@@ -21,7 +21,7 @@ export default function Navbar() {
         >
           <div className="flex items-center gap-3">
             <img
-              src="/assets/image.png"
+              src="/assets/favicon.png"
               alt="Shrinik Logo"
               className="h-8 w-auto object-contain"
             />

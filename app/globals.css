@@ -1,55 +1,65 @@
 @import "tailwindcss";
 
+/* =========================================================
+   SHRINIK DESIGN SYSTEM
+========================================================= */
+
 :root {
   --background: #080808;
   --foreground: #f5f1e8;
 
   --shrinik-black: #080808;
+  --shrinik-surface: #12070a;
+
   --shrinik-burgundy: #3a0712;
   --shrinik-crimson: #7a001b;
+  --shrinik-maroon: #650018;
+
   --shrinik-gold: #c6922e;
+  --shrinik-light-gold: #e3c477;
+
   --shrinik-ivory: #f5f1e8;
+  --shrinik-muted: #8f8980;
 }
+
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
 
 * {
   box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: auto;
   background: var(--background);
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--background);
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(101, 0, 24, 0.08),
+      transparent 35%
+    ),
+    var(--background);
+
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
   overflow-x: hidden;
 }
 
-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-body::-webkit-scrollbar-track {
-  background: #080808;
-}
-
-body::-webkit-scrollbar-thumb {
-  background: #3a0712;
-  border-radius: 999px;
-}
-
-body::-webkit-scrollbar-thumb:hover {
-  background: #7a001b;
-}
-
-::selection {
-  background: #c6922e;
-  color: #080808;
-}
+/* =========================================================
+   LINKS & BUTTONS
+========================================================= */
 
 a {
   color: inherit;
@@ -61,11 +71,156 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+button {
+  font: inherit;
+}
+
+/* =========================================================
+   MEDIA
+========================================================= */
+
 img,
 video {
   display: block;
   max-width: 100%;
 }
+
+/* =========================================================
+   TEXT SELECTION
+========================================================= */
+
+::selection {
+  background: var(--shrinik-gold);
+  color: var(--shrinik-black);
+}
+
+/* =========================================================
+   MAIN PAGE SCROLLBAR
+========================================================= */
+
+body::-webkit-scrollbar {
+  width: 6px;
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--shrinik-black);
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--shrinik-burgundy);
+  border-radius: 999px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: var(--shrinik-crimson);
+}
+
+/* Firefox */
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--shrinik-burgundy)
+    var(--shrinik-black);
+}
+
+/* =========================================================
+   HORIZONTAL CAROUSEL SCROLLBAR
+   Used by:
+   - Team selection
+   - Member carousel
+   - Stand-by members
+========================================================= */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================================================
+   SMOOTH TOUCH SCROLLING
+========================================================= */
+
+.scrollbar-hide {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* =========================================================
+   INTRO ANIMATION
+========================================================= */
+
+@keyframes introProgress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* =========================================================
+   SUBTLE SHRNIK GLOW
+   Can be used with:
+   .shrinik-glow
+========================================================= */
+
+.shrinik-glow {
+  box-shadow:
+    0 0 40px rgba(198, 146, 46, 0.08),
+    0 0 100px rgba(101, 0, 24, 0.08);
+}
+
+/* =========================================================
+   GOLD SHIMMER
+   Useful for premium buttons / highlights
+========================================================= */
+
+@keyframes goldShimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shimmer {
+  background:
+    linear-gradient(
+      110deg,
+      #c6922e 0%,
+      #e3c477 35%,
+      #c6922e 50%,
+      #8f641c 65%,
+      #c6922e 100%
+    );
+
+  background-size: 200% 100%;
+
+  animation:
+    goldShimmer 5s linear infinite;
+}
+
+/* =========================================================
+   FOCUS STATES
+========================================================= */
+
+button:focus-visible,
+a:focus-visible {
+  outline: 1px solid var(--shrinik-gold);
+  outline-offset: 4px;
+}
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -82,12 +237,54 @@ video {
   }
 }
 
-@keyframes introProgress {
-  from {
-    transform: scaleX(0);
+/* =========================================================
+   MOBILE OPTIMIZATION
+========================================================= */
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* =========================================================
+   UTILITY
+========================================================= */
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+/* =========================================================
+   HORIZONTAL CAROUSEL
+========================================================= */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 
-  to {
-    transform: scaleX(1);
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
