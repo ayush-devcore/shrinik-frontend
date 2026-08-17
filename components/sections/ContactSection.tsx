@@ -3,13 +3,51 @@
 import {
   ArrowUpRight,
   Mail,
+  MapPin,
   MessageCircle,
   Sparkles,
 } from "lucide-react";
 
+import {
+  FaInstagram,
+  FaLinkedinIn,
+} from "react-icons/fa";
+
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import Magnetic from "@/components/effects/Magnetic";
 import SectionHeading from "@/components/effects/SectionHeading";
+
+const contactItems = [
+  {
+    label: "Email",
+    value: "shrinikclub@gmail.com",
+    icon: Mail,
+    href: "mailto:shrinikclub@gmail.com",
+    external: false,
+  },
+  {
+    label: "LinkedIn",
+    value: "Shrinik Club",
+    icon: FaLinkedinIn,
+    href: "https://www.linkedin.com/company/shrinik-club/",
+    external: true,
+  },
+  {
+    label: "Instagram",
+    value: "@shrinik_glbajaj",
+    icon: FaInstagram,
+    href: "https://www.instagram.com/shrinik_glbajaj/",
+    external: true,
+  },
+  {
+    label: "Location",
+    value:
+      "G.L. Bajaj Institute of Technology and Management, Greater Noida",
+    icon: MapPin,
+    href: "https://www.google.com/maps/search/?api=1&query=G.L.+Bajaj+Institute+of+Technology+and+Management+Knowledge+Park+3+Greater+Noida",
+    external: true,
+  },
+];
 
 export default function ContactSection() {
   return (
@@ -432,6 +470,186 @@ export default function ContactSection() {
             </div>
 
             {/* =================================================
+                CONTACT DETAILS
+            ================================================== */}
+
+            <div
+              className="
+                relative
+                z-10
+                mt-14
+                grid
+                gap-3
+                border-t
+                border-white/[0.07]
+                pt-8
+                sm:grid-cols-2
+              "
+            >
+
+              {contactItems.map((item, index) => {
+                const Icon = item.icon;
+
+                return (
+                  <ScrollReveal
+                    key={item.label}
+                    delay={0.25 + index * 0.08}
+                    y={35}
+                  >
+                    <a
+                      href={item.href}
+                      target={
+                        item.external
+                          ? "_blank"
+                          : undefined
+                      }
+                      rel={
+                        item.external
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                      className="
+                        group/contact
+                        relative
+                        flex
+                        min-h-[100px]
+                        items-center
+                        justify-between
+                        overflow-hidden
+                        rounded-2xl
+                        border
+                        border-white/[0.07]
+                        bg-black/20
+                        px-5
+                        py-5
+                        transition-all
+                        duration-500
+                        hover:-translate-y-1
+                        hover:border-[#C6922E]/30
+                        hover:bg-[#C6922E]/[0.035]
+                      "
+                    >
+
+                      {/* Left content */}
+
+                      <div
+                        className="
+                          flex
+                          items-center
+                          gap-4
+                        "
+                      >
+
+                        {/* Icon */}
+
+                        <div
+                          className="
+                            flex
+                            h-11
+                            w-11
+                            shrink-0
+                            items-center
+                            justify-center
+                            rounded-full
+                            border
+                            border-white/10
+                            bg-black/20
+                            text-white/35
+                            transition-all
+                            duration-500
+                            group-hover/contact:border-[#C6922E]/40
+                            group-hover/contact:bg-[#C6922E]/10
+                            group-hover/contact:text-[#C6922E]
+                          "
+                        >
+                          <Icon
+                            size={18}
+                            strokeWidth={1.7}
+                          />
+                        </div>
+
+                        {/* Text */}
+
+                        <div>
+
+                          <p
+                            className="
+                              text-[8px]
+                              uppercase
+                              tracking-[0.3em]
+                              text-[#C6922E]/70
+                            "
+                          >
+                            {item.label}
+                          </p>
+
+                          <p
+                            className="
+                              mt-2
+                              text-sm
+                              font-medium
+                              text-[#F5F1E8]/70
+                              transition-colors
+                              duration-300
+                              group-hover/contact:text-[#F5F1E8]
+                            "
+                          >
+                            {item.value}
+                          </p>
+
+                        </div>
+
+                      </div>
+
+                      {/* Arrow */}
+
+                      <div
+                        className="
+                          flex
+                          h-9
+                          w-9
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-full
+                          border
+                          border-white/10
+                          text-white/20
+                          transition-all
+                          duration-500
+                          group-hover/contact:-translate-y-1
+                          group-hover/contact:translate-x-1
+                          group-hover/contact:border-[#C6922E]/40
+                          group-hover/contact:text-[#C6922E]
+                        "
+                      >
+                        <ArrowUpRight size={14} />
+                      </div>
+
+                      {/* Bottom active line */}
+
+                      <div
+                        className="
+                          absolute
+                          bottom-0
+                          left-5
+                          h-px
+                          w-0
+                          bg-[#C6922E]
+                          transition-all
+                          duration-500
+                          group-hover/contact:w-16
+                        "
+                      />
+
+                    </a>
+                  </ScrollReveal>
+                );
+              })}
+
+            </div>
+
+            {/* =================================================
                 BOTTOM META
             ================================================== */}
 
@@ -439,7 +657,7 @@ export default function ContactSection() {
               className="
                 relative
                 z-10
-                mt-12
+                mt-8
                 flex
                 flex-col
                 gap-4
