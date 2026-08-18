@@ -61,7 +61,7 @@ export default function Website() {
             rotate: 0,
             filter: "blur(0px)",
             duration: 1.2,
-          }
+          },
         )
         .fromTo(
           ".hero-eyebrow",
@@ -76,7 +76,7 @@ export default function Website() {
             filter: "blur(0px)",
             duration: 0.7,
           },
-          "-=0.65"
+          "-=0.65",
         )
         .fromTo(
           ".hero-title",
@@ -91,7 +91,7 @@ export default function Website() {
             filter: "blur(0px)",
             duration: 0.9,
           },
-          "-=0.45"
+          "-=0.45",
         )
         .fromTo(
           ".hero-line",
@@ -103,7 +103,7 @@ export default function Website() {
             scaleX: 1,
             duration: 0.7,
           },
-          "-=0.45"
+          "-=0.45",
         )
         .fromTo(
           ".hero-description",
@@ -116,7 +116,7 @@ export default function Website() {
             y: 0,
             duration: 0.7,
           },
-          "-=0.35"
+          "-=0.35",
         )
         .fromTo(
           ".hero-buttons",
@@ -129,7 +129,7 @@ export default function Website() {
             y: 0,
             duration: 0.7,
           },
-          "-=0.35"
+          "-=0.35",
         )
         .fromTo(
           ".hero-scroll",
@@ -142,7 +142,7 @@ export default function Website() {
             y: 0,
             duration: 0.6,
           },
-          "-=0.25"
+          "-=0.25",
         );
     }, heroRef);
 
@@ -169,11 +169,9 @@ export default function Website() {
 
       const rect = hero.getBoundingClientRect();
 
-      const x =
-        (event.clientX - rect.left) / rect.width - 0.5;
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
 
-      const y =
-        (event.clientY - rect.top) / rect.height - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
 
       gsap.to(".hero-logo-parallax", {
         x: x * 18,
@@ -207,10 +205,7 @@ export default function Website() {
     hero.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      hero.removeEventListener(
-        "mousemove",
-        handleMouseMove
-      );
+      hero.removeEventListener("mousemove", handleMouseMove);
     };
   }, [introComplete]);
 
@@ -226,11 +221,7 @@ export default function Website() {
           CINEMATIC INTRO
       ======================================================= */}
 
-      {!introComplete && (
-        <IntroScreen
-          onComplete={handleIntroComplete}
-        />
-      )}
+      {!introComplete && <IntroScreen onComplete={handleIntroComplete} />}
 
       {/* ======================================================
           MAIN WEBSITE
@@ -243,11 +234,7 @@ export default function Website() {
           bg-[#080808]
           transition-opacity
           duration-1000
-          ${
-            introComplete
-              ? "opacity-100"
-              : "pointer-events-none opacity-0"
-          }
+          ${introComplete ? "opacity-100" : "pointer-events-none opacity-0"}
         `}
       >
         {/* ====================================================
@@ -264,23 +251,48 @@ export default function Website() {
           ref={heroRef}
           id="home"
           className="
-            relative
-            flex
-            min-h-screen
-            items-center
-            overflow-hidden
-            bg-[#080808]
-            px-6
-            md:px-12
-          "
+    relative
+    flex
+    min-h-screen
+    items-center
+    overflow-hidden
+    bg-[#080808]
+    px-6
+    md:px-12
+  "
         >
+          {/* ==================================================
+      HERO BACKGROUND VIDEO
+  =================================================== */}
+
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+          >
+            <source
+              src="/videos/shrinik-tech-background.mp4"
+              type="video/mp4"
+            />
+          </video>
+
+          {/* Dark cinematic overlay */}
+
+          <div className="pointer-events-none absolute inset-0 bg-[#080808]/65" />
+
+          {/* Burgundy atmosphere overlay */}
+
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#3A0712]/30 via-transparent to-[#080808]/70" />
 
           {/* ==================================================
-              AMBIENT BACKGROUND
-          =================================================== */}
+      AMBIENT BACKGROUND
+  =================================================== */}
 
           <div className="pointer-events-none absolute inset-0">
-
             {/* Gold light */}
 
             <div
@@ -334,12 +346,10 @@ export default function Website() {
             ================================================= */}
 
             <div className="absolute inset-0 opacity-[0.035]">
-
               <div
                 className="absolute inset-0"
                 style={{
-                  backgroundImage:
-                    `
+                  backgroundImage: `
                     linear-gradient(
                       rgba(255,255,255,0.45) 1px,
                       transparent 1px
@@ -353,7 +363,6 @@ export default function Website() {
                   backgroundSize: "80px 80px",
                 }}
               />
-
             </div>
 
             {/* =================================================
@@ -372,7 +381,6 @@ export default function Website() {
                 backgroundSize: "38px 38px",
               }}
             />
-
           </div>
 
           {/* ==================================================
@@ -388,7 +396,6 @@ export default function Website() {
               max-w-7xl
             "
           >
-
             <div
               className="
                 grid
@@ -397,22 +404,18 @@ export default function Website() {
                 lg:grid-cols-[0.8fr_1.5fr]
               "
             >
-
               {/* =================================================
                   LOGO
               ================================================= */}
 
               <div className="flex justify-center lg:justify-start">
-
                 <div className="hero-logo relative">
-
                   <div
                     className="
                       hero-logo-parallax
                       relative
                     "
                   >
-
                     {/* Glow */}
 
                     <div
@@ -465,7 +468,6 @@ export default function Website() {
                         lg:w-[350px]
                       "
                     >
-
                       <img
                         src="/assets/favicon.png"
                         alt="Shrinik Club G.L. Bajaj"
@@ -482,13 +484,9 @@ export default function Website() {
                           hover:scale-[1.035]
                         "
                       />
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
 
               {/* =================================================
@@ -502,11 +500,9 @@ export default function Website() {
                   lg:text-left
                 "
               >
-
                 {/* Eyebrow */}
 
                 <div className="hero-eyebrow">
-
                   <div
                     className="
                       flex
@@ -516,7 +512,6 @@ export default function Website() {
                       lg:justify-start
                     "
                   >
-
                     <span className="h-px w-8 bg-[#C6922E]" />
 
                     <span
@@ -530,9 +525,7 @@ export default function Website() {
                     >
                       Technology · Creativity · Culture
                     </span>
-
                   </div>
-
                 </div>
 
                 {/* Title */}
@@ -567,7 +560,6 @@ export default function Website() {
                 {/* Description */}
 
                 <div className="hero-description">
-
                   <p
                     className="
                       mt-7
@@ -579,16 +571,12 @@ export default function Website() {
                     "
                   >
                     Where technology meets culture.
-
                     <br />
-
                     <span className="text-white/25">
-                      A student-driven community at
-                      G.L. Bajaj built around creativity,
-                      technology and expression.
+                      A student-driven community at G.L. Bajaj built around
+                      creativity, technology and expression.
                     </span>
                   </p>
-
                 </div>
 
                 {/* =================================================
@@ -606,7 +594,6 @@ export default function Website() {
                     lg:justify-start
                   "
                 >
-
                   {/* Explore */}
 
                   <a
@@ -631,10 +618,7 @@ export default function Website() {
                       hover:shadow-[0_0_40px_rgba(198,146,46,0.22)]
                     "
                   >
-
-                    <span className="relative z-10">
-                      Explore Shrinik
-                    </span>
+                    <span className="relative z-10">Explore Shrinik</span>
 
                     <span
                       className="
@@ -647,7 +631,6 @@ export default function Website() {
                         group-hover:translate-x-full
                       "
                     />
-
                   </a>
 
                   {/* Team */}
@@ -678,9 +661,7 @@ export default function Website() {
                       hover:text-[#F5F1E8]
                     "
                   >
-
                     Our Team
-
                     <span
                       className="
                         transition-transform
@@ -691,15 +672,10 @@ export default function Website() {
                     >
                       ↗
                     </span>
-
                   </a>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
 
           {/* ==================================================
@@ -716,7 +692,6 @@ export default function Website() {
               -translate-x-1/2
             "
           >
-
             <a
               href="#about"
               className="
@@ -727,7 +702,6 @@ export default function Website() {
                 gap-3
               "
             >
-
               <span
                 className="
                   text-[8px]
@@ -743,7 +717,6 @@ export default function Website() {
               </span>
 
               <span className="relative h-10 w-px overflow-hidden bg-white/10">
-
                 <span
                   className="
                     absolute
@@ -757,11 +730,8 @@ export default function Website() {
                     animate-pulse
                   "
                 />
-
               </span>
-
             </a>
-
           </div>
 
           {/* ==================================================
@@ -801,7 +771,6 @@ export default function Website() {
           >
             EST. · SHRINIK
           </div>
-
         </section>
 
         {/* ====================================================
@@ -839,7 +808,6 @@ export default function Website() {
         ===================================================== */}
 
         <Footer />
-
       </main>
     </>
   );
