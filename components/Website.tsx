@@ -37,119 +37,359 @@ export default function Website() {
   useEffect(() => {
     if (!introComplete || !heroRef.current) return;
 
+    const hero = heroRef.current;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
     const ctx = gsap.context(() => {
+      /*
+       * ========================================================
+       * REDUCED MOTION
+       * ========================================================
+       */
+
+      if (prefersReducedMotion) {
+        gsap.set(
+          [
+            ".hero-logo",
+            ".hero-eyebrow",
+            ".hero-letter",
+            ".hero-line",
+            ".hero-description",
+            ".hero-buttons",
+            ".hero-scroll",
+          ],
+          {
+            opacity: 1,
+            clearProps: "filter,transform",
+          },
+        );
+
+        return;
+      }
+
+      /*
+       * ========================================================
+       * INITIAL TITLE STATE
+       * ========================================================
+       */
+
+      gsap.set(".hero-letter", {
+        opacity: 0,
+        y: 90,
+        rotateX: -75,
+        rotateY: 25,
+        rotateZ: 2,
+        scale: 0.72,
+        filter: "blur(18px)",
+        transformOrigin: "50% 100%",
+        transformPerspective: 900,
+      });
+
+      gsap.set(".hero-title-sweep", {
+        xPercent: -180,
+        opacity: 0,
+      });
+
+      gsap.set(".hero-title-line", {
+        xPercent: -120,
+      });
+
+      /*
+       * ========================================================
+       * MAIN TIMELINE
+       * ========================================================
+       */
+
       const timeline = gsap.timeline({
         defaults: {
           ease: "power3.out",
         },
       });
 
-      timeline
-        .fromTo(
-          ".hero-logo",
-          {
-            opacity: 0,
-            scale: 0.75,
-            rotate: -8,
-            filter: "blur(15px)",
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-            filter: "blur(0px)",
-            duration: 1.2,
-          },
-        )
-        .fromTo(
-          ".hero-eyebrow",
-          {
-            opacity: 0,
-            y: 25,
-            filter: "blur(6px)",
-          },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.7,
-          },
-          "-=0.65",
-        )
-        .fromTo(
-          ".hero-title",
-          {
-            opacity: 0,
-            y: 50,
-            filter: "blur(10px)",
-          },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.9,
-          },
-          "-=0.45",
-        )
-        .fromTo(
-          ".hero-line",
-          {
-            scaleX: 0,
-            transformOrigin: "left center",
-          },
-          {
-            scaleX: 1,
-            duration: 0.7,
-          },
-          "-=0.45",
-        )
-        .fromTo(
-          ".hero-description",
-          {
-            opacity: 0,
-            y: 20,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-          },
-          "-=0.35",
-        )
-        .fromTo(
-          ".hero-buttons",
-          {
-            opacity: 0,
-            y: 20,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-          },
-          "-=0.35",
-        )
-        .fromTo(
-          ".hero-scroll",
-          {
-            opacity: 0,
-            y: 15,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-          },
-          "-=0.25",
-        );
-    }, heroRef);
+      /*
+       * LOGO
+       */
 
-    return () => ctx.revert();
+      timeline.fromTo(
+        ".hero-logo",
+        {
+          opacity: 0,
+          scale: 0.72,
+          rotate: -10,
+          filter: "blur(15px)",
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          rotate: 0,
+          filter: "blur(0px)",
+          duration: 1.25,
+          ease: "power4.out",
+        },
+      );
+
+      /*
+       * EYEBROW
+       */
+
+      timeline.fromTo(
+        ".hero-eyebrow",
+        {
+          opacity: 0,
+          y: 25,
+          filter: "blur(7px)",
+        },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.7,
+          ease: "power3.out",
+        },
+        "-=0.65",
+      );
+
+      /*
+       * ========================================================
+       * SHRINIK LETTER-BY-LETTER REVEAL
+       * ========================================================
+       */
+
+      timeline.to(
+        ".hero-letter",
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          rotateY: 0,
+          rotateZ: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.75,
+          stagger: {
+            each: 0.045,
+            from: "start",
+          },
+          ease: "power4.out",
+        },
+        "-=0.25",
+      );
+
+      /*
+       * ========================================================
+       * PEARL / SILVER TITLE GLOW
+       * ========================================================
+       */
+
+      timeline.to(
+        ".hero-letter",
+        {
+          textShadow:
+            "0 0 18px rgba(235,239,245,0.16), 0 0 45px rgba(122,36,56,0.10)",
+          duration: 1.1,
+          stagger: {
+            each: 0.045,
+            from: "start",
+          },
+          ease: "power2.out",
+        },
+        "-=0.75",
+      );
+
+      /*
+       * ========================================================
+       * TITLE SHINE ANIMATION
+       * ========================================================
+       */
+
+      timeline.to(
+        ".hero-letter",
+        {
+          backgroundPosition: "100% 50%",
+          duration: 1.8,
+          stagger: {
+            each: 0.05,
+            from: "start",
+          },
+          ease: "power2.inOut",
+        },
+        "-=0.75",
+      );
+
+      /*
+       * ========================================================
+       * GOLD LINE UNDER TITLE
+       * ========================================================
+       */
+
+      timeline.to(
+        ".hero-title-line",
+        {
+          xPercent: 500,
+          duration: 1.35,
+          ease: "power3.inOut",
+        },
+        "-=1.25",
+      );
+
+      /*
+       * ========================================================
+       * PEARL LIGHT SWEEP
+       * ========================================================
+       */
+
+      timeline.fromTo(
+        ".hero-title-sweep",
+        {
+          xPercent: -180,
+          opacity: 0,
+        },
+        {
+          xPercent: 650,
+          opacity: 1,
+          duration: 1.15,
+          ease: "power2.inOut",
+        },
+        "-=1.15",
+      );
+
+      timeline.to(
+        ".hero-title-sweep",
+        {
+          opacity: 0,
+          duration: 0.3,
+        },
+        "-=0.15",
+      );
+
+      /*
+       * ========================================================
+       * MAIN GOLD LINE
+       * ========================================================
+       */
+
+      timeline.fromTo(
+        ".hero-line",
+        {
+          scaleX: 0,
+          transformOrigin: "left center",
+        },
+        {
+          scaleX: 1,
+          duration: 0.7,
+          ease: "power3.inOut",
+        },
+        "-=0.55",
+      );
+
+      /*
+       * ========================================================
+       * DESCRIPTION
+       * ========================================================
+       */
+
+      timeline.fromTo(
+        ".hero-description",
+        {
+          opacity: 0,
+          y: 12,
+          filter: "blur(3px)",
+        },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        "-=1.05",
+      );
+
+      /*
+       * ========================================================
+       * BUTTONS
+       * ========================================================
+       */
+
+      timeline.fromTo(
+        ".hero-buttons",
+        {
+          opacity: 0,
+          y: 12,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        "-=0.35",
+      );
+
+      /*
+       * ========================================================
+       * SCROLL INDICATOR
+       * ========================================================
+       */
+
+      timeline.fromTo(
+        ".hero-scroll",
+        {
+          opacity: 0,
+          y: 15,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        },
+        "-=0.25",
+      );
+
+      /*
+       * ========================================================
+       * CONTINUOUS SUBTLE LETTER MOTION
+       * ========================================================
+       */
+
+      timeline.call(() => {
+        gsap.to(".hero-letter", {
+          y: -2.5,
+          duration: 2.2,
+          stagger: {
+            each: 0.12,
+            repeat: -1,
+            yoyo: true,
+          },
+          ease: "sine.inOut",
+        });
+
+        /*
+         * Title atmosphere breathing.
+         */
+
+        gsap.to(".hero-title-glow", {
+          opacity: 0.6,
+          scale: 1.07,
+          duration: 3.2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      });
+    }, hero);
+
+    return () => {
+      ctx.revert();
+    };
   }, [introComplete]);
 
   /*
    * ============================================================
-   * HERO MOUSE PARALLAX
+   * HERO MOUSE PARALLAX + LETTER RESPONSE
    * ============================================================
    */
 
@@ -157,6 +397,12 @@ export default function Website() {
     if (!introComplete || !heroRef.current) return;
 
     const hero = heroRef.current;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion) return;
 
     const handleMouseMove = (event: MouseEvent) => {
       if (window.innerWidth < 768) return;
@@ -166,59 +412,148 @@ export default function Website() {
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
 
+      /*
+       * LOGO
+       */
+
       gsap.to(".hero-logo-parallax", {
         x: x * 18,
         y: y * 18,
         duration: 0.8,
         ease: "power3.out",
+        overwrite: true,
       });
+
+      /*
+       * CONTENT
+       */
 
       gsap.to(".hero-content-parallax", {
         x: x * -8,
         y: y * -8,
         duration: 1,
         ease: "power3.out",
+        overwrite: true,
       });
+
+      /*
+       * GOLD AMBIENT LIGHT
+       */
 
       gsap.to(".hero-gold-glow", {
         x: x * 35,
         y: y * 35,
         duration: 1.2,
         ease: "power3.out",
+        overwrite: true,
       });
+
+      /*
+       * BURGUNDY AMBIENT LIGHT
+       */
 
       gsap.to(".hero-burgundy-glow", {
         x: x * -25,
         y: y * -25,
         duration: 1.4,
         ease: "power3.out",
+        overwrite: true,
+      });
+
+      /*
+       * TITLE ATMOSPHERE
+       */
+
+      gsap.to(".hero-title-glow", {
+        x: x * 28,
+        y: y * 18,
+        duration: 1,
+        ease: "power3.out",
+        overwrite: true,
+      });
+
+      /*
+       * INDIVIDUAL LETTER RESPONSE
+       */
+
+      const letters = hero.querySelectorAll<HTMLElement>(".hero-letter");
+
+      letters.forEach((letter, index) => {
+        const centerBias = index - (letters.length - 1) / 2;
+
+        gsap.to(letter, {
+          x: x * (4 + Math.abs(centerBias) * 0.8),
+          y: y * (3 + Math.abs(centerBias) * 0.5),
+          rotateY: x * 4,
+          rotateX: y * -3,
+          duration: 0.75,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      });
+    };
+
+    /*
+     * RESET
+     */
+
+    const handleMouseLeave = () => {
+      gsap.to(
+        [
+          ".hero-logo-parallax",
+          ".hero-content-parallax",
+          ".hero-gold-glow",
+          ".hero-burgundy-glow",
+          ".hero-title-glow",
+        ],
+        {
+          x: 0,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          overwrite: true,
+        },
+      );
+
+      gsap.to(".hero-letter", {
+        x: 0,
+        rotateX: 0,
+        rotateY: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        overwrite: true,
       });
     };
 
     hero.addEventListener("mousemove", handleMouseMove);
+    hero.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
       hero.removeEventListener("mousemove", handleMouseMove);
+      hero.removeEventListener("mouseleave", handleMouseLeave);
+
+      gsap.killTweensOf([
+        ".hero-logo-parallax",
+        ".hero-content-parallax",
+        ".hero-gold-glow",
+        ".hero-burgundy-glow",
+        ".hero-title-glow",
+        ".hero-letter",
+      ]);
     };
   }, [introComplete]);
 
+  /*
+   * ============================================================
+   * RENDER
+   * ============================================================
+   */
+
   return (
     <>
-      {/* ======================================================
-          SMOOTH SCROLL
-      ======================================================= */}
-
       <SmoothScroll />
 
-      {/* ======================================================
-          CINEMATIC INTRO
-      ======================================================= */}
-
       {!introComplete && <IntroScreen onComplete={handleIntroComplete} />}
-
-      {/* ======================================================
-          MAIN WEBSITE
-      ======================================================= */}
 
       <main
         id="main-content"
@@ -230,10 +565,6 @@ export default function Website() {
           ${introComplete ? "opacity-100" : "pointer-events-none opacity-0"}
         `}
       >
-        {/* ====================================================
-            NAVBAR
-        ===================================================== */}
-
         <Navbar />
 
         {/* ====================================================
@@ -254,9 +585,7 @@ export default function Website() {
             md:px-12
           "
         >
-          {/* ==================================================
-              HERO BACKGROUND VIDEO
-          ================================================== */}
+          {/* BACKGROUND VIDEO */}
 
           <video
             className="
@@ -280,9 +609,7 @@ export default function Website() {
             />
           </video>
 
-          {/* ==================================================
-              DARK CINEMATIC OVERLAY
-          ================================================== */}
+          {/* DARK OVERLAY */}
 
           <div
             className="
@@ -294,9 +621,7 @@ export default function Website() {
             "
           />
 
-          {/* ==================================================
-              BURGUNDY ATMOSPHERE
-          ================================================== */}
+          {/* BURGUNDY ATMOSPHERE */}
 
           <div
             className="
@@ -311,12 +636,10 @@ export default function Website() {
             "
           />
 
-          {/* ==================================================
-              AMBIENT EFFECTS
-          ================================================== */}
+          {/* AMBIENT EFFECTS */}
 
           <div className="pointer-events-none absolute inset-0 z-[3]">
-            {/* Gold light */}
+            {/* Gold */}
 
             <div
               className="
@@ -332,7 +655,7 @@ export default function Website() {
               "
             />
 
-            {/* Burgundy light */}
+            {/* Burgundy */}
 
             <div
               className="
@@ -348,7 +671,7 @@ export default function Website() {
               "
             />
 
-            {/* Bottom burgundy atmosphere */}
+            {/* Bottom atmosphere */}
 
             <div
               className="
@@ -364,7 +687,7 @@ export default function Website() {
               "
             />
 
-            {/* Background grid */}
+            {/* Tech grid */}
 
             <div className="absolute inset-0 opacity-[0.035]">
               <div
@@ -386,7 +709,7 @@ export default function Website() {
               />
             </div>
 
-            {/* Fine radial grid */}
+            {/* Radial dots */}
 
             <div
               className="
@@ -403,7 +726,7 @@ export default function Website() {
           </div>
 
           {/* ==================================================
-              HERO CONTENT
+              CONTENT
           ================================================== */}
 
           <div
@@ -430,8 +753,6 @@ export default function Website() {
               <div className="flex justify-center lg:justify-start">
                 <div className="hero-logo relative">
                   <div className="hero-logo-parallax relative">
-                    {/* Glow */}
-
                     <div
                       className="
                         absolute
@@ -441,8 +762,6 @@ export default function Website() {
                         blur-[55px]
                       "
                     />
-
-                    {/* Outer ring */}
 
                     <div
                       className="
@@ -454,8 +773,6 @@ export default function Website() {
                       "
                     />
 
-                    {/* Secondary ring */}
-
                     <div
                       className="
                         absolute
@@ -465,8 +782,6 @@ export default function Website() {
                         border-[#C6922E]/[0.06]
                       "
                     />
-
-                    {/* Logo */}
 
                     <div
                       className="
@@ -508,7 +823,7 @@ export default function Website() {
               ================================================= */}
 
               <div className="hero-content-parallax text-center lg:text-left">
-                {/* Eyebrow */}
+                {/* EYEBROW */}
 
                 <div className="hero-eyebrow">
                   <div
@@ -536,28 +851,143 @@ export default function Website() {
                   </div>
                 </div>
 
-                {/* Title */}
+                {/* =================================================
+                    SHRINIK TITLE
+                ================================================== */}
 
-                <h1
-                  className="
-                    hero-title
-                    mt-7
-                    text-[clamp(4rem,9vw,9rem)]
-                    font-medium
-                    leading-[0.78]
-                    tracking-[-0.065em]
-                    text-[#F5F1E8]
-                  "
-                >
-                  SHRINIK
-                </h1>
+                <div className="hero-title-wrap relative mt-7">
+                  {/* Pearl / silver glow */}
 
-                {/* Gold line */}
+                  <div
+                    className="
+                      hero-title-glow
+                      pointer-events-none
+                      absolute
+                      left-1/2
+                      top-1/2
+                      z-0
+                      h-[190px]
+                      w-[90%]
+                      -translate-x-1/2
+                      -translate-y-1/2
+                      rounded-full
+                      bg-[#E5EAF0]/[0.08]
+                      blur-[95px]
+                    "
+                  />
+
+                  {/* Burgundy depth */}
+
+                  <div
+                    className="
+                      pointer-events-none
+                      absolute
+                      left-1/2
+                      top-1/2
+                      z-0
+                      h-[120px]
+                      w-[70%]
+                      -translate-x-1/2
+                      -translate-y-1/2
+                      rounded-full
+                      bg-[#7A2438]/20
+                      blur-[75px]
+                    "
+                  />
+
+                  {/* Pearl light sweep */}
+
+                  <div
+                    className="
+                      hero-title-sweep
+                      pointer-events-none
+                      absolute
+                      inset-y-[-15%]
+                      left-[-30%]
+                      z-20
+                      w-[16%]
+                      skew-x-[-18deg]
+                      bg-gradient-to-r
+                      from-transparent
+                      via-[#FFFFFF]/75
+                      to-transparent
+                      opacity-0
+                      blur-xl
+                    "
+                  />
+
+                  {/* TITLE */}
+
+                  <h1
+                    className="
+                      hero-title
+                      relative
+                      z-10
+                      flex
+                      whitespace-nowrap
+                      text-[clamp(4rem,9vw,9rem)]
+                      font-semibold
+                      leading-[0.78]
+                      tracking-[-0.07em]
+                    "
+                    aria-label="SHRINIK"
+                  >
+                    {"SHRINIK".split("").map((letter, index) => (
+                      <span
+                        key={`${letter}-${index}`}
+                        className="
+                          hero-letter
+                          relative
+                          inline-block
+                          bg-[linear-gradient(120deg,#FFFFFF_0%,#E9EDF2_28%,#AEB8C4_50%,#F8F7F3_68%,#7A2438_100%)]
+                          bg-[length:250%_250%]
+                          bg-clip-text
+                          text-transparent
+                          will-change-transform
+                        "
+                        style={{
+                          textShadow: "0 0 16px rgba(235,239,245,0.10)",
+                        }}
+                      >
+                        {letter}
+                      </span>
+                    ))}
+                  </h1>
+
+                  {/* TITLE BASELINE */}
+
+                  <div
+                    className="
+                      pointer-events-none
+                      absolute
+                      -bottom-5
+                      left-0
+                      h-px
+                      w-full
+                      overflow-hidden
+                      bg-[#C6922E]/10
+                    "
+                  >
+                    <div
+                      className="
+                        hero-title-line
+                        h-full
+                        w-1/4
+                        bg-gradient-to-r
+                        from-transparent
+                        via-[#C6922E]
+                        to-transparent
+                      "
+                    />
+                  </div>
+                </div>
+
+                {/* GOLD DIVIDER */}
 
                 <div
                   className="
                     hero-line
-                    mt-8
+                    mt-9
                     h-px
                     w-24
                     bg-[#C6922E]/70
@@ -565,7 +995,7 @@ export default function Website() {
                   "
                 />
 
-                {/* Description */}
+                {/* DESCRIPTION */}
 
                 <div className="hero-description">
                   <p
@@ -589,7 +1019,7 @@ export default function Website() {
 
                 {/* =================================================
                     BUTTONS
-                ================================================= */}
+                ================================================== */}
 
                 <div
                   className="
@@ -602,8 +1032,6 @@ export default function Website() {
                     lg:justify-start
                   "
                 >
-                  {/* Explore */}
-
                   <a
                     href="#about"
                     className="
@@ -626,9 +1054,7 @@ export default function Website() {
                       hover:shadow-[0_0_40px_rgba(198,146,46,0.22)]
                     "
                   >
-                    <span className="relative z-10">
-                      Explore Shrinik
-                    </span>
+                    <span className="relative z-10">Explore Shrinik</span>
 
                     <span
                       className="
@@ -642,8 +1068,6 @@ export default function Website() {
                       "
                     />
                   </a>
-
-                  {/* Team */}
 
                   <a
                     href="#team"
@@ -672,7 +1096,6 @@ export default function Website() {
                     "
                   >
                     Our Team
-
                     <span
                       className="
                         transition-transform
@@ -745,9 +1168,7 @@ export default function Website() {
             </a>
           </div>
 
-          {/* ==================================================
-              HERO CORNER DETAILS
-          ================================================== */}
+          {/* CORNER DETAILS */}
 
           <div
             className="
@@ -785,39 +1206,14 @@ export default function Website() {
         </section>
 
         {/* ====================================================
-            ABOUT
+            SECTIONS
         ===================================================== */}
 
         <AboutSection />
-
-        {/* ====================================================
-            TEAM
-        ===================================================== */}
-
         <TeamSection />
-
-        {/* ====================================================
-            EVENTS
-        ===================================================== */}
-
         <EventsSection />
-
-        {/* ====================================================
-            GALLERY
-        ===================================================== */}
-
         <GallerySection />
-
-        {/* ====================================================
-            CONTACT
-        ===================================================== */}
-
         <ContactSection />
-
-        {/* ====================================================
-            FOOTER
-        ===================================================== */}
-
         <Footer />
       </main>
     </>
