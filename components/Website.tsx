@@ -32,8 +32,6 @@ export default function Website() {
    * ============================================================
    * HERO ENTRANCE ANIMATION
    * ============================================================
-   *
-   * Runs once after the 5-second intro disappears.
    */
 
   useEffect(() => {
@@ -153,10 +151,6 @@ export default function Website() {
    * ============================================================
    * HERO MOUSE PARALLAX
    * ============================================================
-   *
-   * Desktop only.
-   *
-   * The logo and ambient lights subtly react to the cursor.
    */
 
   useEffect(() => {
@@ -170,7 +164,6 @@ export default function Website() {
       const rect = hero.getBoundingClientRect();
 
       const x = (event.clientX - rect.left) / rect.width - 0.5;
-
       const y = (event.clientY - rect.top) / rect.height - 0.5;
 
       gsap.to(".hero-logo-parallax", {
@@ -251,22 +244,29 @@ export default function Website() {
           ref={heroRef}
           id="home"
           className="
-    relative
-    flex
-    min-h-screen
-    items-center
-    overflow-hidden
-    bg-[#080808]
-    px-6
-    md:px-12
-  "
+            relative
+            flex
+            min-h-screen
+            items-center
+            overflow-hidden
+            bg-[#080808]
+            px-6
+            md:px-12
+          "
         >
           {/* ==================================================
-      HERO BACKGROUND VIDEO
-  =================================================== */}
+              HERO BACKGROUND VIDEO
+          ================================================== */}
 
           <video
-            className="absolute inset-0 h-full w-full object-cover"
+            className="
+              absolute
+              inset-0
+              z-0
+              h-full
+              w-full
+              object-cover
+            "
             autoPlay
             muted
             loop
@@ -280,19 +280,42 @@ export default function Website() {
             />
           </video>
 
-          {/* Dark cinematic overlay */}
+          {/* ==================================================
+              DARK CINEMATIC OVERLAY
+          ================================================== */}
 
-          <div className="pointer-events-none absolute inset-0 bg-[#080808]/65" />
-
-          {/* Burgundy atmosphere overlay */}
-
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#3A0712]/30 via-transparent to-[#080808]/70" />
+          <div
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              z-[1]
+              bg-[#080808]/55
+            "
+          />
 
           {/* ==================================================
-      AMBIENT BACKGROUND
-  =================================================== */}
+              BURGUNDY ATMOSPHERE
+          ================================================== */}
 
-          <div className="pointer-events-none absolute inset-0">
+          <div
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              z-[2]
+              bg-gradient-to-br
+              from-[#3A0712]/30
+              via-transparent
+              to-[#080808]/70
+            "
+          />
+
+          {/* ==================================================
+              AMBIENT EFFECTS
+          ================================================== */}
+
+          <div className="pointer-events-none absolute inset-0 z-[3]">
             {/* Gold light */}
 
             <div
@@ -341,9 +364,7 @@ export default function Website() {
               "
             />
 
-            {/* =================================================
-                BACKGROUND GRID
-            ================================================= */}
+            {/* Background grid */}
 
             <div className="absolute inset-0 opacity-[0.035]">
               <div
@@ -359,15 +380,13 @@ export default function Website() {
                       rgba(255,255,255,0.45) 1px,
                       transparent 1px
                     )
-                    `,
+                  `,
                   backgroundSize: "80px 80px",
                 }}
               />
             </div>
 
-            {/* =================================================
-                FINE RADIAL GRID
-            ================================================= */}
+            {/* Fine radial grid */}
 
             <div
               className="
@@ -385,7 +404,7 @@ export default function Website() {
 
           {/* ==================================================
               HERO CONTENT
-          =================================================== */}
+          ================================================== */}
 
           <div
             className="
@@ -410,12 +429,7 @@ export default function Website() {
 
               <div className="flex justify-center lg:justify-start">
                 <div className="hero-logo relative">
-                  <div
-                    className="
-                      hero-logo-parallax
-                      relative
-                    "
-                  >
+                  <div className="hero-logo-parallax relative">
                     {/* Glow */}
 
                     <div
@@ -493,13 +507,7 @@ export default function Website() {
                   HERO TEXT
               ================================================= */}
 
-              <div
-                className="
-                  hero-content-parallax
-                  text-center
-                  lg:text-left
-                "
-              >
+              <div className="hero-content-parallax text-center lg:text-left">
                 {/* Eyebrow */}
 
                 <div className="hero-eyebrow">
@@ -618,7 +626,9 @@ export default function Website() {
                       hover:shadow-[0_0_40px_rgba(198,146,46,0.22)]
                     "
                   >
-                    <span className="relative z-10">Explore Shrinik</span>
+                    <span className="relative z-10">
+                      Explore Shrinik
+                    </span>
 
                     <span
                       className="
@@ -662,6 +672,7 @@ export default function Website() {
                     "
                   >
                     Our Team
+
                     <span
                       className="
                         transition-transform
@@ -680,7 +691,7 @@ export default function Website() {
 
           {/* ==================================================
               SCROLL INDICATOR
-          =================================================== */}
+          ================================================== */}
 
           <div
             className="
@@ -736,7 +747,7 @@ export default function Website() {
 
           {/* ==================================================
               HERO CORNER DETAILS
-          =================================================== */}
+          ================================================== */}
 
           <div
             className="
