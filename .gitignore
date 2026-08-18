@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large video masters
+*.mov
+*.mkv
+*.avi
+
+# Keep only the web-optimized MP4
+/public/videos/*
+
+# Explicitly allow the web background
+!/public/videos/shrinik-tech-background.mp4
