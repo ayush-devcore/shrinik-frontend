@@ -20,7 +20,6 @@ export interface TeamGroup {
     | "management"
     | "cultural";
   members: TeamMember[];
-  standBy?: TeamMember[];
 }
 
 export const teamGroups: TeamGroup[] = [
@@ -80,12 +79,12 @@ export const teamGroups: TeamGroup[] = [
       {
         id: "tech-palak-chadha",
         name: "Palak Chadha",
-        role: "Director",
+        role: "Lead",
       },
       {
         id: "tech-altamish",
         name: "Altamish",
-        role: "Co-Director",
+        role: "Co-Lead",
       },
       {
         id: "tech-aashish-pandey",
@@ -128,29 +127,6 @@ export const teamGroups: TeamGroup[] = [
         role: "Member",
       },
     ],
-
-    standBy: [
-      {
-        id: "tech-saksham-kaushik",
-        name: "Saksham Kaushik",
-        role: "Stand-by",
-      },
-      {
-        id: "tech-akshat-mishra",
-        name: "Akshat Mishra",
-        role: "Stand-by",
-      },
-      {
-        id: "tech-ojasv",
-        name: "Ojasv",
-        role: "Stand-by",
-      },
-      {
-        id: "tech-dev-agarwal",
-        name: "Dev Agarwal",
-        role: "Stand-by",
-      },
-    ],
   },
 
   // =========================================================
@@ -166,7 +142,7 @@ export const teamGroups: TeamGroup[] = [
       {
         id: "design-khyati-prakash",
         name: "Khyati Prakash",
-        role: "Director",
+        role: "Lead",
       },
       {
         id: "design-ujjwal-maheshwari",
@@ -176,7 +152,7 @@ export const teamGroups: TeamGroup[] = [
       {
         id: "design-diya-tyagi",
         name: "Diya Tyagi",
-        role: "Co-Director",
+        role: "Co-Lead",
       },
       {
         id: "design-rajeshwari-aggarwal",
@@ -194,14 +170,6 @@ export const teamGroups: TeamGroup[] = [
         role: "Member",
       },
     ],
-
-    standBy: [
-      {
-        id: "design-aayush-srivastava",
-        name: "Aayush Srivastava",
-        role: "Stand-by",
-      },
-    ],
   },
 
   // =========================================================
@@ -217,12 +185,12 @@ export const teamGroups: TeamGroup[] = [
       {
         id: "editorial-shruti-dixit",
         name: "Shruti Dixit",
-        role: "Director",
+        role: "Lead",
       },
       {
         id: "editorial-prateek-sharma",
         name: "Prateek Sharma",
-        role: "Co-Director",
+        role: "Co-Lead",
       },
       {
         id: "editorial-mantra-srivastava",
@@ -250,19 +218,6 @@ export const teamGroups: TeamGroup[] = [
         role: "Member",
       },
     ],
-
-    standBy: [
-      {
-        id: "editorial-jigyasa",
-        name: "Jigyasa",
-        role: "Stand-by",
-      },
-      {
-        id: "editorial-riya",
-        name: "Riya",
-        role: "Stand-by",
-      },
-    ],
   },
 
   // =========================================================
@@ -278,12 +233,12 @@ export const teamGroups: TeamGroup[] = [
       {
         id: "pr-abhinav-raj",
         name: "Abhinav Raj",
-        role: "Director",
+        role: "Lead",
       },
       {
         id: "pr-ashwani-mishra",
         name: "Ashwani Mishra",
-        role: "Co-Director",
+        role: "Co-Lead",
       },
       {
         id: "pr-nitya-reja",
@@ -346,12 +301,12 @@ export const teamGroups: TeamGroup[] = [
       {
         id: "social-satyam-singh",
         name: "Satyam Singh",
-        role: "Director",
+        role: "Lead",
       },
       {
         id: "social-ayush",
         name: "Ayush",
-        role: "Co-Director",
+        role: "Co-Lead",
       },
       {
         id: "social-deepesh-ojha",
@@ -389,14 +344,6 @@ export const teamGroups: TeamGroup[] = [
         role: "Member",
       },
     ],
-
-    standBy: [
-      {
-        id: "social-shambhavi-singh",
-        name: "Shambhavi Singh",
-        role: "Stand-by",
-      },
-    ],
   },
 
   // =========================================================
@@ -412,17 +359,17 @@ export const teamGroups: TeamGroup[] = [
       {
         id: "event-abhay-shukla",
         name: "Abhay Shukla",
-        role: "Head",
+        role: "Lead",
       },
       {
         id: "event-tanish-solanki",
         name: "Tanish Solanki",
-        role: "Co-Head",
+        role: "Co-Lead",
       },
       {
         id: "event-noorpreet",
         name: "Noorpreet",
-        role: "Co-Head",
+        role: "Co-Lead",
       },
       {
         id: "event-vishishta-shukla",
@@ -468,19 +415,6 @@ export const teamGroups: TeamGroup[] = [
         id: "event-anoushka-verma",
         name: "Anoushka Verma",
         role: "Member",
-      },
-    ],
-
-    standBy: [
-      {
-        id: "event-eklavya-verma",
-        name: "Eklavya Verma",
-        role: "Stand-by",
-      },
-      {
-        id: "event-vansh-gupta",
-        name: "Vansh Gupta",
-        role: "Stand-by",
       },
     ],
   },

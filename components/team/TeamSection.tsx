@@ -34,25 +34,54 @@ gsap.registerPlugin(ScrollTrigger);
  */
 
 export default function TeamSection() {
-  const [activeTeamIndex, setActiveTeamIndex] =
-    useState(0);
-
-  const [activeMemberIndex, setActiveMemberIndex] =
-    useState(0);
+  const [activeTeamIndex, setActiveTeamIndex] = useState(0);
+  const [activeMemberIndex, setActiveMemberIndex] = useState(0);
 
   const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const memberTrackRef =
-    useRef<HTMLDivElement>(null);
+  const teamTrackRef = useRef<HTMLDivElement>(null);
+  const memberTrackRef = useRef<HTMLDivElement>(null);
 
-  const activeTeam =
-    teamGroups[activeTeamIndex];
+  const activeTeam = teamGroups[activeTeamIndex];
+  const members = activeTeam?.members ?? [];
 
-  const members =
-    activeTeam?.members ?? [];
+  /*
+   * ==========================================================
+   * SCROLL HELPER
+   * ==========================================================
+   */
 
-  const standByMembers =
-    activeTeam?.standBy ?? [];
+  const scrollToElement = useCallback(
+    (
+      track: HTMLDivElement | null,
+      selector: string,
+      index: number
+    ) => {
+      if (!track) return;
+
+      const items =
+        track.querySelectorAll<HTMLElement>(selector);
+
+      const item = items[index];
+
+      if (!item) return;
+
+      const trackRect = track.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+
+      const isVisible =
+        itemRect.left >= trackRect.left + 8 &&
+        itemRect.right <= trackRect.right - 8;
+
+      if (isVisible) return;
+
+      item.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    },
+    []
+  );
 
   /*
    * ==========================================================
@@ -62,14 +91,24 @@ export default function TeamSection() {
 
   const changeTeam = useCallback(
     (index: number) => {
+      if (!teamGroups.length) return;
+
       const next =
         (index + teamGroups.length) %
         teamGroups.length;
 
       setActiveTeamIndex(next);
       setActiveMemberIndex(0);
+
+      requestAnimationFrame(() => {
+        scrollToElement(
+          teamTrackRef.current,
+          ".team-category-card",
+          next
+        );
+      });
     },
-    []
+    [scrollToElement]
   );
 
   const previousTeam = useCallback(() => {
@@ -86,25 +125,68 @@ export default function TeamSection() {
    * ==========================================================
    */
 
+  const changeMember = useCallback(
+    (index: number) => {
+      if (!members.length) return;
+
+      const next =
+        (index + members.length) %
+        members.length;
+
+      setActiveMemberIndex(next);
+
+      requestAnimationFrame(() => {
+        scrollToElement(
+          memberTrackRef.current,
+          ".team-member-card",
+          next
+        );
+      });
+    },
+    [members.length, scrollToElement]
+  );
+
   const previousMember = useCallback(() => {
     if (!members.length) return;
 
-    setActiveMemberIndex((current) =>
-      current === 0
-        ? members.length - 1
-        : current - 1
-    );
-  }, [members.length]);
+    changeMember(activeMemberIndex - 1);
+  }, [
+    activeMemberIndex,
+    changeMember,
+    members.length,
+  ]);
 
   const nextMember = useCallback(() => {
     if (!members.length) return;
 
-    setActiveMemberIndex((current) =>
-      current === members.length - 1
-        ? 0
-        : current + 1
-    );
-  }, [members.length]);
+    changeMember(activeMemberIndex + 1);
+  }, [
+    activeMemberIndex,
+    changeMember,
+    members.length,
+  ]);
+
+  /*
+   * ==========================================================
+   * RESET MEMBER POSITION WHEN TEAM CHANGES
+   * ==========================================================
+   */
+
+  useEffect(() => {
+    if (!members.length) return;
+
+    requestAnimationFrame(() => {
+      scrollToElement(
+        memberTrackRef.current,
+        ".team-member-card",
+        0
+      );
+    });
+  }, [
+    activeTeamIndex,
+    members.length,
+    scrollToElement,
+  ]);
 
   /*
    * ==========================================================
@@ -116,10 +198,6 @@ export default function TeamSection() {
     const handleKeyboard = (
       event: KeyboardEvent
     ) => {
-      /*
-       * Don't hijack arrow keys while typing.
-       */
-
       const target =
         event.target as HTMLElement | null;
 
@@ -131,11 +209,31 @@ export default function TeamSection() {
         return;
       }
 
+      /*
+       * Only control the carousel when the
+       * team section is reasonably visible.
+       */
+
+      const section = sectionRef.current;
+
+      if (!section) return;
+
+      const rect =
+        section.getBoundingClientRect();
+
+      const visible =
+        rect.bottom > 0 &&
+        rect.top < window.innerHeight;
+
+      if (!visible) return;
+
       if (event.key === "ArrowLeft") {
+        event.preventDefault();
         previousMember();
       }
 
       if (event.key === "ArrowRight") {
+        event.preventDefault();
         nextMember();
       }
     };
@@ -241,7 +339,9 @@ export default function TeamSection() {
         );
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, []);
 
   /*
@@ -251,7 +351,7 @@ export default function TeamSection() {
    */
 
   useEffect(() => {
-    if (!contentRef.current) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       const timeline = gsap.timeline();
@@ -293,9 +393,11 @@ export default function TeamSection() {
           },
           "-=0.35"
         );
-    }, contentRef);
+    }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, [activeTeamIndex]);
 
   /*
@@ -313,6 +415,12 @@ export default function TeamSection() {
       window.clearTimeout(timeout);
     };
   }, [activeTeamIndex]);
+
+  /*
+   * ==========================================================
+   * SAFETY
+   * ==========================================================
+   */
 
   if (!activeTeam) {
     return null;
@@ -341,8 +449,6 @@ export default function TeamSection() {
 
       <div className="pointer-events-none absolute inset-0">
 
-        {/* Burgundy glow */}
-
         <div
           className="
             absolute
@@ -356,8 +462,6 @@ export default function TeamSection() {
           "
         />
 
-        {/* Gold glow */}
-
         <div
           className="
             absolute
@@ -370,8 +474,6 @@ export default function TeamSection() {
             blur-[150px]
           "
         />
-
-        {/* Bottom atmosphere */}
 
         <div
           className="
@@ -387,8 +489,6 @@ export default function TeamSection() {
           "
         />
 
-        {/* Grid */}
-
         <div
           className="
             absolute
@@ -396,8 +496,7 @@ export default function TeamSection() {
             opacity-[0.025]
           "
           style={{
-            backgroundImage:
-              `
+            backgroundImage: `
               linear-gradient(
                 rgba(255,255,255,.4) 1px,
                 transparent 1px
@@ -407,15 +506,13 @@ export default function TeamSection() {
                 rgba(255,255,255,.4) 1px,
                 transparent 1px
               )
-              `,
+            `,
             backgroundSize: "80px 80px",
           }}
         />
-
       </div>
 
       <div
-        ref={contentRef}
         className="
           relative
           z-10
@@ -423,7 +520,6 @@ export default function TeamSection() {
           max-w-7xl
         "
       >
-
         {/* ====================================================
             HEADER
         ===================================================== */}
@@ -438,9 +534,7 @@ export default function TeamSection() {
             md:items-end
           "
         >
-
           <div>
-
             <div
               className="
                 team-eyebrow
@@ -449,7 +543,6 @@ export default function TeamSection() {
                 gap-3
               "
             >
-
               <span className="h-px w-8 bg-[#C6922E]" />
 
               <span
@@ -462,7 +555,6 @@ export default function TeamSection() {
               >
                 The People
               </span>
-
             </div>
 
             <h2
@@ -486,7 +578,6 @@ export default function TeamSection() {
                 people behind Shrinik.
               </span>
             </h2>
-
           </div>
 
           <div
@@ -509,7 +600,6 @@ export default function TeamSection() {
               the Shrinik experience.
             </p>
           </div>
-
         </div>
 
         {/* ====================================================
@@ -526,9 +616,7 @@ export default function TeamSection() {
               justify-between
             "
           >
-
             <div className="flex items-center gap-3">
-
               <span
                 className="
                   text-[8px]
@@ -541,11 +629,9 @@ export default function TeamSection() {
               </span>
 
               <span className="h-px w-8 bg-white/10" />
-
             </div>
 
             <div className="flex gap-2">
-
               <RoundButton
                 label="Previous team"
                 onClick={previousTeam}
@@ -559,14 +645,13 @@ export default function TeamSection() {
               >
                 <ArrowRight size={15} />
               </RoundButton>
-
             </div>
-
           </div>
 
           {/* Category carousel */}
 
           <div
+            ref={teamTrackRef}
             className="
               flex
               snap-x
@@ -577,28 +662,19 @@ export default function TeamSection() {
               pb-8
               scrollbar-hide
               md:gap-6
+              scroll-smooth
             "
           >
-
-            {teamGroups.map(
-              (team, index) => (
-                <TeamVisualCard
-                  key={team.id}
-                  team={team}
-                  index={index}
-                  active={
-                    index ===
-                    activeTeamIndex
-                  }
-                  onClick={() =>
-                    changeTeam(index)
-                  }
-                />
-              )
-            )}
-
+            {teamGroups.map((team, index) => (
+              <TeamVisualCard
+                key={team.id}
+                team={team}
+                index={index}
+                active={index === activeTeamIndex}
+                onClick={() => changeTeam(index)}
+              />
+            ))}
           </div>
-
         </div>
 
         {/* ====================================================
@@ -614,7 +690,6 @@ export default function TeamSection() {
             pt-10
           "
         >
-
           <div
             className="
               flex
@@ -623,9 +698,7 @@ export default function TeamSection() {
               gap-8
             "
           >
-
             <div>
-
               <div
                 className="
                   flex
@@ -633,7 +706,6 @@ export default function TeamSection() {
                   gap-3
                 "
               >
-
                 <span
                   className="
                     text-[9px]
@@ -659,7 +731,6 @@ export default function TeamSection() {
                     activeTeam.category
                   )}
                 </span>
-
               </div>
 
               <h3
@@ -675,7 +746,6 @@ export default function TeamSection() {
               >
                 {activeTeam.name}
               </h3>
-
             </div>
 
             <div
@@ -685,7 +755,6 @@ export default function TeamSection() {
                 md:block
               "
             >
-
               <span
                 className="
                   text-4xl
@@ -693,9 +762,7 @@ export default function TeamSection() {
                   text-[#C6922E]
                 "
               >
-                {String(
-                  members.length
-                ).padStart(2, "0")}
+                {String(members.length).padStart(2, "0")}
               </span>
 
               <p
@@ -709,11 +776,8 @@ export default function TeamSection() {
               >
                 Active members
               </p>
-
             </div>
-
           </div>
-
         </div>
 
         {/* ====================================================
@@ -727,7 +791,6 @@ export default function TeamSection() {
             mt-12
           "
         >
-
           {/* Desktop previous */}
 
           <button
@@ -756,6 +819,7 @@ export default function TeamSection() {
               hover:border-[#C6922E]/50
               hover:bg-[#C6922E]/10
               hover:text-[#C6922E]
+              active:scale-95
               lg:flex
             "
           >
@@ -775,28 +839,18 @@ export default function TeamSection() {
               px-1
               pb-8
               scrollbar-hide
+              scroll-smooth
               lg:px-20
             "
           >
-
-            {members.map(
-              (member, index) => (
-                <MemberCard
-                  key={member.id}
-                  member={member}
-                  active={
-                    index ===
-                    activeMemberIndex
-                  }
-                  onClick={() =>
-                    setActiveMemberIndex(
-                      index
-                    )
-                  }
-                />
-              )
-            )}
-
+            {members.map((member, index) => (
+              <MemberCard
+                key={member.id}
+                member={member}
+                active={index === activeMemberIndex}
+                onClick={() => changeMember(index)}
+              />
+            ))}
           </div>
 
           {/* Desktop next */}
@@ -827,12 +881,12 @@ export default function TeamSection() {
               hover:border-[#C6922E]/50
               hover:bg-[#C6922E]/10
               hover:text-[#C6922E]
+              active:scale-95
               lg:flex
             "
           >
             <ArrowRight size={17} />
           </button>
-
         </div>
 
         {/* ====================================================
@@ -850,7 +904,6 @@ export default function TeamSection() {
             pt-6
           "
         >
-
           <button
             type="button"
             onClick={previousMember}
@@ -864,6 +917,7 @@ export default function TeamSection() {
               text-white/30
               transition-colors
               hover:text-[#C6922E]
+              active:scale-95
               lg:hidden
             "
           >
@@ -882,35 +936,31 @@ export default function TeamSection() {
               overflow-hidden
             "
           >
-
-            {members.map(
-              (member, index) => (
-                <button
-                  key={member.id}
-                  type="button"
-                  aria-label={`View ${member.name}`}
-                  onClick={() =>
-                    setActiveMemberIndex(
-                      index
-                    )
+            {members.map((member, index) => (
+              <button
+                key={member.id}
+                type="button"
+                aria-label={`View ${member.name}`}
+                aria-current={
+                  index === activeMemberIndex
+                    ? "true"
+                    : undefined
+                }
+                onClick={() => changeMember(index)}
+                className={`
+                  h-1.5
+                  shrink-0
+                  rounded-full
+                  transition-all
+                  duration-300
+                  ${
+                    index === activeMemberIndex
+                      ? "w-8 bg-[#C6922E]"
+                      : "w-1.5 bg-white/15 hover:bg-white/30"
                   }
-                  className={`
-                    h-1.5
-                    shrink-0
-                    rounded-full
-                    transition-all
-                    duration-300
-                    ${
-                      index ===
-                      activeMemberIndex
-                        ? "w-8 bg-[#C6922E]"
-                        : "w-1.5 bg-white/15 hover:bg-white/30"
-                    }
-                  `}
-                />
-              )
-            )}
-
+                `}
+              />
+            ))}
           </div>
 
           <button
@@ -926,25 +976,14 @@ export default function TeamSection() {
               text-white/30
               transition-colors
               hover:text-[#C6922E]
+              active:scale-95
               lg:hidden
             "
           >
             Next
             <ChevronRight size={13} />
           </button>
-
         </div>
-
-        {/* ====================================================
-            STAND-BY
-        ===================================================== */}
-
-        {standByMembers.length > 0 && (
-          <StandBySection
-            members={standByMembers}
-          />
-        )}
-
       </div>
     </section>
   );
@@ -1008,9 +1047,7 @@ function TeamVisualCard({
     gsap.to(cardRef.current, {
       rotateX,
       rotateY,
-      scale: active
-        ? 1.025
-        : 1.015,
+      scale: active ? 1.025 : 1.015,
       duration: 0.4,
       ease: "power3.out",
       overwrite: true,
@@ -1044,9 +1081,7 @@ function TeamVisualCard({
     gsap.to(cardRef.current, {
       rotateX: 0,
       rotateY: 0,
-      scale: active
-        ? 1.015
-        : 1,
+      scale: active ? 1.015 : 1,
       duration: 0.65,
       ease: "power3.out",
       overwrite: true,
@@ -1117,24 +1152,14 @@ function TeamVisualCard({
         }
       `}
     >
-
-      {/* ======================================================
-          VISUAL
-      ======================================================= */}
-
       <div
         ref={visualRef}
         className={`
           absolute
           inset-0
-          ${teamBackground(
-            team.category
-          )}
+          ${teamBackground(team.category)}
         `}
       >
-
-        {/* Grid */}
-
         <div
           className="
             absolute
@@ -1142,8 +1167,7 @@ function TeamVisualCard({
             opacity-[0.12]
           "
           style={{
-            backgroundImage:
-              `
+            backgroundImage: `
               linear-gradient(
                 rgba(255,255,255,.12) 1px,
                 transparent 1px
@@ -1153,13 +1177,10 @@ function TeamVisualCard({
                 rgba(255,255,255,.12) 1px,
                 transparent 1px
               )
-              `,
-            backgroundSize:
-              "44px 44px",
+            `,
+            backgroundSize: "44px 44px",
           }}
         />
-
-        {/* Vertical lights */}
 
         <div
           className="
@@ -1189,13 +1210,7 @@ function TeamVisualCard({
           "
         />
 
-        {/* Artwork */}
-
-        <TeamArtwork
-          category={team.category}
-        />
-
-        {/* Floor */}
+        <TeamArtwork category={team.category} />
 
         <div
           className="
@@ -1213,8 +1228,6 @@ function TeamVisualCard({
           "
         />
 
-        {/* Gold light */}
-
         <div
           ref={lightRef}
           className="
@@ -1230,10 +1243,7 @@ function TeamVisualCard({
             blur-[75px]
           "
         />
-
       </div>
-
-      {/* Overlay */}
 
       <div
         className="
@@ -1246,10 +1256,6 @@ function TeamVisualCard({
         "
       />
 
-      {/* ======================================================
-          TOP
-      ======================================================= */}
-
       <div
         className="
           absolute
@@ -1259,7 +1265,6 @@ function TeamVisualCard({
           z-20
         "
       >
-
         <div
           className="
             flex
@@ -1267,9 +1272,7 @@ function TeamVisualCard({
             justify-between
           "
         >
-
           <div>
-
             <span
               className="
                 text-[9px]
@@ -1279,10 +1282,7 @@ function TeamVisualCard({
               "
             >
               Team{" "}
-              {String(index + 1).padStart(
-                2,
-                "0"
-              )}
+              {String(index + 1).padStart(2, "0")}
             </span>
 
             <p
@@ -1294,11 +1294,8 @@ function TeamVisualCard({
                 text-white/35
               "
             >
-              {teamCategoryLabel(
-                team.category
-              )}
+              {teamCategoryLabel(team.category)}
             </p>
-
           </div>
 
           <div
@@ -1321,14 +1318,8 @@ function TeamVisualCard({
           >
             <ArrowUpRight size={16} />
           </div>
-
         </div>
-
       </div>
-
-      {/* ======================================================
-          BOTTOM
-      ======================================================= */}
 
       <div
         className="
@@ -1339,7 +1330,6 @@ function TeamVisualCard({
           z-20
         "
       >
-
         <h4
           className="
             max-w-[310px]
@@ -1364,7 +1354,6 @@ function TeamVisualCard({
             justify-between
           "
         >
-
           <span
             className="
               text-[8px]
@@ -1373,34 +1362,10 @@ function TeamVisualCard({
               text-white/30
             "
           >
-            {String(
-              team.members.length
-            ).padStart(2, "0")}{" "}
-            Active
+            {String(team.members.length).padStart(2, "0")} Active
           </span>
-
-          {team.standBy &&
-            team.standBy.length > 0 && (
-              <span
-                className="
-                  text-[8px]
-                  uppercase
-                  tracking-[0.2em]
-                  text-[#C6922E]/50
-                "
-              >
-                {String(
-                  team.standBy.length
-                ).padStart(2, "0")}{" "}
-                Stand-by
-              </span>
-            )}
-
         </div>
-
       </div>
-
-      {/* Active outline */}
 
       {active && (
         <div
@@ -1414,7 +1379,6 @@ function TeamVisualCard({
           "
         />
       )}
-
     </button>
   );
 }
@@ -1430,10 +1394,6 @@ function TeamArtwork({
 }: {
   category: string;
 }) {
-  /*
-   * CORE
-   */
-
   if (category === "core") {
     return (
       <div
@@ -1446,11 +1406,8 @@ function TeamArtwork({
         "
       >
         <div className="relative h-44 w-44">
-
           <div className="absolute inset-0 rounded-full border border-[#C6922E]/30" />
-
           <div className="absolute inset-5 rounded-full border border-[#C6922E]/20" />
-
           <div className="absolute inset-10 rounded-full border border-[#C6922E]/30" />
 
           <div
@@ -1484,15 +1441,10 @@ function TeamArtwork({
           >
             ✦
           </div>
-
         </div>
       </div>
     );
   }
-
-  /*
-   * TECHNICAL
-   */
 
   if (category === "technical") {
     return (
@@ -1506,7 +1458,6 @@ function TeamArtwork({
         "
       >
         <div className="relative h-48 w-64">
-
           <div
             className="
               absolute
@@ -1541,9 +1492,7 @@ function TeamArtwork({
           />
 
           <div className="absolute left-[22%] top-[26%] h-2 w-2 rounded-full bg-[#C6922E]/60" />
-
           <div className="absolute left-[30%] top-[26%] h-2 w-2 rounded-full bg-[#C6922E]/30" />
-
           <div className="absolute left-[38%] top-[26%] h-2 w-2 rounded-full bg-[#C6922E]/20" />
 
           <div
@@ -1569,15 +1518,10 @@ function TeamArtwork({
               bg-[#C6922E]/15
             "
           />
-
         </div>
       </div>
     );
   }
-
-  /*
-   * CREATIVE
-   */
 
   if (category === "creative") {
     return (
@@ -1591,7 +1535,6 @@ function TeamArtwork({
         "
       >
         <div className="relative h-48 w-56">
-
           <div
             className="
               absolute
@@ -1663,15 +1606,10 @@ function TeamArtwork({
               blur-md
             "
           />
-
         </div>
       </div>
     );
   }
-
-  /*
-   * MANAGEMENT
-   */
 
   if (category === "management") {
     return (
@@ -1685,7 +1623,6 @@ function TeamArtwork({
         "
       >
         <div className="relative h-48 w-60">
-
           <div
             className="
               absolute
@@ -1766,15 +1703,10 @@ function TeamArtwork({
           >
             ◆
           </div>
-
         </div>
       </div>
     );
   }
-
-  /*
-   * CULTURAL
-   */
 
   return (
     <div
@@ -1787,7 +1719,6 @@ function TeamArtwork({
       "
     >
       <div className="relative h-48 w-56">
-
         <div
           className="
             absolute
@@ -1857,7 +1788,6 @@ function TeamArtwork({
             blur-md
           "
         />
-
       </div>
     </div>
   );
@@ -2008,11 +1938,6 @@ function MemberCard({
         }
       `}
     >
-
-      {/* ====================================================
-          VISUAL
-      ===================================================== */}
-
       <div
         ref={imageRef}
         className="
@@ -2021,7 +1946,6 @@ function MemberCard({
           overflow-hidden
         "
       >
-
         {member.image ? (
           <img
             src={member.image}
@@ -2052,9 +1976,6 @@ function MemberCard({
               to-[#050505]
             "
           >
-
-            {/* Grid */}
-
             <div
               className="
                 absolute
@@ -2062,8 +1983,7 @@ function MemberCard({
                 opacity-[0.08]
               "
               style={{
-                backgroundImage:
-                  `
+                backgroundImage: `
                   linear-gradient(
                     rgba(255,255,255,.2) 1px,
                     transparent 1px
@@ -2073,13 +1993,10 @@ function MemberCard({
                     rgba(255,255,255,.2) 1px,
                     transparent 1px
                   )
-                  `,
-                backgroundSize:
-                  "38px 38px",
+                `,
+                backgroundSize: "38px 38px",
               }}
             />
-
-            {/* Glow */}
 
             <div
               className="
@@ -2091,8 +2008,6 @@ function MemberCard({
                 blur-[80px]
               "
             />
-
-            {/* Initials */}
 
             <span
               className="
@@ -2109,8 +2024,6 @@ function MemberCard({
             >
               {initials}
             </span>
-
-            {/* Orbit */}
 
             <div
               className="
@@ -2134,15 +2047,9 @@ function MemberCard({
                 border-[#C6922E]/10
               "
             />
-
           </div>
         )}
-
       </div>
-
-      {/* ====================================================
-          PHOTO GRADIENT
-      ===================================================== */}
 
       <div
         className="
@@ -2157,10 +2064,6 @@ function MemberCard({
           to-transparent
         "
       />
-
-      {/* ====================================================
-          ROLE
-      ===================================================== */}
 
       <div
         className="
@@ -2188,10 +2091,6 @@ function MemberCard({
           {member.role}
         </span>
       </div>
-
-      {/* ====================================================
-          LEADERSHIP BADGE
-      ===================================================== */}
 
       {leadership && (
         <div
@@ -2222,10 +2121,6 @@ function MemberCard({
         </div>
       )}
 
-      {/* ====================================================
-          INFO
-      ===================================================== */}
-
       <div
         className="
           absolute
@@ -2240,9 +2135,7 @@ function MemberCard({
           p-6
         "
       >
-
         <div>
-
           <h4
             className="
               text-lg
@@ -2265,7 +2158,6 @@ function MemberCard({
           >
             {member.role}
           </p>
-
         </div>
 
         <div
@@ -2289,10 +2181,7 @@ function MemberCard({
         >
           <ArrowUpRight size={14} />
         </div>
-
       </div>
-
-      {/* Active outline */}
 
       {active && (
         <div
@@ -2307,312 +2196,6 @@ function MemberCard({
           "
         />
       )}
-
-    </article>
-  );
-}
-
-/*
- * ============================================================
- * STAND-BY SECTION
- * ============================================================
- */
-
-function StandBySection({
-  members,
-}: {
-  members: TeamMember[];
-}) {
-  return (
-    <div
-      className="
-        team-content-animate
-        mt-24
-        border-t
-        border-white/[0.08]
-        pt-16
-      "
-    >
-
-      <div
-        className="
-          flex
-          items-end
-          justify-between
-          gap-8
-        "
-      >
-
-        <div>
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-            "
-          >
-
-            <span className="h-px w-7 bg-[#C6922E]/60" />
-
-            <span
-              className="
-                text-[9px]
-                uppercase
-                tracking-[0.3em]
-                text-white/30
-              "
-            >
-              Reserve roster
-            </span>
-
-          </div>
-
-          <h4
-            className="
-              mt-4
-              text-3xl
-              font-medium
-              tracking-[-0.03em]
-              text-[#F5F1E8]
-              md:text-4xl
-            "
-          >
-            Stand-by
-          </h4>
-
-          <p
-            className="
-              mt-3
-              max-w-md
-              text-sm
-              leading-6
-              text-white/30
-            "
-          >
-            Members ready to step in and
-            support the team whenever needed.
-          </p>
-
-        </div>
-
-        <div
-          className="
-            hidden
-            text-right
-            md:block
-          "
-        >
-
-          <span
-            className="
-              text-3xl
-              font-light
-              text-[#C6922E]
-            "
-          >
-            {String(
-              members.length
-            ).padStart(2, "0")}
-          </span>
-
-          <p
-            className="
-              mt-1
-              text-[8px]
-              uppercase
-              tracking-[0.25em]
-              text-white/20
-            "
-          >
-            Stand-by
-          </p>
-
-        </div>
-
-      </div>
-
-      {/* Stand-by cards */}
-
-      <div
-        className="
-          mt-10
-          flex
-          snap-x
-          snap-mandatory
-          gap-4
-          overflow-x-auto
-          pb-5
-          scrollbar-hide
-        "
-      >
-
-        {members.map(
-          (member) => (
-            <StandByCard
-              key={member.id}
-              member={member}
-            />
-          )
-        )}
-
-      </div>
-
-    </div>
-  );
-}
-
-/*
- * ============================================================
- * STAND-BY CARD
- * ============================================================
- */
-
-function StandByCard({
-  member,
-}: {
-  member: TeamMember;
-}) {
-  const initials = member.name
-    .split(" ")
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
-  return (
-    <article
-      className="
-        group
-        min-w-[235px]
-        snap-start
-        rounded-[1.5rem]
-        border
-        border-white/[0.07]
-        bg-white/[0.015]
-        p-5
-        transition-all
-        duration-500
-        hover:-translate-y-1
-        hover:border-[#C6922E]/25
-        hover:bg-[#C6922E]/[0.025]
-        sm:min-w-[270px]
-      "
-    >
-
-      <div className="flex items-center gap-4">
-
-        {/* Avatar */}
-
-        <div
-          className="
-            flex
-            h-16
-            w-16
-            shrink-0
-            items-center
-            justify-center
-            overflow-hidden
-            rounded-full
-            border
-            border-[#C6922E]/15
-            bg-gradient-to-br
-            from-[#3A0712]
-            to-[#050505]
-          "
-        >
-
-          {member.image ? (
-            <img
-              src={member.image}
-              alt={member.name}
-              className="
-                h-full
-                w-full
-                object-cover
-                grayscale
-                transition-all
-                duration-500
-                group-hover:grayscale-0
-              "
-            />
-          ) : (
-            <span
-              className="
-                text-lg
-                font-medium
-                text-[#C6922E]/40
-              "
-            >
-              {initials}
-            </span>
-          )}
-
-        </div>
-
-        <div className="min-w-0">
-
-          <h5
-            className="
-              truncate
-              text-sm
-              font-medium
-              text-[#F5F1E8]
-            "
-          >
-            {member.name}
-          </h5>
-
-          <p
-            className="
-              mt-1
-              text-[8px]
-              uppercase
-              tracking-[0.2em]
-              text-[#C6922E]/60
-            "
-          >
-            Stand-by
-          </p>
-
-        </div>
-
-      </div>
-
-      <div
-        className="
-          mt-5
-          flex
-          items-center
-          gap-2
-          border-t
-          border-white/[0.06]
-          pt-4
-        "
-      >
-
-        <span
-          className="
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#C6922E]/60
-          "
-        />
-
-        <span
-          className="
-            text-[8px]
-            uppercase
-            tracking-[0.2em]
-            text-white/20
-          "
-        >
-          Reserve member
-        </span>
-
-      </div>
-
     </article>
   );
 }
@@ -2666,9 +2249,7 @@ function RoundButton({
  * ============================================================
  */
 
-function teamBackground(
-  category: string
-) {
+function teamBackground(category: string) {
   switch (category) {
     case "core":
       return `
@@ -2726,9 +2307,7 @@ function teamBackground(
  * ============================================================
  */
 
-function teamCategoryLabel(
-  category: string
-) {
+function teamCategoryLabel(category: string) {
   switch (category) {
     case "core":
       return "Leadership";

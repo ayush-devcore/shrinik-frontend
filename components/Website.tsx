@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import { FaLinkedinIn } from "react-icons/fa6";
 import gsap from "gsap";
 
 import IntroScreen from "@/components/intro/IntroScreen";
@@ -16,11 +23,20 @@ import Footer from "@/components/footer/Footer";
 
 export default function Website() {
   const [introComplete, setIntroComplete] = useState(false);
+
   const heroRef = useRef<HTMLElement>(null);
+  const mouseFrame = useRef<number | null>(null);
+
+  const mousePosition = useRef({
+    x: 0,
+    y: 0,
+  });
+
+  const mouseActive = useRef(false);
 
   /*
    * ============================================================
-   * INTRO COMPLETE
+   * INTRO
    * ============================================================
    */
 
@@ -30,27 +46,23 @@ export default function Website() {
 
   /*
    * ============================================================
-   * HERO ENTRANCE ANIMATION
+   * HERO ANIMATION
    * ============================================================
    */
 
   useEffect(() => {
-    if (!introComplete || !heroRef.current) return;
+    if (!introComplete || !heroRef.current) {
+      return;
+    }
 
     const hero = heroRef.current;
 
-    const prefersReducedMotion = window.matchMedia(
+    const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
     const ctx = gsap.context(() => {
-      /*
-       * ========================================================
-       * REDUCED MOTION
-       * ========================================================
-       */
-
-      if (prefersReducedMotion) {
+      if (reducedMotion) {
         gsap.set(
           [
             ".hero-logo",
@@ -63,7 +75,7 @@ export default function Website() {
           ],
           {
             opacity: 1,
-            clearProps: "filter,transform",
+            clearProps: "transform,filter",
           },
         );
 
@@ -71,19 +83,17 @@ export default function Website() {
       }
 
       /*
-       * ========================================================
-       * INITIAL TITLE STATE
-       * ========================================================
+       * Initial states
        */
 
       gsap.set(".hero-letter", {
         opacity: 0,
-        y: 90,
-        rotateX: -75,
-        rotateY: 25,
+        y: 70,
+        rotateX: -65,
+        rotateY: 18,
         rotateZ: 2,
-        scale: 0.72,
-        filter: "blur(18px)",
+        scale: 0.8,
+        filter: "blur(10px)",
         transformOrigin: "50% 100%",
         transformPerspective: 900,
       });
@@ -98,9 +108,7 @@ export default function Website() {
       });
 
       /*
-       * ========================================================
-       * MAIN TIMELINE
-       * ========================================================
+       * Main timeline
        */
 
       const timeline = gsap.timeline({
@@ -110,52 +118,47 @@ export default function Website() {
       });
 
       /*
-       * LOGO
+       * Logo
        */
 
       timeline.fromTo(
         ".hero-logo",
         {
           opacity: 0,
-          scale: 0.72,
-          rotate: -10,
-          filter: "blur(15px)",
+          scale: 0.76,
+          rotate: -8,
+          filter: "blur(10px)",
         },
         {
           opacity: 1,
           scale: 1,
           rotate: 0,
           filter: "blur(0px)",
-          duration: 1.25,
+          duration: 0.9,
           ease: "power4.out",
         },
       );
 
       /*
-       * EYEBROW
+       * Eyebrow
        */
 
       timeline.fromTo(
         ".hero-eyebrow",
         {
           opacity: 0,
-          y: 25,
-          filter: "blur(7px)",
+          y: 18,
         },
         {
           opacity: 1,
           y: 0,
-          filter: "blur(0px)",
-          duration: 0.7,
-          ease: "power3.out",
+          duration: 0.55,
         },
-        "-=0.65",
+        "-=0.45",
       );
 
       /*
-       * ========================================================
-       * SHRINIK LETTER-BY-LETTER REVEAL
-       * ========================================================
+       * SHRINIK
        */
 
       timeline.to(
@@ -168,107 +171,83 @@ export default function Website() {
           rotateZ: 0,
           scale: 1,
           filter: "blur(0px)",
-          duration: 0.75,
-          stagger: {
-            each: 0.045,
-            from: "start",
-          },
+          duration: 0.62,
+          stagger: 0.045,
           ease: "power4.out",
         },
-        "-=0.25",
+        "-=0.12",
       );
 
       /*
-       * ========================================================
-       * PEARL / SILVER TITLE GLOW
-       * ========================================================
+       * Title glow
        */
 
       timeline.to(
         ".hero-letter",
         {
           textShadow:
-            "0 0 18px rgba(235,239,245,0.16), 0 0 45px rgba(122,36,56,0.10)",
-          duration: 1.1,
-          stagger: {
-            each: 0.045,
-            from: "start",
-          },
-          ease: "power2.out",
+            "0 0 18px rgba(245,241,232,0.12), 0 0 40px rgba(198,146,46,0.08)",
+          duration: 0.8,
+          stagger: 0.035,
         },
-        "-=0.75",
+        "-=0.55",
       );
 
       /*
-       * ========================================================
-       * TITLE SHINE ANIMATION
-       * ========================================================
+       * Title shine
        */
 
       timeline.to(
         ".hero-letter",
         {
           backgroundPosition: "100% 50%",
-          duration: 1.8,
-          stagger: {
-            each: 0.05,
-            from: "start",
-          },
+          duration: 1.25,
+          stagger: 0.035,
           ease: "power2.inOut",
         },
-        "-=0.75",
+        "-=0.55",
       );
 
       /*
-       * ========================================================
-       * GOLD LINE UNDER TITLE
-       * ========================================================
+       * Baseline
        */
 
       timeline.to(
         ".hero-title-line",
         {
           xPercent: 500,
-          duration: 1.35,
+          duration: 1,
           ease: "power3.inOut",
         },
-        "-=1.25",
+        "-=0.9",
       );
 
       /*
-       * ========================================================
-       * PEARL LIGHT SWEEP
-       * ========================================================
+       * Light sweep
        */
 
-      timeline.fromTo(
+      timeline.to(
         ".hero-title-sweep",
-        {
-          xPercent: -180,
-          opacity: 0,
-        },
         {
           xPercent: 650,
           opacity: 1,
-          duration: 1.15,
+          duration: 0.95,
           ease: "power2.inOut",
         },
-        "-=1.15",
+        "-=0.9",
       );
 
       timeline.to(
         ".hero-title-sweep",
         {
           opacity: 0,
-          duration: 0.3,
+          duration: 0.2,
         },
-        "-=0.15",
+        "-=0.12",
       );
 
       /*
-       * ========================================================
-       * MAIN GOLD LINE
-       * ========================================================
+       * Divider
        */
 
       timeline.fromTo(
@@ -279,102 +258,75 @@ export default function Website() {
         },
         {
           scaleX: 1,
-          duration: 0.7,
+          duration: 0.55,
           ease: "power3.inOut",
         },
-        "-=0.55",
+        "-=0.35",
       );
 
       /*
-       * ========================================================
-       * DESCRIPTION
-       * ========================================================
+       * Description
        */
 
       timeline.fromTo(
         ".hero-description",
         {
           opacity: 0,
-          y: 12,
-          filter: "blur(3px)",
+          y: 10,
         },
         {
           opacity: 1,
           y: 0,
-          filter: "blur(0px)",
-          duration: 0.5,
-          ease: "power2.out",
+          duration: 0.45,
         },
-        "-=1.05",
+        "-=0.7",
       );
 
       /*
-       * ========================================================
-       * BUTTONS
-       * ========================================================
+       * Buttons
        */
 
       timeline.fromTo(
         ".hero-buttons",
         {
           opacity: 0,
-          y: 12,
+          y: 10,
         },
         {
           opacity: 1,
           y: 0,
-          duration: 0.5,
-          ease: "power2.out",
+          duration: 0.45,
         },
-        "-=0.35",
+        "-=0.25",
       );
 
       /*
-       * ========================================================
-       * SCROLL INDICATOR
-       * ========================================================
+       * Scroll
        */
 
       timeline.fromTo(
         ".hero-scroll",
         {
           opacity: 0,
-          y: 15,
+          y: 10,
         },
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: 0.45,
         },
-        "-=0.25",
+        "-=0.15",
       );
 
       /*
-       * ========================================================
-       * CONTINUOUS SUBTLE LETTER MOTION
-       * ========================================================
+       * Continuous atmosphere
        */
 
       timeline.call(() => {
-        gsap.to(".hero-letter", {
-          y: -2.5,
-          duration: 2.2,
-          stagger: {
-            each: 0.12,
-            repeat: -1,
-            yoyo: true,
-          },
-          ease: "sine.inOut",
-        });
-
-        /*
-         * Title atmosphere breathing.
-         */
-
         gsap.to(".hero-title-glow", {
-          opacity: 0.6,
-          scale: 1.07,
-          duration: 3.2,
+          opacity: 0.55,
+          scale: 1.05,
+          duration: 3.5,
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut",
@@ -384,161 +336,238 @@ export default function Website() {
 
     return () => {
       ctx.revert();
+
+      if (mouseFrame.current !== null) {
+        cancelAnimationFrame(mouseFrame.current);
+        mouseFrame.current = null;
+      }
     };
   }, [introComplete]);
 
   /*
    * ============================================================
-   * HERO MOUSE PARALLAX + LETTER RESPONSE
+   * HERO PARALLAX
    * ============================================================
    */
 
   useEffect(() => {
-    if (!introComplete || !heroRef.current) return;
+    if (!introComplete || !heroRef.current) {
+      return;
+    }
 
     const hero = heroRef.current;
 
-    const prefersReducedMotion = window.matchMedia(
+    const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    if (prefersReducedMotion) return;
+    if (reducedMotion) {
+      return;
+    }
 
-    const handleMouseMove = (event: MouseEvent) => {
-      if (window.innerWidth < 768) return;
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      return;
+    }
 
-      const rect = hero.getBoundingClientRect();
+    const logo = hero.querySelector(
+      ".hero-logo-parallax",
+    );
 
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
+    const content = hero.querySelector(
+      ".hero-content-parallax",
+    );
 
-      /*
-       * LOGO
-       */
+    const goldGlow = hero.querySelector(
+      ".hero-gold-glow",
+    );
 
-      gsap.to(".hero-logo-parallax", {
-        x: x * 18,
-        y: y * 18,
-        duration: 0.8,
-        ease: "power3.out",
-        overwrite: true,
-      });
+    const burgundyGlow = hero.querySelector(
+      ".hero-burgundy-glow",
+    );
 
-      /*
-       * CONTENT
-       */
+    const titleGlow = hero.querySelector(
+      ".hero-title-glow",
+    );
 
-      gsap.to(".hero-content-parallax", {
-        x: x * -8,
-        y: y * -8,
-        duration: 1,
-        ease: "power3.out",
-        overwrite: true,
-      });
+    const letters = Array.from(
+      hero.querySelectorAll<HTMLElement>(
+        ".hero-letter",
+      ),
+    );
 
-      /*
-       * GOLD AMBIENT LIGHT
-       */
+    const updateParallax = () => {
+      mouseFrame.current = null;
 
-      gsap.to(".hero-gold-glow", {
-        x: x * 35,
-        y: y * 35,
-        duration: 1.2,
-        ease: "power3.out",
-        overwrite: true,
-      });
+      if (!mouseActive.current) {
+        return;
+      }
 
-      /*
-       * BURGUNDY AMBIENT LIGHT
-       */
+      const { x, y } = mousePosition.current;
 
-      gsap.to(".hero-burgundy-glow", {
-        x: x * -25,
-        y: y * -25,
-        duration: 1.4,
-        ease: "power3.out",
-        overwrite: true,
-      });
+      if (logo) {
+        gsap.set(logo, {
+          x: x * 16,
+          y: y * 16,
+        });
+      }
 
-      /*
-       * TITLE ATMOSPHERE
-       */
+      if (content) {
+        gsap.set(content, {
+          x: x * -7,
+          y: y * -7,
+        });
+      }
 
-      gsap.to(".hero-title-glow", {
-        x: x * 28,
-        y: y * 18,
-        duration: 1,
-        ease: "power3.out",
-        overwrite: true,
-      });
+      if (goldGlow) {
+        gsap.set(goldGlow, {
+          x: x * 28,
+          y: y * 28,
+        });
+      }
 
-      /*
-       * INDIVIDUAL LETTER RESPONSE
-       */
+      if (burgundyGlow) {
+        gsap.set(burgundyGlow, {
+          x: x * -20,
+          y: y * -20,
+        });
+      }
 
-      const letters = hero.querySelectorAll<HTMLElement>(".hero-letter");
+      if (titleGlow) {
+        gsap.set(titleGlow, {
+          x: x * 18,
+          y: y * 12,
+        });
+      }
 
       letters.forEach((letter, index) => {
-        const centerBias = index - (letters.length - 1) / 2;
+        const center =
+          index - (letters.length - 1) / 2;
 
-        gsap.to(letter, {
-          x: x * (4 + Math.abs(centerBias) * 0.8),
-          y: y * (3 + Math.abs(centerBias) * 0.5),
-          rotateY: x * 4,
-          rotateX: y * -3,
-          duration: 0.75,
-          ease: "power3.out",
-          overwrite: true,
+        gsap.set(letter, {
+          x:
+            x *
+            (2.5 + Math.abs(center) * 0.35),
+          y:
+            y *
+            (1.8 + Math.abs(center) * 0.25),
+          rotateY: x * 2.5,
+          rotateX: y * -1.5,
         });
       });
     };
 
-    /*
-     * RESET
-     */
+    const handleMouseMove = (
+      event: MouseEvent,
+    ) => {
+      const rect =
+        hero.getBoundingClientRect();
 
-    const handleMouseLeave = () => {
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      ) {
+        return;
+      }
+
+      mousePosition.current = {
+        x:
+          (event.clientX - rect.left) /
+            rect.width -
+          0.5,
+        y:
+          (event.clientY - rect.top) /
+            rect.height -
+          0.5,
+      };
+
+      mouseActive.current = true;
+
+      if (mouseFrame.current === null) {
+        mouseFrame.current =
+          requestAnimationFrame(
+            updateParallax,
+          );
+      }
+    };
+
+    const resetParallax = () => {
+      mouseActive.current = false;
+
+      if (mouseFrame.current !== null) {
+        cancelAnimationFrame(
+          mouseFrame.current,
+        );
+
+        mouseFrame.current = null;
+      }
+
       gsap.to(
         [
-          ".hero-logo-parallax",
-          ".hero-content-parallax",
-          ".hero-gold-glow",
-          ".hero-burgundy-glow",
-          ".hero-title-glow",
-        ],
+          logo,
+          content,
+          goldGlow,
+          burgundyGlow,
+          titleGlow,
+        ].filter(Boolean),
         {
           x: 0,
           y: 0,
-          duration: 1,
+          duration: 0.65,
           ease: "power3.out",
           overwrite: true,
         },
       );
 
-      gsap.to(".hero-letter", {
+      gsap.to(letters, {
         x: 0,
+        y: 0,
         rotateX: 0,
         rotateY: 0,
-        duration: 0.8,
+        duration: 0.55,
         ease: "power3.out",
         overwrite: true,
       });
     };
 
-    hero.addEventListener("mousemove", handleMouseMove);
-    hero.addEventListener("mouseleave", handleMouseLeave);
+    hero.addEventListener(
+      "mousemove",
+      handleMouseMove,
+      { passive: true },
+    );
+
+    hero.addEventListener(
+      "mouseleave",
+      resetParallax,
+    );
 
     return () => {
-      hero.removeEventListener("mousemove", handleMouseMove);
-      hero.removeEventListener("mouseleave", handleMouseLeave);
+      hero.removeEventListener(
+        "mousemove",
+        handleMouseMove,
+      );
+
+      hero.removeEventListener(
+        "mouseleave",
+        resetParallax,
+      );
+
+      if (mouseFrame.current !== null) {
+        cancelAnimationFrame(
+          mouseFrame.current,
+        );
+
+        mouseFrame.current = null;
+      }
 
       gsap.killTweensOf([
-        ".hero-logo-parallax",
-        ".hero-content-parallax",
-        ".hero-gold-glow",
-        ".hero-burgundy-glow",
-        ".hero-title-glow",
-        ".hero-letter",
+        logo,
+        content,
+        goldGlow,
+        burgundyGlow,
+        titleGlow,
+        ...letters,
       ]);
     };
   }, [introComplete]);
@@ -553,7 +582,11 @@ export default function Website() {
     <>
       <SmoothScroll />
 
-      {!introComplete && <IntroScreen onComplete={handleIntroComplete} />}
+      {!introComplete && (
+        <IntroScreen
+          onComplete={handleIntroComplete}
+        />
+      )}
 
       <main
         id="main-content"
@@ -561,15 +594,23 @@ export default function Website() {
           overflow-x-clip
           bg-[#080808]
           transition-opacity
-          duration-1000
-          ${introComplete ? "opacity-100" : "pointer-events-none opacity-0"}
+          duration-700
+          ${
+            introComplete
+              ? "opacity-100"
+              : "pointer-events-none opacity-0"
+          }
         `}
       >
+        {/* ======================================================
+            NAVBAR
+        ====================================================== */}
+
         <Navbar />
 
-        {/* ====================================================
+        {/* ======================================================
             HERO
-        ===================================================== */}
+        ====================================================== */}
 
         <section
           ref={heroRef}
@@ -589,6 +630,7 @@ export default function Website() {
 
           <video
             className="
+              pointer-events-none
               absolute
               inset-0
               z-0
@@ -600,7 +642,7 @@ export default function Website() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             aria-hidden="true"
           >
             <source
@@ -617,7 +659,7 @@ export default function Website() {
               absolute
               inset-0
               z-[1]
-              bg-[#080808]/55
+              bg-[#080808]/60
             "
           />
 
@@ -630,48 +672,46 @@ export default function Website() {
               inset-0
               z-[2]
               bg-gradient-to-br
-              from-[#3A0712]/30
+              from-[#3A0712]/35
               via-transparent
-              to-[#080808]/70
+              to-[#080808]/80
             "
           />
 
-          {/* AMBIENT EFFECTS */}
+          {/* ==================================================
+              AMBIENT LIGHTS
+          ================================================== */}
 
           <div className="pointer-events-none absolute inset-0 z-[3]">
-            {/* Gold */}
-
             <div
               className="
                 hero-gold-glow
                 absolute
-                left-[5%]
-                top-[20%]
+                left-[3%]
+                top-[18%]
                 h-[380px]
                 w-[380px]
                 rounded-full
                 bg-[#C6922E]/10
                 blur-[140px]
+                will-change-transform
               "
             />
-
-            {/* Burgundy */}
 
             <div
               className="
                 hero-burgundy-glow
                 absolute
                 right-[-10%]
-                top-[15%]
+                top-[10%]
                 h-[650px]
                 w-[650px]
                 rounded-full
                 bg-[#7A001B]/15
                 blur-[170px]
+                will-change-transform
               "
             />
-
-            {/* Bottom atmosphere */}
 
             <div
               className="
@@ -682,12 +722,12 @@ export default function Website() {
                 w-[800px]
                 -translate-x-1/2
                 rounded-full
-                bg-[#650018]/[0.06]
+                bg-[#650018]/[0.07]
                 blur-[140px]
               "
             />
 
-            {/* Tech grid */}
+            {/* TECH GRID */}
 
             <div className="absolute inset-0 opacity-[0.035]">
               <div
@@ -709,7 +749,7 @@ export default function Website() {
               />
             </div>
 
-            {/* Radial dots */}
+            {/* DOTS */}
 
             <div
               className="
@@ -726,7 +766,7 @@ export default function Website() {
           </div>
 
           {/* ==================================================
-              CONTENT
+              HERO CONTENT
           ================================================== */}
 
           <div
@@ -752,7 +792,13 @@ export default function Website() {
 
               <div className="flex justify-center lg:justify-start">
                 <div className="hero-logo relative">
-                  <div className="hero-logo-parallax relative">
+                  <div
+                    className="
+                      hero-logo-parallax
+                      relative
+                      will-change-transform
+                    "
+                  >
                     <div
                       className="
                         absolute
@@ -788,11 +834,11 @@ export default function Website() {
                         relative
                         flex
                         aspect-square
-                        w-[235px]
+                        w-[230px]
                         items-center
                         justify-center
                         rounded-full
-                        sm:w-[275px]
+                        sm:w-[270px]
                         md:w-[310px]
                         lg:w-[350px]
                       "
@@ -807,11 +853,8 @@ export default function Website() {
                           w-full
                           object-contain
                           drop-shadow-[0_0_40px_rgba(198,146,46,0.25)]
-                          transition-transform
-                          duration-700
-                          ease-out
-                          hover:scale-[1.035]
                         "
+                        draggable={false}
                       />
                     </div>
                   </div>
@@ -822,7 +865,14 @@ export default function Website() {
                   HERO TEXT
               ================================================= */}
 
-              <div className="hero-content-parallax text-center lg:text-left">
+              <div
+                className="
+                  hero-content-parallax
+                  text-center
+                  will-change-transform
+                  lg:text-left
+                "
+              >
                 {/* EYEBROW */}
 
                 <div className="hero-eyebrow">
@@ -851,12 +901,16 @@ export default function Website() {
                   </div>
                 </div>
 
-                {/* =================================================
-                    SHRINIK TITLE
-                ================================================== */}
+                {/* SHRINIK */}
 
-                <div className="hero-title-wrap relative mt-7">
-                  {/* Pearl / silver glow */}
+                <div
+                  className="
+                    hero-title-wrap
+                    relative
+                    mt-7
+                  "
+                >
+                  {/* PEARL GLOW */}
 
                   <div
                     className="
@@ -871,12 +925,13 @@ export default function Website() {
                       -translate-x-1/2
                       -translate-y-1/2
                       rounded-full
-                      bg-[#E5EAF0]/[0.08]
+                      bg-[#E5EAF0]/[0.07]
                       blur-[95px]
+                      will-change-transform
                     "
                   />
 
-                  {/* Burgundy depth */}
+                  {/* BURGUNDY GLOW */}
 
                   <div
                     className="
@@ -885,17 +940,17 @@ export default function Website() {
                       left-1/2
                       top-1/2
                       z-0
-                      h-[120px]
-                      w-[70%]
+                      h-[140px]
+                      w-[75%]
                       -translate-x-1/2
                       -translate-y-1/2
                       rounded-full
                       bg-[#7A2438]/20
-                      blur-[75px]
+                      blur-[80px]
                     "
                   />
 
-                  {/* Pearl light sweep */}
+                  {/* LIGHT SWEEP */}
 
                   <div
                     className="
@@ -909,7 +964,7 @@ export default function Website() {
                       skew-x-[-18deg]
                       bg-gradient-to-r
                       from-transparent
-                      via-[#FFFFFF]/75
+                      via-[#FFFFFF]/70
                       to-transparent
                       opacity-0
                       blur-xl
@@ -932,29 +987,28 @@ export default function Website() {
                     "
                     aria-label="SHRINIK"
                   >
-                    {"SHRINIK".split("").map((letter, index) => (
-                      <span
-                        key={`${letter}-${index}`}
-                        className="
-                          hero-letter
-                          relative
-                          inline-block
-                          bg-[linear-gradient(120deg,#FFFFFF_0%,#E9EDF2_28%,#AEB8C4_50%,#F8F7F3_68%,#7A2438_100%)]
-                          bg-[length:250%_250%]
-                          bg-clip-text
-                          text-transparent
-                          will-change-transform
-                        "
-                        style={{
-                          textShadow: "0 0 16px rgba(235,239,245,0.10)",
-                        }}
-                      >
-                        {letter}
-                      </span>
-                    ))}
+                    {"SHRINIK".split("").map(
+                      (letter, index) => (
+                        <span
+                          key={`${letter}-${index}`}
+                          className="
+                            hero-letter
+                            relative
+                            inline-block
+                            bg-[linear-gradient(120deg,#FFFFFF_0%,#F5F1E8_30%,#C9CED4_52%,#F5F1E8_70%,#8B3148_100%)]
+                            bg-[length:250%_250%]
+                            bg-clip-text
+                            text-transparent
+                            will-change-transform
+                          "
+                        >
+                          {letter}
+                        </span>
+                      ),
+                    )}
                   </h1>
 
-                  {/* TITLE BASELINE */}
+                  {/* BASELINE */}
 
                   <div
                     className="
@@ -982,7 +1036,7 @@ export default function Website() {
                   </div>
                 </div>
 
-                {/* GOLD DIVIDER */}
+                {/* DIVIDER */}
 
                 <div
                   className="
@@ -1010,16 +1064,16 @@ export default function Website() {
                   >
                     Where technology meets culture.
                     <br />
+
                     <span className="text-white/25">
-                      A student-driven community at G.L. Bajaj built around
-                      creativity, technology and expression.
+                      A student-driven community at
+                      G.L. Bajaj built around creativity,
+                      technology and expression.
                     </span>
                   </p>
                 </div>
 
-                {/* =================================================
-                    BUTTONS
-                ================================================== */}
+                {/* BUTTONS */}
 
                 <div
                   className="
@@ -1049,12 +1103,14 @@ export default function Website() {
                       text-[#080808]
                       transition-all
                       duration-300
-                      hover:scale-[1.04]
+                      hover:scale-[1.03]
                       hover:bg-[#D8AA4D]
-                      hover:shadow-[0_0_40px_rgba(198,146,46,0.22)]
+                      hover:shadow-[0_0_40px_rgba(198,146,46,0.2)]
                     "
                   >
-                    <span className="relative z-10">Explore Shrinik</span>
+                    <span className="relative z-10">
+                      Explore Shrinik
+                    </span>
 
                     <span
                       className="
@@ -1096,6 +1152,7 @@ export default function Website() {
                     "
                   >
                     Our Team
+
                     <span
                       className="
                         transition-transform
@@ -1112,9 +1169,7 @@ export default function Website() {
             </div>
           </div>
 
-          {/* ==================================================
-              SCROLL INDICATOR
-          ================================================== */}
+          {/* SCROLL */}
 
           <div
             className="
@@ -1150,7 +1205,15 @@ export default function Website() {
                 Scroll
               </span>
 
-              <span className="relative h-10 w-px overflow-hidden bg-white/10">
+              <span
+                className="
+                  relative
+                  h-10
+                  w-px
+                  overflow-hidden
+                  bg-white/10
+                "
+              >
                 <span
                   className="
                     absolute
@@ -1205,15 +1268,464 @@ export default function Website() {
           </div>
         </section>
 
-        {/* ====================================================
-            SECTIONS
-        ===================================================== */}
+        {/* ======================================================
+            ABOUT
+        ====================================================== */}
 
         <AboutSection />
+
+        {/* ======================================================
+            HOD
+        ====================================================== */}
+
+        <section
+          id="hod"
+          className="
+            relative
+            overflow-hidden
+            bg-[#080808]
+            px-6
+            py-28
+            md:px-12
+            md:py-36
+          "
+        >
+          {/* Background atmosphere */}
+
+          <div className="pointer-events-none absolute inset-0">
+            <div
+              className="
+                absolute
+                left-[-15%]
+                top-[10%]
+                h-[400px]
+                w-[400px]
+                rounded-full
+                bg-[#650018]/10
+                blur-[140px]
+              "
+            />
+
+            <div
+              className="
+                absolute
+                right-[-10%]
+                bottom-[-15%]
+                h-[450px]
+                w-[450px]
+                rounded-full
+                bg-[#C6922E]/[0.05]
+                blur-[150px]
+              "
+            />
+
+            <div
+              className="
+                absolute
+                inset-x-0
+                top-0
+                h-px
+                bg-gradient-to-r
+                from-transparent
+                via-[#C6922E]/30
+                to-transparent
+              "
+            />
+
+            <div
+              className="
+                absolute
+                inset-x-0
+                bottom-0
+                h-px
+                bg-gradient-to-r
+                from-transparent
+                via-[#C6922E]/20
+                to-transparent
+              "
+            />
+          </div>
+
+          <div
+            className="
+              relative
+              z-10
+              mx-auto
+              max-w-7xl
+            "
+          >
+            {/* Section heading */}
+
+            <div className="mb-12">
+              <div className="flex items-center gap-3">
+                <span
+                  className="
+                    h-px
+                    w-8
+                    bg-[#C6922E]
+                  "
+                />
+
+                <span
+                  className="
+                    text-[9px]
+                    uppercase
+                    tracking-[0.4em]
+                    text-[#C6922E]
+                  "
+                >
+                  Academic Leadership
+                </span>
+              </div>
+
+              <h2
+                className="
+                  mt-6
+                  text-5xl
+                  font-medium
+                  leading-[0.9]
+                  tracking-[-0.055em]
+                  text-[#F5F1E8]
+                  sm:text-6xl
+                  md:text-7xl
+                "
+              >
+                Meet Our
+                <br />
+
+                <span className="text-white/25">
+                  HOD.
+                </span>
+              </h2>
+            </div>
+
+            {/* HOD CARD */}
+
+            <article
+              className="
+                group
+                relative
+                overflow-hidden
+                rounded-[2rem]
+                border
+                border-white/[0.09]
+                bg-gradient-to-br
+                from-[#120A0C]
+                via-[#0D0B0B]
+                to-[#080808]
+                p-6
+                shadow-[0_25px_80px_rgba(0,0,0,0.35)]
+                transition-all
+                duration-500
+                hover:border-[#C6922E]/25
+                md:p-10
+              "
+            >
+              {/* Card glow */}
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  right-[-10%]
+                  top-[-30%]
+                  h-[450px]
+                  w-[450px]
+                  rounded-full
+                  bg-[#650018]/10
+                  blur-[120px]
+                  transition-opacity
+                  duration-500
+                  group-hover:opacity-75
+                "
+              />
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  bottom-[-35%]
+                  left-[-15%]
+                  h-[350px]
+                  w-[350px]
+                  rounded-full
+                  bg-[#C6922E]/[0.04]
+                  blur-[100px]
+                "
+              />
+
+              <div
+                className="
+                  relative
+                  z-10
+                  grid
+                  items-center
+                  gap-10
+                  lg:grid-cols-[1fr_320px]
+                  xl:grid-cols-[1fr_360px]
+                "
+              >
+                {/* =================================================
+                    HOD INFORMATION
+                ================================================== */}
+
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="
+                        h-px
+                        w-7
+                        bg-[#C6922E]/70
+                      "
+                    />
+
+                    <span
+                      className="
+                        text-[9px]
+                        uppercase
+                        tracking-[0.35em]
+                        text-[#C6922E]
+                      "
+                    >
+                      Head of Department
+                    </span>
+                  </div>
+
+                  <h3
+                    className="
+                      mt-5
+                      text-4xl
+                      font-medium
+                      leading-[0.95]
+                      tracking-[-0.045em]
+                      text-[#F5F1E8]
+                      sm:text-5xl
+                      md:text-6xl
+                    "
+                  >
+                    Dr. Sansar S. Chauhan
+                  </h3>
+
+                  <p
+                    className="
+                      mt-5
+                      max-w-2xl
+                      text-base
+                      leading-7
+                      text-white/45
+                      md:text-lg
+                      md:leading-8
+                    "
+                  >
+                    Head of the Department of Computer
+                    Science and Engineering at G.L. Bajaj,
+                    dedicated to fostering excellence in
+                    teaching, research and innovation.
+                  </p>
+
+                  <p
+                    className="
+                      mt-4
+                      max-w-2xl
+                      text-sm
+                      leading-7
+                      text-white/25
+                    "
+                  >
+                    His experience and academic vision
+                    continue to inspire students and
+                    faculty towards meaningful growth
+                    and holistic development.
+                  </p>
+
+                  {/* Academic marker */}
+
+                  <div
+                    className="
+                      mt-8
+                      flex
+                      flex-wrap
+                      items-center
+                      gap-x-5
+                      gap-y-3
+                    "
+                  >
+                    <span
+                      className="
+                        text-[8px]
+                        uppercase
+                        tracking-[0.25em]
+                        text-white/25
+                      "
+                    >
+                      G.L. Bajaj
+                    </span>
+
+                    <span
+                      className="
+                        h-1
+                        w-1
+                        rounded-full
+                        bg-[#C6922E]/60
+                      "
+                    />
+
+                    <span
+                      className="
+                        text-[8px]
+                        uppercase
+                        tracking-[0.25em]
+                        text-white/25
+                      "
+                    >
+                      Computer Science & Engineering
+                    </span>
+                  </div>
+
+                  {/* LinkedIn */}
+
+                  <div className="mt-9">
+                    <a
+                      href="https://www.linkedin.com/in/sansar-s-chauhan-ph-d-4969b223/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Dr. Sansar S. Chauhan on LinkedIn"
+                      title="View LinkedIn Profile"
+                      className="
+                        group/linkedin
+                        inline-flex
+                        h-12
+                        w-12
+                        items-center
+                        justify-center
+                        rounded-full
+                        border
+                        border-white/10
+                        bg-white/[0.02]
+                        text-[#F5F1E8]/70
+                        backdrop-blur-sm
+                        transition-all
+                        duration-300
+                        hover:-translate-y-1
+                        hover:border-[#C6922E]/50
+                        hover:bg-[#C6922E]/10
+                        hover:text-[#F5F1E8]
+                        hover:shadow-[0_0_30px_rgba(198,146,46,0.15)]
+                      "
+                    >
+                      <FaLinkedinIn
+                        size={21}
+                        className="
+                          transition-transform
+                          duration-300
+                          group-hover/linkedin:scale-110
+                        "
+                      />
+                    </a>
+                  </div>
+                </div>
+
+                {/* =================================================
+                    PORTRAIT
+                ================================================== */}
+
+                <div className="mx-auto w-full max-w-[330px]">
+                  <div
+                    className="
+                      relative
+                      aspect-square
+                      overflow-hidden
+                      rounded-full
+                      border
+                      border-[#C6922E]/35
+                      bg-gradient-to-br
+                      from-[#3A0712]
+                      via-[#16090C]
+                      to-[#050505]
+                      p-2
+                      shadow-[0_0_70px_rgba(198,146,46,0.08)]
+                    "
+                  >
+                    {/* Inner border */}
+
+                    <div
+                      className="
+                        pointer-events-none
+                        absolute
+                        inset-3
+                        z-20
+                        rounded-full
+                        border
+                        border-[#E3C477]/20
+                      "
+                    />
+
+                    <img
+                      src="/images/hod-sansar-chauhan.jpg"
+                      alt="Dr. Sansar S. Chauhan"
+                      className="
+                        h-full
+                        w-full
+                        rounded-full
+                        object-cover
+                        object-center
+                        transition-transform
+                        duration-700
+                        group-hover:scale-[1.035]
+                      "
+                      loading="lazy"
+                      draggable={false}
+                    />
+                  </div>
+
+                  {/* Portrait label */}
+
+                  <div className="mt-5 text-center">
+                    <p
+                      className="
+                        text-[8px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/20
+                      "
+                    >
+                      Academic Leadership · Shrinik
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {/* ======================================================
+            TEAM
+        ====================================================== */}
+
         <TeamSection />
+
+        {/* ======================================================
+            EVENTS
+        ====================================================== */}
+
         <EventsSection />
+
+        {/* ======================================================
+            GALLERY
+        ====================================================== */}
+
         <GallerySection />
+
+        {/* ======================================================
+            CONTACT
+        ====================================================== */}
+
         <ContactSection />
+
+        {/* ======================================================
+            FOOTER
+        ====================================================== */}
+
         <Footer />
       </main>
     </>
