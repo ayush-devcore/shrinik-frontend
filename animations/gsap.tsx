@@ -20,7 +20,7 @@ export const DURATION = {
 
 export function animateIn(
   target: gsap.TweenTarget,
-  options: gsap.TweenVars = {}
+  options: gsap.TweenVars = {},
 ) {
   return gsap.fromTo(
     target,
@@ -35,22 +35,24 @@ export function animateIn(
       duration: DURATION.normal,
       ease: EASE.smooth,
       ...options,
-    }
+    },
   );
 }
 
 export function fadeIn(
   target: gsap.TweenTarget,
-  options: gsap.TweenVars = {}
+  options: gsap.TweenVars = {},
 ) {
   return gsap.fromTo(
     target,
-    { opacity: 0 },
+    {
+      opacity: 0,
+    },
     {
       opacity: 1,
       duration: DURATION.normal,
       ease: EASE.smooth,
       ...options,
-    }
+    },
   );
 }

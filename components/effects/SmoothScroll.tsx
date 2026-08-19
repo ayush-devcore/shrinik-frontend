@@ -17,32 +17,61 @@ export default function SmoothScroll() {
       touchMultiplier: 1,
     });
 
-    lenis.on("scroll", ScrollTrigger.update);
+    /*
+     * Keep ScrollTrigger synchronized
+     * with Lenis scrolling.
+     */
+    const handleScroll = () => {
+      ScrollTrigger.update();
+    };
 
+    lenis.on("scroll", handleScroll);
+
+    /*
+     * Drive Lenis from GSAP's ticker.
+     * GSAP provides the animation clock,
+     * keeping both systems synchronized.
+     */
     const update = (time: number) => {
       lenis.raf(time * 1000);
     };
 
     gsap.ticker.add(update);
 
-    gsap.ticker.lagSmoothing(0);
+    /*
+     * Keep GSAP's default lag protection.
+     *
+     * Do NOT disable lag smoothing globally.
+     * This helps prevent aggressive catch-up
+     * when the browser temporarily becomes busy.
+     */
 
+    /*
+     * Refresh ScrollTrigger after the page
+     * has loaded and layout dimensions are
+     * available.
+     */
     const refresh = () => {
       ScrollTrigger.refresh();
     };
 
-    window.addEventListener("load", refresh);
-
-    const timeout = window.setTimeout(
-      refresh,
-      1000
-    );
+    if (document.readyState === "complete") {
+      refresh();
+    } else {
+      window.addEventListener("load", refresh, {
+        once: true,
+      });
+    }
 
     return () => {
-      window.clearTimeout(timeout);
-      window.removeEventListener("load", refresh);
+      window.removeEventListener(
+        "load",
+        refresh,
+      );
 
       gsap.ticker.remove(update);
+
+      lenis.off("scroll", handleScroll);
 
       lenis.destroy();
     };

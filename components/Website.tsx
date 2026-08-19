@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -22,17 +23,23 @@ import TeamSection from "@/components/team/TeamSection";
 import Footer from "@/components/footer/Footer";
 
 export default function Website() {
-  const [introComplete, setIntroComplete] = useState(false);
+  const [introComplete, setIntroComplete] =
+    useState(false);
 
-  const heroRef = useRef<HTMLElement>(null);
-  const mouseFrame = useRef<number | null>(null);
+  const heroRef =
+    useRef<HTMLElement>(null);
 
-  const mousePosition = useRef({
-    x: 0,
-    y: 0,
-  });
+  const mouseFrame =
+    useRef<number | null>(null);
 
-  const mouseActive = useRef(false);
+  const mousePosition =
+    useRef({
+      x: 0,
+      y: 0,
+    });
+
+  const mouseActive =
+    useRef(false);
 
   /*
    * ============================================================
@@ -40,9 +47,10 @@ export default function Website() {
    * ============================================================
    */
 
-  const handleIntroComplete = useCallback(() => {
-    setIntroComplete(true);
-  }, []);
+  const handleIntroComplete =
+    useCallback(() => {
+      setIntroComplete(true);
+    }, []);
 
   /*
    * ============================================================
@@ -50,32 +58,101 @@ export default function Website() {
    * ============================================================
    */
 
-  useEffect(() => {
-    if (!introComplete || !heroRef.current) {
+  useLayoutEffect(() => {
+    if (
+      !introComplete ||
+      !heroRef.current
+    ) {
       return;
     }
 
     const hero = heroRef.current;
 
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const reducedMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
     const ctx = gsap.context(() => {
+      const letters =
+        gsap.utils.toArray<HTMLElement>(
+          ".hero-letter",
+        );
+
+      const logo =
+        hero.querySelector(
+          ".hero-logo",
+        );
+
+      const eyebrow =
+        hero.querySelector(
+          ".hero-eyebrow",
+        );
+
+      const titleSweep =
+        hero.querySelector(
+          ".hero-title-sweep",
+        );
+
+      const titleLine =
+        hero.querySelector(
+          ".hero-title-line",
+        );
+
+      const titleGlow =
+        hero.querySelector(
+          ".hero-title-glow",
+        );
+
+      const heroLine =
+        hero.querySelector(
+          ".hero-line",
+        );
+
+      const description =
+        hero.querySelector(
+          ".hero-description",
+        );
+
+      const buttons =
+        hero.querySelector(
+          ".hero-buttons",
+        );
+
+      const scroll =
+        hero.querySelector(
+          ".hero-scroll",
+        );
+
+      /*
+       * Reduced motion
+       */
+
       if (reducedMotion) {
         gsap.set(
           [
-            ".hero-logo",
-            ".hero-eyebrow",
-            ".hero-letter",
-            ".hero-line",
-            ".hero-description",
-            ".hero-buttons",
-            ".hero-scroll",
-          ],
+            logo,
+            eyebrow,
+            ...letters,
+            heroLine,
+            description,
+            buttons,
+            scroll,
+          ].filter(Boolean),
           {
             opacity: 1,
-            clearProps: "transform,filter",
+            clearProps:
+              "transform,filter,textShadow",
+          },
+        );
+
+        gsap.set(
+          [titleSweep, titleLine].filter(
+            Boolean,
+          ),
+          {
+            clearProps:
+              "transform,opacity",
           },
         );
 
@@ -86,7 +163,7 @@ export default function Website() {
        * Initial states
        */
 
-      gsap.set(".hero-letter", {
+      gsap.set(letters, {
         opacity: 0,
         y: 70,
         rotateX: -65,
@@ -94,35 +171,41 @@ export default function Website() {
         rotateZ: 2,
         scale: 0.8,
         filter: "blur(10px)",
-        transformOrigin: "50% 100%",
+        transformOrigin:
+          "50% 100%",
         transformPerspective: 900,
+        willChange: "transform,opacity",
       });
 
-      gsap.set(".hero-title-sweep", {
+      gsap.set(titleSweep, {
         xPercent: -180,
         opacity: 0,
+        willChange:
+          "transform,opacity",
       });
 
-      gsap.set(".hero-title-line", {
+      gsap.set(titleLine, {
         xPercent: -120,
+        willChange: "transform",
       });
 
       /*
        * Main timeline
        */
 
-      const timeline = gsap.timeline({
-        defaults: {
-          ease: "power3.out",
-        },
-      });
+      const timeline =
+        gsap.timeline({
+          defaults: {
+            ease: "power3.out",
+          },
+        });
 
       /*
        * Logo
        */
 
       timeline.fromTo(
-        ".hero-logo",
+        logo,
         {
           opacity: 0,
           scale: 0.76,
@@ -144,7 +227,7 @@ export default function Website() {
        */
 
       timeline.fromTo(
-        ".hero-eyebrow",
+        eyebrow,
         {
           opacity: 0,
           y: 18,
@@ -162,7 +245,7 @@ export default function Website() {
        */
 
       timeline.to(
-        ".hero-letter",
+        letters,
         {
           opacity: 1,
           y: 0,
@@ -183,7 +266,7 @@ export default function Website() {
        */
 
       timeline.to(
-        ".hero-letter",
+        letters,
         {
           textShadow:
             "0 0 18px rgba(245,241,232,0.12), 0 0 40px rgba(198,146,46,0.08)",
@@ -198,9 +281,10 @@ export default function Website() {
        */
 
       timeline.to(
-        ".hero-letter",
+        letters,
         {
-          backgroundPosition: "100% 50%",
+          backgroundPosition:
+            "100% 50%",
           duration: 1.25,
           stagger: 0.035,
           ease: "power2.inOut",
@@ -213,7 +297,7 @@ export default function Website() {
        */
 
       timeline.to(
-        ".hero-title-line",
+        titleLine,
         {
           xPercent: 500,
           duration: 1,
@@ -227,7 +311,7 @@ export default function Website() {
        */
 
       timeline.to(
-        ".hero-title-sweep",
+        titleSweep,
         {
           xPercent: 650,
           opacity: 1,
@@ -238,7 +322,7 @@ export default function Website() {
       );
 
       timeline.to(
-        ".hero-title-sweep",
+        titleSweep,
         {
           opacity: 0,
           duration: 0.2,
@@ -251,10 +335,11 @@ export default function Website() {
        */
 
       timeline.fromTo(
-        ".hero-line",
+        heroLine,
         {
           scaleX: 0,
-          transformOrigin: "left center",
+          transformOrigin:
+            "left center",
         },
         {
           scaleX: 1,
@@ -269,7 +354,7 @@ export default function Website() {
        */
 
       timeline.fromTo(
-        ".hero-description",
+        description,
         {
           opacity: 0,
           y: 10,
@@ -287,7 +372,7 @@ export default function Website() {
        */
 
       timeline.fromTo(
-        ".hero-buttons",
+        buttons,
         {
           opacity: 0,
           y: 10,
@@ -301,11 +386,11 @@ export default function Website() {
       );
 
       /*
-       * Scroll
+       * Scroll indicator
        */
 
       timeline.fromTo(
-        ".hero-scroll",
+        scroll,
         {
           opacity: 0,
           y: 10,
@@ -319,28 +404,41 @@ export default function Website() {
       );
 
       /*
-       * Continuous atmosphere
+       * Continuous title atmosphere
        */
 
-      timeline.call(() => {
-        gsap.to(".hero-title-glow", {
-          opacity: 0.55,
-          scale: 1.05,
-          duration: 3.5,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
+      if (titleGlow) {
+        timeline.call(() => {
+          gsap.to(
+            titleGlow,
+            {
+              opacity: 0.55,
+              scale: 1.05,
+              duration: 3.5,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+            },
+          );
         });
-      });
+      }
     }, hero);
 
     return () => {
       ctx.revert();
 
-      if (mouseFrame.current !== null) {
-        cancelAnimationFrame(mouseFrame.current);
+      if (
+        mouseFrame.current !==
+        null
+      ) {
+        cancelAnimationFrame(
+          mouseFrame.current,
+        );
+
         mouseFrame.current = null;
       }
+
+      mouseActive.current = false;
     };
   }, [introComplete]);
 
@@ -351,190 +449,423 @@ export default function Website() {
    */
 
   useEffect(() => {
-    if (!introComplete || !heroRef.current) {
+    if (
+      !introComplete ||
+      !heroRef.current
+    ) {
       return;
     }
 
     const hero = heroRef.current;
 
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const reducedMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
-    if (reducedMotion) {
+    const coarsePointer =
+      window.matchMedia(
+        "(pointer: coarse)",
+      ).matches;
+
+    /*
+     * Mouse parallax is intentionally
+     * disabled on touch devices.
+     */
+
+    if (
+      reducedMotion ||
+      coarsePointer
+    ) {
       return;
     }
 
-    if (window.matchMedia("(pointer: coarse)").matches) {
-      return;
-    }
-
-    const logo = hero.querySelector(
-      ".hero-logo-parallax",
-    );
-
-    const content = hero.querySelector(
-      ".hero-content-parallax",
-    );
-
-    const goldGlow = hero.querySelector(
-      ".hero-gold-glow",
-    );
-
-    const burgundyGlow = hero.querySelector(
-      ".hero-burgundy-glow",
-    );
-
-    const titleGlow = hero.querySelector(
-      ".hero-title-glow",
-    );
-
-    const letters = Array.from(
-      hero.querySelectorAll<HTMLElement>(
-        ".hero-letter",
-      ),
-    );
-
-    const updateParallax = () => {
-      mouseFrame.current = null;
-
-      if (!mouseActive.current) {
-        return;
-      }
-
-      const { x, y } = mousePosition.current;
-
-      if (logo) {
-        gsap.set(logo, {
-          x: x * 16,
-          y: y * 16,
-        });
-      }
-
-      if (content) {
-        gsap.set(content, {
-          x: x * -7,
-          y: y * -7,
-        });
-      }
-
-      if (goldGlow) {
-        gsap.set(goldGlow, {
-          x: x * 28,
-          y: y * 28,
-        });
-      }
-
-      if (burgundyGlow) {
-        gsap.set(burgundyGlow, {
-          x: x * -20,
-          y: y * -20,
-        });
-      }
-
-      if (titleGlow) {
-        gsap.set(titleGlow, {
-          x: x * 18,
-          y: y * 12,
-        });
-      }
-
-      letters.forEach((letter, index) => {
-        const center =
-          index - (letters.length - 1) / 2;
-
-        gsap.set(letter, {
-          x:
-            x *
-            (2.5 + Math.abs(center) * 0.35),
-          y:
-            y *
-            (1.8 + Math.abs(center) * 0.25),
-          rotateY: x * 2.5,
-          rotateX: y * -1.5,
-        });
-      });
-    };
-
-    const handleMouseMove = (
-      event: MouseEvent,
-    ) => {
-      const rect =
-        hero.getBoundingClientRect();
-
-      if (
-        event.clientX < rect.left ||
-        event.clientX > rect.right ||
-        event.clientY < rect.top ||
-        event.clientY > rect.bottom
-      ) {
-        return;
-      }
-
-      mousePosition.current = {
-        x:
-          (event.clientX - rect.left) /
-            rect.width -
-          0.5,
-        y:
-          (event.clientY - rect.top) /
-            rect.height -
-          0.5,
-      };
-
-      mouseActive.current = true;
-
-      if (mouseFrame.current === null) {
-        mouseFrame.current =
-          requestAnimationFrame(
-            updateParallax,
-          );
-      }
-    };
-
-    const resetParallax = () => {
-      mouseActive.current = false;
-
-      if (mouseFrame.current !== null) {
-        cancelAnimationFrame(
-          mouseFrame.current,
-        );
-
-        mouseFrame.current = null;
-      }
-
-      gsap.to(
-        [
-          logo,
-          content,
-          goldGlow,
-          burgundyGlow,
-          titleGlow,
-        ].filter(Boolean),
-        {
-          x: 0,
-          y: 0,
-          duration: 0.65,
-          ease: "power3.out",
-          overwrite: true,
-        },
+    const logo =
+      hero.querySelector<HTMLElement>(
+        ".hero-logo-parallax",
       );
 
-      gsap.to(letters, {
-        x: 0,
-        y: 0,
-        rotateX: 0,
-        rotateY: 0,
-        duration: 0.55,
-        ease: "power3.out",
-        overwrite: true,
-      });
+    const content =
+      hero.querySelector<HTMLElement>(
+        ".hero-content-parallax",
+      );
+
+    const goldGlow =
+      hero.querySelector<HTMLElement>(
+        ".hero-gold-glow",
+      );
+
+    const burgundyGlow =
+      hero.querySelector<HTMLElement>(
+        ".hero-burgundy-glow",
+      );
+
+    const titleGlow =
+      hero.querySelector<HTMLElement>(
+        ".hero-title-glow",
+      );
+
+    const letters =
+      Array.from(
+        hero.querySelectorAll<HTMLElement>(
+          ".hero-letter",
+        ),
+      );
+
+    const parallaxElements =
+      [
+        logo,
+        content,
+        goldGlow,
+        burgundyGlow,
+        titleGlow,
+      ].filter(
+        (
+          element,
+        ): element is HTMLElement =>
+          element !== null,
+      );
+
+    /*
+     * Use GSAP quickTo instead of creating
+     * new GSAP tweens for every mouse frame.
+     */
+
+    const quickSetters = {
+      logoX: logo
+        ? gsap.quickTo(logo, "x", {
+            duration: 0.45,
+            ease: "power3.out",
+          })
+        : null,
+
+      logoY: logo
+        ? gsap.quickTo(logo, "y", {
+            duration: 0.45,
+            ease: "power3.out",
+          })
+        : null,
+
+      contentX: content
+        ? gsap.quickTo(content, "x", {
+            duration: 0.5,
+            ease: "power3.out",
+          })
+        : null,
+
+      contentY: content
+        ? gsap.quickTo(content, "y", {
+            duration: 0.5,
+            ease: "power3.out",
+          })
+        : null,
+
+      goldX: goldGlow
+        ? gsap.quickTo(goldGlow, "x", {
+            duration: 0.65,
+            ease: "power3.out",
+          })
+        : null,
+
+      goldY: goldGlow
+        ? gsap.quickTo(goldGlow, "y", {
+            duration: 0.65,
+            ease: "power3.out",
+          })
+        : null,
+
+      burgundyX: burgundyGlow
+        ? gsap.quickTo(
+            burgundyGlow,
+            "x",
+            {
+              duration: 0.65,
+              ease: "power3.out",
+            },
+          )
+        : null,
+
+      burgundyY: burgundyGlow
+        ? gsap.quickTo(
+            burgundyGlow,
+            "y",
+            {
+              duration: 0.65,
+              ease: "power3.out",
+            },
+          )
+        : null,
+
+      titleX: titleGlow
+        ? gsap.quickTo(titleGlow, "x", {
+            duration: 0.55,
+            ease: "power3.out",
+          })
+        : null,
+
+      titleY: titleGlow
+        ? gsap.quickTo(titleGlow, "y", {
+            duration: 0.55,
+            ease: "power3.out",
+          })
+        : null,
     };
+
+    const letterSetters =
+      letters.map((letter) => ({
+        x: gsap.quickTo(letter, "x", {
+          duration: 0.4,
+          ease: "power3.out",
+        }),
+
+        y: gsap.quickTo(letter, "y", {
+          duration: 0.4,
+          ease: "power3.out",
+        }),
+
+        rotateX: gsap.quickTo(
+          letter,
+          "rotateX",
+          {
+            duration: 0.4,
+            ease: "power3.out",
+          },
+        ),
+
+        rotateY: gsap.quickTo(
+          letter,
+          "rotateY",
+          {
+            duration: 0.4,
+            ease: "power3.out",
+          },
+        ),
+      }));
+
+    const updateParallax =
+      () => {
+        mouseFrame.current =
+          null;
+
+        if (
+          !mouseActive.current
+        ) {
+          return;
+        }
+
+        const {
+          x,
+          y,
+        } =
+          mousePosition.current;
+
+        quickSetters.logoX?.(
+          x * 16,
+        );
+
+        quickSetters.logoY?.(
+          y * 16,
+        );
+
+        quickSetters.contentX?.(
+          x * -7,
+        );
+
+        quickSetters.contentY?.(
+          y * -7,
+        );
+
+        quickSetters.goldX?.(
+          x * 28,
+        );
+
+        quickSetters.goldY?.(
+          y * 28,
+        );
+
+        quickSetters.burgundyX?.(
+          x * -20,
+        );
+
+        quickSetters.burgundyY?.(
+          y * -20,
+        );
+
+        quickSetters.titleX?.(
+          x * 18,
+        );
+
+        quickSetters.titleY?.(
+          y * 12,
+        );
+
+        letterSetters.forEach(
+          (
+            setter,
+            index,
+          ) => {
+            const center =
+              index -
+              (letters.length -
+                1) /
+                2;
+
+            setter.x(
+              x *
+                (2.5 +
+                  Math.abs(
+                    center,
+                  ) *
+                    0.35),
+            );
+
+            setter.y(
+              y *
+                (1.8 +
+                  Math.abs(
+                    center,
+                  ) *
+                    0.25),
+            );
+
+            setter.rotateY(
+              x * 2.5,
+            );
+
+            setter.rotateX(
+              y * -1.5,
+            );
+          },
+        );
+      };
+
+    const handleMouseMove =
+      (event: MouseEvent) => {
+        const rect =
+          hero.getBoundingClientRect();
+
+        if (
+          event.clientX <
+            rect.left ||
+          event.clientX >
+            rect.right ||
+          event.clientY <
+            rect.top ||
+          event.clientY >
+            rect.bottom
+        ) {
+          return;
+        }
+
+        mousePosition.current = {
+          x:
+            (event.clientX -
+              rect.left) /
+              rect.width -
+            0.5,
+
+          y:
+            (event.clientY -
+              rect.top) /
+              rect.height -
+            0.5,
+        };
+
+        mouseActive.current =
+          true;
+
+        if (
+          mouseFrame.current ===
+          null
+        ) {
+          mouseFrame.current =
+            requestAnimationFrame(
+              updateParallax,
+            );
+        }
+      };
+
+    /*
+     * Reset parallax when mouse leaves hero.
+     */
+
+    const resetParallax =
+      () => {
+        mouseActive.current =
+          false;
+
+        if (
+          mouseFrame.current !==
+          null
+        ) {
+          cancelAnimationFrame(
+            mouseFrame.current,
+          );
+
+          mouseFrame.current =
+            null;
+        }
+
+        /*
+         * Reset normal parallax.
+         */
+
+        gsap.to(
+          parallaxElements,
+          {
+            x: 0,
+            y: 0,
+            duration: 0.65,
+            ease: "power3.out",
+            overwrite: true,
+          },
+        );
+
+        /*
+         * Reset letter position.
+         */
+
+        gsap.to(
+          letters,
+          {
+            x: 0,
+            y: 0,
+            duration: 0.55,
+            ease: "power3.out",
+            overwrite: true,
+          },
+        );
+
+        /*
+         * Reset 3D rotation.
+         *
+         * Kept as a separate tween so the
+         * existing GSAP 3D animation is not
+         * disrupted.
+         */
+
+        letters.forEach(
+          (letter) => {
+            gsap.to(
+              letter,
+              {
+                rotateX: 0,
+                rotateY: 0,
+                duration: 0.55,
+                ease: "power3.out",
+                overwrite: true,
+              },
+            );
+          },
+        );
+      };
 
     hero.addEventListener(
       "mousemove",
       handleMouseMove,
-      { passive: true },
+      {
+        passive: true,
+      },
     );
 
     hero.addEventListener(
@@ -553,22 +884,33 @@ export default function Website() {
         resetParallax,
       );
 
-      if (mouseFrame.current !== null) {
+      if (
+        mouseFrame.current !==
+        null
+      ) {
         cancelAnimationFrame(
           mouseFrame.current,
         );
 
-        mouseFrame.current = null;
+        mouseFrame.current =
+          null;
       }
 
-      gsap.killTweensOf([
-        logo,
-        content,
-        goldGlow,
-        burgundyGlow,
-        titleGlow,
-        ...letters,
-      ]);
+      mouseActive.current =
+        false;
+
+      /*
+       * Kill only the tweens created
+       * by this parallax instance.
+       */
+
+      gsap.killTweensOf(
+        parallaxElements,
+      );
+
+      gsap.killTweensOf(
+        letters,
+      );
     };
   }, [introComplete]);
 
@@ -584,7 +926,9 @@ export default function Website() {
 
       {!introComplete && (
         <IntroScreen
-          onComplete={handleIntroComplete}
+          onComplete={
+            handleIntroComplete
+          }
         />
       )}
 
@@ -744,7 +1088,8 @@ export default function Website() {
                       transparent 1px
                     )
                   `,
-                  backgroundSize: "80px 80px",
+                  backgroundSize:
+                    "80px 80px",
                 }}
               />
             </div>
@@ -760,7 +1105,8 @@ export default function Website() {
               style={{
                 backgroundImage:
                   "radial-gradient(circle at center, rgba(198,146,46,0.8) 1px, transparent 1px)",
-                backgroundSize: "38px 38px",
+                backgroundSize:
+                  "38px 38px",
               }}
             />
           </div>
@@ -846,6 +1192,10 @@ export default function Website() {
                       <img
                         src="/assets/favicon.png"
                         alt="Shrinik Club G.L. Bajaj"
+                        width={350}
+                        height={350}
+                        fetchPriority="high"
+                        decoding="async"
                         className="
                           relative
                           z-10
@@ -988,7 +1338,10 @@ export default function Website() {
                     aria-label="SHRINIK"
                   >
                     {"SHRINIK".split("").map(
-                      (letter, index) => (
+                      (
+                        letter,
+                        index,
+                      ) => (
                         <span
                           key={`${letter}-${index}`}
                           className="
@@ -1290,8 +1643,6 @@ export default function Website() {
             md:py-36
           "
         >
-          {/* Background atmosphere */}
-
           <div className="pointer-events-none absolute inset-0">
             <div
               className="
@@ -1354,8 +1705,6 @@ export default function Website() {
               max-w-7xl
             "
           >
-            {/* Section heading */}
-
             <div className="mb-12">
               <div className="flex items-center gap-3">
                 <span
@@ -1399,8 +1748,6 @@ export default function Website() {
               </h2>
             </div>
 
-            {/* HOD CARD */}
-
             <article
               className="
                 group
@@ -1421,8 +1768,6 @@ export default function Website() {
                 md:p-10
               "
             >
-              {/* Card glow */}
-
               <div
                 className="
                   pointer-events-none
@@ -1465,10 +1810,6 @@ export default function Website() {
                   xl:grid-cols-[1fr_360px]
                 "
               >
-                {/* =================================================
-                    HOD INFORMATION
-                ================================================== */}
-
                 <div>
                   <div className="flex items-center gap-3">
                     <span
@@ -1538,8 +1879,6 @@ export default function Website() {
                     and holistic development.
                   </p>
 
-                  {/* Academic marker */}
-
                   <div
                     className="
                       mt-8
@@ -1582,8 +1921,6 @@ export default function Website() {
                     </span>
                   </div>
 
-                  {/* LinkedIn */}
-
                   <div className="mt-9">
                     <a
                       href="https://www.linkedin.com/in/sansar-s-chauhan-ph-d-4969b223/"
@@ -1625,10 +1962,6 @@ export default function Website() {
                   </div>
                 </div>
 
-                {/* =================================================
-                    PORTRAIT
-                ================================================== */}
-
                 <div className="mx-auto w-full max-w-[330px]">
                   <div
                     className="
@@ -1646,8 +1979,6 @@ export default function Website() {
                       shadow-[0_0_70px_rgba(198,146,46,0.08)]
                     "
                   >
-                    {/* Inner border */}
-
                     <div
                       className="
                         pointer-events-none
@@ -1663,6 +1994,10 @@ export default function Website() {
                     <img
                       src="/images/hod-sansar-chauhan.jpg"
                       alt="Dr. Sansar S. Chauhan"
+                      width={360}
+                      height={360}
+                      loading="lazy"
+                      decoding="async"
                       className="
                         h-full
                         w-full
@@ -1673,12 +2008,9 @@ export default function Website() {
                         duration-700
                         group-hover:scale-[1.035]
                       "
-                      loading="lazy"
                       draggable={false}
                     />
                   </div>
-
-                  {/* Portrait label */}
 
                   <div className="mt-5 text-center">
                     <p

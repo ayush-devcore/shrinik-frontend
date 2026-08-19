@@ -1,10 +1,13 @@
 "use client";
 
-import { ReactNode, useEffect, useRef } from "react";
+import {
+  ReactNode,
+  useEffect,
+  useRef,
+} from "react";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface ParallaxProps {
   children: ReactNode;
@@ -20,9 +23,11 @@ export default function Parallax({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
-
     const element = ref.current;
+
+    if (!element) return;
+
+    gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -33,21 +38,27 @@ export default function Parallax({
         {
           y: speed / 2,
           ease: "none",
+          overwrite: "auto",
           scrollTrigger: {
             trigger: element,
             start: "top bottom",
             end: "bottom top",
-            scrub: true,
+            scrub: 0.6,
           },
-        }
+        },
       );
-    }, ref);
+    }, element);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, [speed]);
 
   return (
-    <div ref={ref} className={className}>
+    <div
+      ref={ref}
+      className={className}
+    >
       {children}
     </div>
   );

@@ -5,8 +5,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 let registered = false;
 
+/* ============================================================
+   SCROLLTRIGGER REGISTRATION
+============================================================ */
+
 export function registerScrollTrigger() {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   if (!registered) {
     gsap.registerPlugin(ScrollTrigger);
@@ -16,6 +22,10 @@ export function registerScrollTrigger() {
 
 export { ScrollTrigger };
 
+/* ============================================================
+   SCROLL ANIMATION
+============================================================ */
+
 export function createScrollAnimation(
   target: gsap.TweenTarget,
   options: gsap.TweenVars & {
@@ -23,7 +33,7 @@ export function createScrollAnimation(
     start?: string;
     end?: string;
     scrub?: boolean | number;
-  } = {}
+  } = {},
 ) {
   registerScrollTrigger();
 
@@ -47,12 +57,13 @@ export function createScrollAnimation(
       duration: 0.8,
       ease: "power3.out",
       ...animation,
+
       scrollTrigger: {
         trigger: trigger as gsap.DOMTarget,
         start,
         end,
         scrub,
       },
-    }
+    },
   );
 }

@@ -57,7 +57,7 @@ export default function SectionHeading({
 
       {description && (
         <ScrollReveal delay={0.16}>
-          <p className="mt-7 max-w-xl text-sm leading-7 text-white/40 md:text-base">
+          <p className="mt-7 max-w-xl text-sm leading-7 text-[#A9AFB7] md:text-base">
             {description}
           </p>
         </ScrollReveal>

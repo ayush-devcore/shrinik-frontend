@@ -1,10 +1,12 @@
 "use client";
 
-import { ReactNode, useEffect, useRef } from "react";
+import {
+  ReactNode,
+  useEffect,
+  useRef,
+} from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface StaggerRevealProps {
   children: ReactNode;
@@ -22,15 +24,24 @@ export default function StaggerReveal({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const container = ref.current;
+
+    if (!container) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      const items = gsap.utils.toArray<HTMLElement>(
-        selector,
-        ref.current
-      );
+      const items =
+        gsap.utils.toArray<HTMLElement>(
+          selector,
+          container,
+        );
 
-      if (!items.length) return;
+      if (items.length === 0) {
+        return;
+      }
 
       gsap.fromTo(
         items,
@@ -48,20 +59,26 @@ export default function StaggerReveal({
           duration: 0.8,
           stagger,
           ease: "power3.out",
+          overwrite: "auto",
           scrollTrigger: {
-            trigger: ref.current,
+            trigger: container,
             start: "top 82%",
             once: true,
           },
-        }
+        },
       );
-    }, ref);
+    }, container);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, [selector, stagger]);
 
   return (
-    <div ref={ref} className={className}>
+    <div
+      ref={ref}
+      className={className}
+    >
       {children}
     </div>
   );

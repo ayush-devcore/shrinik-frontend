@@ -19,14 +19,22 @@ export default function Magnetic({
   className = "",
 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const tween = useRef<gsap.core.Tween | null>(null);
 
   const handleMove = (
-    event: MouseEvent<HTMLDivElement>
+    event: MouseEvent<HTMLDivElement>,
   ) => {
-    if (!ref.current || window.innerWidth < 768) return;
+    const element = ref.current;
+
+    if (
+      !element ||
+      window.innerWidth < 768
+    ) {
+      return;
+    }
 
     const rect =
-      ref.current.getBoundingClientRect();
+      element.getBoundingClientRect();
 
     const x =
       event.clientX -
@@ -38,22 +46,32 @@ export default function Magnetic({
       rect.top -
       rect.height / 2;
 
-    gsap.to(ref.current, {
+    tween.current?.kill();
+
+    tween.current = gsap.to(element, {
       x: x * strength,
       y: y * strength,
-      duration: 0.35,
+      duration: 0.25,
       ease: "power3.out",
+      overwrite: true,
     });
   };
 
   const handleLeave = () => {
-    if (!ref.current) return;
+    const element = ref.current;
 
-    gsap.to(ref.current, {
+    if (!element) {
+      return;
+    }
+
+    tween.current?.kill();
+
+    tween.current = gsap.to(element, {
       x: 0,
       y: 0,
       duration: 0.6,
       ease: "elastic.out(1, 0.4)",
+      overwrite: true,
     });
   };
 

@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 
@@ -11,25 +18,90 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
   const [scrolled, setScrolled] = useState(false);
 
+  const tickingRef = useRef(false);
+  const previousScrollState = useRef(false);
+
+  /*
+   * ============================================================
+   * REDUCED MOTION
+   * ============================================================
+   */
+
+  const reducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+
+    reducedMotionRef.current = mediaQuery.matches;
+
+    const handleChange = () => {
+      reducedMotionRef.current = mediaQuery.matches;
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener(
+        "change",
+        handleChange
+      );
+    };
+  }, []);
+
   /*
    * ============================================================
    * SCROLL STATE
    * ============================================================
+   *
+   * requestAnimationFrame prevents React state from being
+   * updated unnecessarily on every raw scroll event.
    */
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+    const updateScrollState = () => {
+      tickingRef.current = false;
+
+      const nextScrolled =
+        window.scrollY > 40;
+
+      if (
+        previousScrollState.current !==
+        nextScrolled
+      ) {
+        previousScrollState.current =
+          nextScrolled;
+
+        setScrolled(nextScrolled);
+      }
     };
 
-    handleScroll();
+    const handleScroll = () => {
+      if (tickingRef.current) return;
 
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
+      tickingRef.current = true;
+
+      requestAnimationFrame(
+        updateScrollState
+      );
+    };
+
+    updateScrollState();
+
+    window.addEventListener(
+      "scroll",
+      handleScroll,
+      {
+        passive: true,
+      }
+    );
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
     };
   }, []);
 
@@ -40,39 +112,78 @@ export default function Navbar() {
    */
 
   useEffect(() => {
-    const sections = NAV_ITEMS.map((item) =>
-      document.querySelector(item.href)
-    ).filter(Boolean) as HTMLElement[];
+    const sections = NAV_ITEMS.map(
+      (item) => {
+        try {
+          return document.querySelector(
+            item.href
+          );
+        } catch {
+          return null;
+        }
+      }
+    ).filter(
+      (section): section is HTMLElement =>
+        section instanceof HTMLElement
+    );
 
     if (!sections.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              b.intersectionRatio -
-              a.intersectionRatio
-          );
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          const visibleEntries =
+            entries.filter(
+              (entry) =>
+                entry.isIntersecting
+            );
 
-        if (visible[0]?.target?.id) {
-          setActiveSection(
-            visible[0].target.id
+          if (!visibleEntries.length)
+            return;
+
+          const mostVisible =
+            visibleEntries.reduce(
+              (previous, current) =>
+                current.intersectionRatio >
+                previous.intersectionRatio
+                  ? current
+                  : previous
+            );
+
+          const id =
+            mostVisible.target instanceof
+            HTMLElement
+              ? mostVisible.target.id
+              : "";
+
+          if (!id) return;
+
+          setActiveSection((current) =>
+            current === id
+              ? current
+              : id
           );
+        },
+        {
+          root: null,
+          rootMargin:
+            "-25% 0px -55% 0px",
+          threshold: [
+            0,
+            0.1,
+            0.25,
+            0.5,
+          ],
         }
-      },
-      {
-        rootMargin: "-35% 0px -50% 0px",
-        threshold: [0.05, 0.2, 0.5],
-      }
-    );
+      );
 
     sections.forEach((section) =>
       observer.observe(section)
     );
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   /*
@@ -81,27 +192,45 @@ export default function Navbar() {
    * ============================================================
    */
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const navbar =
+      document.querySelector(
+        ".navbar-inner"
+      );
+
+    if (!navbar) return;
+
+    if (reducedMotionRef.current) {
+      gsap.set(navbar, {
+        clearProps:
+          "opacity,transform,filter",
+      });
+
+      return;
+    }
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        ".navbar-inner",
+        navbar,
         {
-          y: -35,
+          y: -25,
           opacity: 0,
-          filter: "blur(8px)",
+          filter: "blur(6px)",
         },
         {
           y: 0,
           opacity: 1,
           filter: "blur(0px)",
-          duration: 0.9,
-          delay: 0.3,
+          duration: 0.7,
+          delay: 0.15,
           ease: "power3.out",
         }
       );
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, []);
 
   /*
@@ -111,6 +240,8 @@ export default function Navbar() {
    */
 
   useEffect(() => {
+    if (!open) return;
+
     const handleKeyDown = (
       event: KeyboardEvent
     ) => {
@@ -130,23 +261,34 @@ export default function Navbar() {
         handleKeyDown
       );
     };
-  }, []);
+  }, [open]);
 
   /*
    * ============================================================
-   * BODY LOCK ON MOBILE MENU
+   * BODY SCROLL LOCK
    * ============================================================
    */
 
   useEffect(() => {
-    if (open && window.innerWidth < 768) {
-      document.body.style.overflow = "hidden";
-    } else {
+    const isMobile =
+      window.matchMedia(
+        "(max-width: 767px)"
+      ).matches;
+
+    if (!open || !isMobile) {
       document.body.style.overflow = "";
+      return;
     }
 
+    const previousOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow =
+      "hidden";
+
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow =
+        previousOverflow;
     };
   }, [open]);
 
@@ -156,78 +298,135 @@ export default function Navbar() {
    * ============================================================
    */
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) return;
 
+    const menu =
+      document.querySelector(
+        ".mobile-menu"
+      );
+
+    if (!menu) return;
+
+    if (reducedMotionRef.current) {
+      gsap.set(menu, {
+        clearProps:
+          "opacity,transform",
+      });
+
+      return;
+    }
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".mobile-menu",
+      const timeline =
+        gsap.timeline();
+
+      timeline.fromTo(
+        menu,
         {
           opacity: 0,
-          y: -15,
-          scale: 0.97,
+          y: -10,
+          scale: 0.985,
         },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.45,
+          duration: 0.35,
           ease: "power3.out",
         }
       );
 
-      gsap.fromTo(
+      timeline.fromTo(
         ".mobile-nav-item",
         {
           opacity: 0,
-          x: -15,
+          x: -12,
         },
         {
           opacity: 1,
           x: 0,
-          duration: 0.45,
-          stagger: 0.06,
-          delay: 0.08,
+          duration: 0.35,
+          stagger: 0.045,
           ease: "power3.out",
-        }
+        },
+        "-=0.15"
       );
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, [open]);
 
   /*
    * ============================================================
-   * CLOSE MENU
+   * NAVIGATION
    * ============================================================
    */
 
-  const handleClick = () => {
-    setOpen(false);
-  };
+  const handleNavigation =
+    useCallback(
+      (href: string) => {
+        setOpen(false);
+
+        if (!href.startsWith("#"))
+          return;
+
+        const target =
+          document.querySelector(href);
+
+        if (!(target instanceof HTMLElement))
+          return;
+
+        const navbarHeight =
+          document.querySelector(
+            ".navbar-inner"
+          )?.getBoundingClientRect()
+            .height ?? 0;
+
+        const targetTop =
+          target.getBoundingClientRect()
+            .top +
+          window.scrollY -
+          navbarHeight -
+          18;
+
+        window.scrollTo({
+          top: Math.max(
+            0,
+            targetTop
+          ),
+          behavior:
+            reducedMotionRef.current
+              ? "auto"
+              : "smooth",
+        });
+      },
+      []
+    );
 
   /*
    * ============================================================
-   * SMOOTH NAVIGATION
+   * LOGO CLICK
    * ============================================================
    */
 
-  const handleNavigation = (
-    href: string
-  ) => {
-    setOpen(false);
+  const handleLogoClick =
+    useCallback(() => {
+      handleNavigation("#home");
+    }, [handleNavigation]);
 
-    const target = document.querySelector(
-      href
-    );
+  /*
+   * ============================================================
+   * MOBILE TOGGLE
+   * ============================================================
+   */
 
-    if (!target) return;
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
+  const toggleMenu =
+    useCallback(() => {
+      setOpen((current) => !current);
+    }, []);
 
   return (
     <header
@@ -253,7 +452,7 @@ export default function Navbar() {
           border
           px-5
           py-3
-          transition-all
+          transition-[background-color,border-color,box-shadow]
           duration-500
           md:px-7
           ${
@@ -271,21 +470,20 @@ export default function Navbar() {
           backdrop-blur-2xl
         `}
       >
-
         {/* ====================================================
             LOGO
         ===================================================== */}
 
         <button
           type="button"
-          onClick={() =>
-            handleNavigation("#home")
-          }
+          onClick={handleLogoClick}
+          aria-label="Go to homepage"
           className="
             group
             flex
             items-center
             gap-3
+            outline-none
           "
         >
           <div
@@ -298,7 +496,6 @@ export default function Navbar() {
               justify-center
             "
           >
-
             <div
               className="
                 absolute
@@ -316,6 +513,10 @@ export default function Navbar() {
             <img
               src="/assets/favicon.png"
               alt="Shrinik Logo"
+              width={32}
+              height={32}
+              fetchPriority="high"
+              decoding="async"
               className="
                 relative
                 z-10
@@ -328,7 +529,6 @@ export default function Navbar() {
                 group-hover:rotate-2
               "
             />
-
           </div>
 
           <span
@@ -348,11 +548,16 @@ export default function Navbar() {
         ===================================================== */}
 
         <div className="hidden items-center gap-6 md:flex">
-
           {NAV_ITEMS.map((item) => {
+            const sectionId =
+              item.href.replace(
+                "#",
+                ""
+              );
+
             const isActive =
               activeSection ===
-              item.href.replace("#", "");
+              sectionId;
 
             return (
               <button
@@ -363,6 +568,11 @@ export default function Navbar() {
                     item.href
                   )
                 }
+                aria-current={
+                  isActive
+                    ? "page"
+                    : undefined
+                }
                 className="
                   group
                   relative
@@ -371,9 +581,9 @@ export default function Navbar() {
                   text-xs
                   uppercase
                   tracking-[0.18em]
+                  outline-none
                 "
               >
-
                 <span
                   className={`
                     transition-colors
@@ -388,9 +598,8 @@ export default function Navbar() {
                   {item.label}
                 </span>
 
-                {/* Active indicator */}
-
                 <span
+                  aria-hidden="true"
                   className={`
                     absolute
                     bottom-0
@@ -398,7 +607,7 @@ export default function Navbar() {
                     h-px
                     -translate-x-1/2
                     bg-[#C6922E]
-                    transition-all
+                    transition-[width,opacity]
                     duration-300
                     ${
                       isActive
@@ -407,7 +616,6 @@ export default function Navbar() {
                     }
                   `}
                 />
-
               </button>
             );
           })}
@@ -419,7 +627,9 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() =>
-              handleNavigation("#contact")
+              handleNavigation(
+                "#contact"
+              )
             }
             className="
               group
@@ -436,7 +646,7 @@ export default function Navbar() {
               uppercase
               tracking-[0.15em]
               text-[#F5F1E8]
-              transition-all
+              transition-[border-color,background-color,box-shadow]
               duration-300
               hover:border-[#C6922E]
               hover:bg-[#C6922E]/10
@@ -447,6 +657,7 @@ export default function Navbar() {
 
             <ArrowUpRight
               size={14}
+              aria-hidden="true"
               className="
                 transition-transform
                 duration-300
@@ -455,7 +666,6 @@ export default function Navbar() {
               "
             />
           </button>
-
         </div>
 
         {/* ====================================================
@@ -470,9 +680,8 @@ export default function Navbar() {
               : "Open menu"
           }
           aria-expanded={open}
-          onClick={() =>
-            setOpen((value) => !value)
-          }
+          aria-controls="mobile-navigation"
+          onClick={toggleMenu}
           className="
             relative
             flex
@@ -485,17 +694,19 @@ export default function Navbar() {
             border-white/10
             bg-white/[0.02]
             text-white
-            transition-all
+            transition-[border-color,background-color,transform]
             duration-300
             hover:border-[#C6922E]/40
             hover:bg-[#C6922E]/[0.05]
+            active:scale-95
             md:hidden
           "
         >
           <span
+            aria-hidden="true"
             className={`
               absolute
-              transition-all
+              transition-[transform,opacity]
               duration-300
               ${
                 open
@@ -508,9 +719,10 @@ export default function Navbar() {
           </span>
 
           <span
+            aria-hidden="true"
             className={`
               absolute
-              transition-all
+              transition-[transform,opacity]
               duration-300
               ${
                 open
@@ -522,7 +734,6 @@ export default function Navbar() {
             <X size={18} />
           </span>
         </button>
-
       </nav>
 
       {/* ======================================================
@@ -531,6 +742,7 @@ export default function Navbar() {
 
       {open && (
         <div
+          id="mobile-navigation"
           className="
             mobile-menu
             mx-2
@@ -546,13 +758,17 @@ export default function Navbar() {
             md:hidden
           "
         >
-
           <div className="flex flex-col gap-1">
-
             {NAV_ITEMS.map((item) => {
+              const sectionId =
+                item.href.replace(
+                  "#",
+                  ""
+                );
+
               const isActive =
                 activeSection ===
-                item.href.replace("#", "");
+                sectionId;
 
               return (
                 <button
@@ -562,6 +778,11 @@ export default function Navbar() {
                     handleNavigation(
                       item.href
                     )
+                  }
+                  aria-current={
+                    isActive
+                      ? "page"
+                      : undefined
                   }
                   className={`
                     mobile-nav-item
@@ -575,7 +796,7 @@ export default function Navbar() {
                     text-sm
                     uppercase
                     tracking-[0.16em]
-                    transition-all
+                    transition-[background-color,color]
                     duration-300
                     ${
                       isActive
@@ -584,17 +805,17 @@ export default function Navbar() {
                     }
                   `}
                 >
-
                   <span>
                     {item.label}
                   </span>
 
                   <span
+                    aria-hidden="true"
                     className={`
                       h-1.5
                       w-1.5
                       rounded-full
-                      transition-all
+                      transition-[background-color,box-shadow]
                       duration-300
                       ${
                         isActive
@@ -603,7 +824,6 @@ export default function Navbar() {
                       }
                     `}
                   />
-
                 </button>
               );
             })}
@@ -633,7 +853,7 @@ export default function Navbar() {
                 uppercase
                 tracking-[0.16em]
                 text-[#C6922E]
-                transition-all
+                transition-[border-color,background-color]
                 duration-300
                 hover:border-[#C6922E]/50
                 hover:bg-[#C6922E]/10
@@ -645,17 +865,15 @@ export default function Navbar() {
 
               <ArrowUpRight
                 size={16}
+                aria-hidden="true"
               />
             </button>
-
           </div>
 
           {/* Mobile footer */}
 
           <div className="mt-4 border-t border-white/[0.06] px-5 pt-4">
-
             <div className="flex items-center justify-between">
-
               <span className="text-[8px] uppercase tracking-[0.25em] text-white/20">
                 Shrinik Club
               </span>
@@ -663,11 +881,8 @@ export default function Navbar() {
               <span className="text-[8px] uppercase tracking-[0.25em] text-[#C6922E]/40">
                 2026–27
               </span>
-
             </div>
-
           </div>
-
         </div>
       )}
     </header>

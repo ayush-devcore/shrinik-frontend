@@ -1,59 +1,206 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 interface IntroScreenProps {
   onComplete: () => void;
 }
 
-export default function IntroScreen({ onComplete }: IntroScreenProps) {
+const EXIT_DURATION = 700;
+
+export default function IntroScreen({
+  onComplete,
+}: IntroScreenProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [isReady, setIsReady] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const handleCanPlay = () => {
+    setIsReady(true);
+  };
+
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+
+    if (!video || !video.duration) {
+      return;
+    }
+
+    const percentage =
+      (video.currentTime / video.duration) * 100;
+
+    setProgress(Math.min(percentage, 100));
+  };
+
+  const handleVideoEnd = () => {
+    setProgress(100);
+    setIsLeaving(true);
+
+    window.setTimeout(() => {
+      onComplete();
+    }, EXIT_DURATION);
+  };
 
   useEffect(() => {
-    // Intro duration: 5 seconds
-    const timer = window.setTimeout(() => {
-      setIsLeaving(true);
+    const video = videoRef.current;
 
-      // Allow the exit animation to finish
-      window.setTimeout(() => {
-        onComplete();
-      }, 700);
-    }, 5000);
+    if (!video) return;
 
-    return () => {
-      window.clearTimeout(timer);
+    const attemptPlay = async () => {
+      try {
+        await video.play();
+      } catch {
+        // Browser may delay autoplay until enough data is available.
+      }
     };
-  }, [onComplete]);
+
+    if (video.readyState >= 3) {
+      setIsReady(true);
+      attemptPlay();
+    }
+  }, []);
 
   return (
     <div
-      className={`fixed inset-0 z-[100] overflow-hidden bg-[#080808] transition-opacity duration-700 ${
-        isLeaving ? "pointer-events-none opacity-0" : "opacity-100"
-      }`}
+      className={`
+        fixed
+        inset-0
+        z-[100]
+        overflow-hidden
+        bg-[#080808]
+        transition-opacity
+        duration-700
+        ${
+          isLeaving
+            ? "pointer-events-none opacity-0"
+            : "opacity-100"
+        }
+      `}
     >
+      {/* =====================================================
+          VIDEO
+      ====================================================== */}
+
       <video
-        className="absolute inset-0 h-full w-full object-cover"
+        ref={videoRef}
+        className={`
+          absolute
+          inset-0
+          h-full
+          w-full
+          object-cover
+          transition-opacity
+          duration-500
+          ${isReady ? "opacity-100" : "opacity-0"}
+        `}
         src="/videos/shrinik-intro.mp4"
         autoPlay
         muted
         playsInline
         preload="auto"
+        onCanPlay={handleCanPlay}
+        onTimeUpdate={handleTimeUpdate}
+        onEnded={handleVideoEnd}
+        aria-hidden="true"
       />
 
-      {/* Cinematic overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-black/10" />
+      {/* =====================================================
+          LOADING BACKGROUND
+      ====================================================== */}
 
-      {/* Vignette */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.55)_100%)]" />
+      {!isReady && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-1 w-1 animate-pulse rounded-full bg-[#C6922E]" />
+        </div>
+      )}
 
-      {/* Loading indicator */}
-      <div className="absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3">
-        <span className="text-[9px] uppercase tracking-[0.45em] text-white/40">
-          Entering Shrinik
+      {/* =====================================================
+          CINEMATIC OVERLAY
+      ====================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          bg-black/10
+        "
+      />
+
+      {/* =====================================================
+          VIGNETTE
+      ====================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.55)_100%)]
+        "
+      />
+
+      {/* =====================================================
+          LOADING / VIDEO PROGRESS
+      ====================================================== */}
+
+      <div
+        className="
+          absolute
+          bottom-10
+          left-1/2
+          z-10
+          flex
+          -translate-x-1/2
+          flex-col
+          items-center
+          gap-3
+        "
+      >
+        <span
+          className="
+            text-[9px]
+            uppercase
+            tracking-[0.45em]
+            text-white/40
+          "
+        >
+          {isReady
+            ? "Entering Shrinik"
+            : "Loading Shrinik"}
         </span>
 
-        <div className="h-px w-32 overflow-hidden bg-white/10">
-          <div className="h-full w-full origin-left animate-[introProgress_5s_linear_forwards] bg-[#C6922E]" />
+        <div
+          className="
+            relative
+            h-px
+            w-32
+            overflow-hidden
+            bg-white/10
+          "
+        >
+          <div
+            className="
+              absolute
+              inset-y-0
+              left-0
+              bg-[#C6922E]
+              transition-[width]
+              duration-100
+              ease-linear
+            "
+            style={{
+              width: `${progress}%`,
+            }}
+          />
         </div>
       </div>
     </div>

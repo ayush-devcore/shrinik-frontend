@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -41,16 +42,51 @@ export default function TeamSection() {
   const teamTrackRef = useRef<HTMLDivElement>(null);
   const memberTrackRef = useRef<HTMLDivElement>(null);
 
+  const isAnimatingRef = useRef(false);
+
   const activeTeam = teamGroups[activeTeamIndex];
-  const members = activeTeam?.members ?? [];
+
+  const members = useMemo(
+    () => activeTeam?.members ?? [],
+    [activeTeam]
+  );
 
   /*
    * ==========================================================
-   * SCROLL HELPER
+   * REDUCED MOTION
    * ==========================================================
    */
 
-  const scrollToElement = useCallback(
+  const prefersReducedMotion = useRef(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+
+    prefersReducedMotion.current = mediaQuery.matches;
+
+    const handleChange = () => {
+      prefersReducedMotion.current = mediaQuery.matches;
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener(
+        "change",
+        handleChange
+      );
+    };
+  }, []);
+
+  /*
+   * ==========================================================
+   * CAROUSEL SCROLL HELPER
+   * ==========================================================
+   */
+
+  const scrollTrackToIndex = useCallback(
     (
       track: HTMLDivElement | null,
       selector: string,
@@ -65,19 +101,28 @@ export default function TeamSection() {
 
       if (!item) return;
 
-      const trackRect = track.getBoundingClientRect();
-      const itemRect = item.getBoundingClientRect();
+      const trackRect =
+        track.getBoundingClientRect();
+
+      const itemRect =
+        item.getBoundingClientRect();
 
       const isVisible =
-        itemRect.left >= trackRect.left + 8 &&
-        itemRect.right <= trackRect.right - 8;
+        itemRect.left >= trackRect.left + 10 &&
+        itemRect.right <= trackRect.right - 10;
 
       if (isVisible) return;
 
-      item.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
+      const targetLeft =
+        item.offsetLeft -
+        track.clientWidth / 2 +
+        item.offsetWidth / 2;
+
+      track.scrollTo({
+        left: Math.max(0, targetLeft),
+        behavior: prefersReducedMotion.current
+          ? "auto"
+          : "smooth",
       });
     },
     []
@@ -97,18 +142,23 @@ export default function TeamSection() {
         (index + teamGroups.length) %
         teamGroups.length;
 
+      if (next === activeTeamIndex) return;
+
       setActiveTeamIndex(next);
       setActiveMemberIndex(0);
 
       requestAnimationFrame(() => {
-        scrollToElement(
+        scrollTrackToIndex(
           teamTrackRef.current,
           ".team-category-card",
           next
         );
       });
     },
-    [scrollToElement]
+    [
+      activeTeamIndex,
+      scrollTrackToIndex,
+    ]
   );
 
   const previousTeam = useCallback(() => {
@@ -136,14 +186,14 @@ export default function TeamSection() {
       setActiveMemberIndex(next);
 
       requestAnimationFrame(() => {
-        scrollToElement(
+        scrollTrackToIndex(
           memberTrackRef.current,
           ".team-member-card",
           next
         );
       });
     },
-    [members.length, scrollToElement]
+    [members.length, scrollTrackToIndex]
   );
 
   const previousMember = useCallback(() => {
@@ -168,29 +218,32 @@ export default function TeamSection() {
 
   /*
    * ==========================================================
-   * RESET MEMBER POSITION WHEN TEAM CHANGES
+   * RESET MEMBER POSITION
    * ==========================================================
    */
 
   useEffect(() => {
-    if (!members.length) return;
+    setActiveMemberIndex(0);
 
-    requestAnimationFrame(() => {
-      scrollToElement(
-        memberTrackRef.current,
-        ".team-member-card",
-        0
-      );
+    const frame = requestAnimationFrame(() => {
+      const track = memberTrackRef.current;
+
+      if (!track) return;
+
+      track.scrollTo({
+        left: 0,
+        behavior: "auto",
+      });
     });
-  }, [
-    activeTeamIndex,
-    members.length,
-    scrollToElement,
-  ]);
+
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [activeTeamIndex]);
 
   /*
    * ==========================================================
-   * KEYBOARD CONTROLS
+   * KEYBOARD NAVIGATION
    * ==========================================================
    */
 
@@ -208,11 +261,6 @@ export default function TeamSection() {
       ) {
         return;
       }
-
-      /*
-       * Only control the carousel when the
-       * team section is reasonably visible.
-       */
 
       const section = sectionRef.current;
 
@@ -253,17 +301,37 @@ export default function TeamSection() {
 
   /*
    * ==========================================================
-   * TEAM SECTION ENTRANCE ANIMATION
+   * SECTION ENTRANCE ANIMATION
    * ==========================================================
    */
 
   useLayoutEffect(() => {
-    if (!sectionRef.current) return;
+    const section = sectionRef.current;
+
+    if (!section) return;
 
     const ctx = gsap.context(() => {
+      if (prefersReducedMotion.current) {
+        gsap.set(
+          [
+            ".team-eyebrow",
+            ".team-heading",
+            ".team-description",
+            ".team-category-card",
+          ],
+          {
+            opacity: 1,
+            y: 0,
+            clearProps: "filter,transform",
+          }
+        );
+
+        return;
+      }
+
       const timeline = gsap.timeline({
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: section,
           start: "top 78%",
           once: true,
         },
@@ -274,70 +342,65 @@ export default function TeamSection() {
           ".team-eyebrow",
           {
             opacity: 0,
-            y: 25,
+            y: 20,
+            filter: "blur(6px)",
+          },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.65,
+            ease: "power3.out",
+          }
+        )
+        .fromTo(
+          ".team-heading",
+          {
+            opacity: 0,
+            y: 40,
             filter: "blur(8px)",
           },
           {
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
-            duration: 0.7,
-            ease: "power3.out",
-          }
-        )
-
-        .fromTo(
-          ".team-heading",
-          {
-            opacity: 0,
-            y: 55,
-            filter: "blur(12px)",
-          },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.9,
+            duration: 0.8,
             ease: "power3.out",
           },
-          "-=0.4"
+          "-=0.35"
         )
-
         .fromTo(
           ".team-description",
           {
             opacity: 0,
-            y: 25,
+            y: 20,
           },
           {
             opacity: 1,
             y: 0,
-            duration: 0.65,
+            duration: 0.6,
             ease: "power3.out",
           },
-          "-=0.45"
+          "-=0.4"
         )
-
         .fromTo(
           ".team-category-card",
           {
             opacity: 0,
-            y: 45,
-            scale: 0.94,
-            rotateX: 8,
+            y: 30,
+            scale: 0.97,
           },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            rotateX: 0,
-            duration: 0.75,
-            stagger: 0.07,
+            duration: 0.65,
+            stagger: 0.06,
             ease: "power3.out",
           },
-          "-=0.35"
+          "-=0.3"
         );
-    }, sectionRef);
+    }, section);
 
     return () => {
       ctx.revert();
@@ -350,69 +413,68 @@ export default function TeamSection() {
    * ==========================================================
    */
 
-  useEffect(() => {
-    if (!sectionRef.current) return;
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+
+    if (!section) return;
+
+    if (prefersReducedMotion.current) {
+      return;
+    }
 
     const ctx = gsap.context(() => {
-      const timeline = gsap.timeline();
-
-      timeline
-        .fromTo(
-          ".team-content-animate",
-          {
-            opacity: 0,
-            y: 28,
-            filter: "blur(8px)",
-          },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.6,
-            stagger: 0.055,
-            ease: "power3.out",
-          }
-        )
-
-        .fromTo(
-          ".team-member-card",
-          {
-            opacity: 0,
-            y: 35,
-            scale: 0.96,
-            rotateY: -4,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotateY: 0,
-            duration: 0.7,
-            stagger: 0.075,
-            ease: "power3.out",
-          },
-          "-=0.35"
+      const elements =
+        section.querySelectorAll<HTMLElement>(
+          ".team-content-animate"
         );
-    }, sectionRef);
+
+      const memberCards =
+        section.querySelectorAll<HTMLElement>(
+          ".team-member-card"
+        );
+
+      gsap.killTweensOf([
+        elements,
+        memberCards,
+      ]);
+
+      gsap.fromTo(
+        elements,
+        {
+          opacity: 0,
+          y: 18,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.45,
+          stagger: 0.04,
+          ease: "power3.out",
+          overwrite: true,
+        }
+      );
+
+      gsap.fromTo(
+        memberCards,
+        {
+          opacity: 0,
+          y: 20,
+          scale: 0.98,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.045,
+          ease: "power3.out",
+          overwrite: true,
+        }
+      );
+    }, section);
 
     return () => {
       ctx.revert();
-    };
-  }, [activeTeamIndex]);
-
-  /*
-   * ==========================================================
-   * SCROLL TRIGGER REFRESH
-   * ==========================================================
-   */
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-
-    return () => {
-      window.clearTimeout(timeout);
     };
   }, [activeTeamIndex]);
 
@@ -439,16 +501,12 @@ export default function TeamSection() {
         md:px-12
         md:py-36
       "
-      style={{
-        perspective: "1400px",
-      }}
     >
       {/* ======================================================
-          BACKGROUND ATMOSPHERE
+          BACKGROUND
       ======================================================= */}
 
       <div className="pointer-events-none absolute inset-0">
-
         <div
           className="
             absolute
@@ -607,7 +665,6 @@ export default function TeamSection() {
         ===================================================== */}
 
         <div className="team-content-animate mt-20">
-
           <div
             className="
               mb-6
@@ -648,8 +705,6 @@ export default function TeamSection() {
             </div>
           </div>
 
-          {/* Category carousel */}
-
           <div
             ref={teamTrackRef}
             className="
@@ -663,6 +718,7 @@ export default function TeamSection() {
               scrollbar-hide
               md:gap-6
               scroll-smooth
+              overscroll-x-contain
             "
           >
             {teamGroups.map((team, index) => (
@@ -678,7 +734,7 @@ export default function TeamSection() {
         </div>
 
         {/* ====================================================
-            SELECTED TEAM HEADER
+            SELECTED TEAM
         ===================================================== */}
 
         <div
@@ -699,13 +755,7 @@ export default function TeamSection() {
             "
           >
             <div>
-              <div
-                className="
-                  flex
-                  items-center
-                  gap-3
-                "
-              >
+              <div className="flex items-center gap-3">
                 <span
                   className="
                     text-[9px]
@@ -748,13 +798,7 @@ export default function TeamSection() {
               </h3>
             </div>
 
-            <div
-              className="
-                hidden
-                text-right
-                md:block
-              "
-            >
+            <div className="hidden text-right md:block">
               <span
                 className="
                   text-4xl
@@ -762,7 +806,10 @@ export default function TeamSection() {
                   text-[#C6922E]
                 "
               >
-                {String(members.length).padStart(2, "0")}
+                {String(members.length).padStart(
+                  2,
+                  "0"
+                )}
               </span>
 
               <p
@@ -784,15 +831,7 @@ export default function TeamSection() {
             MEMBER CAROUSEL
         ===================================================== */}
 
-        <div
-          className="
-            team-content-animate
-            relative
-            mt-12
-          "
-        >
-          {/* Desktop previous */}
-
+        <div className="team-content-animate relative mt-12">
           <button
             type="button"
             aria-label="Previous member"
@@ -826,8 +865,6 @@ export default function TeamSection() {
             <ArrowLeft size={17} />
           </button>
 
-          {/* Member track */}
-
           <div
             ref={memberTrackRef}
             className="
@@ -840,6 +877,7 @@ export default function TeamSection() {
               pb-8
               scrollbar-hide
               scroll-smooth
+              overscroll-x-contain
               lg:px-20
             "
           >
@@ -852,8 +890,6 @@ export default function TeamSection() {
               />
             ))}
           </div>
-
-          {/* Desktop next */}
 
           <button
             type="button"
@@ -924,8 +960,6 @@ export default function TeamSection() {
             <ChevronLeft size={13} />
             Previous
           </button>
-
-          {/* Dots */}
 
           <div
             className="
@@ -1015,74 +1049,100 @@ function TeamVisualCard({
   const lightRef =
     useRef<HTMLDivElement>(null);
 
+  const rafRef = useRef<number | null>(null);
+
+  const pointerRef = useRef({
+    x: 0,
+    y: 0,
+  });
+
   const moveCard = (
     event: MouseEvent<HTMLButtonElement>
   ) => {
     if (
       !cardRef.current ||
-      window.innerWidth < 768
+      window.innerWidth < 768 ||
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
     ) {
       return;
     }
 
-    const rect =
-      cardRef.current.getBoundingClientRect();
+    pointerRef.current.x = event.clientX;
+    pointerRef.current.y = event.clientY;
 
-    const x =
-      event.clientX -
-      rect.left -
-      rect.width / 2;
+    if (rafRef.current !== null) return;
 
-    const y =
-      event.clientY -
-      rect.top -
-      rect.height / 2;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
 
-    const rotateX =
-      -(y / rect.height) * 6;
+      if (!cardRef.current) return;
 
-    const rotateY =
-      (x / rect.width) * 6;
+      const rect =
+        cardRef.current.getBoundingClientRect();
 
-    gsap.to(cardRef.current, {
-      rotateX,
-      rotateY,
-      scale: active ? 1.025 : 1.015,
-      duration: 0.4,
-      ease: "power3.out",
-      overwrite: true,
-    });
+      const x =
+        pointerRef.current.x -
+        rect.left -
+        rect.width / 2;
 
-    if (visualRef.current) {
-      gsap.to(visualRef.current, {
-        x: rotateY * 1.7,
-        y: rotateX * -1.7,
-        scale: 1.06,
-        duration: 0.5,
-        ease: "power3.out",
-        overwrite: true,
-      });
-    }
+      const y =
+        pointerRef.current.y -
+        rect.top -
+        rect.height / 2;
 
-    if (lightRef.current) {
-      gsap.to(lightRef.current, {
-        x: x * 0.18,
-        y: y * 0.18,
-        duration: 0.4,
+      const rotateX =
+        -(y / rect.height) * 5;
+
+      const rotateY =
+        (x / rect.width) * 5;
+
+      gsap.to(cardRef.current, {
+        rotateX,
+        rotateY,
+        scale: active ? 1.02 : 1.01,
+        duration: 0.3,
         ease: "power2.out",
         overwrite: true,
       });
-    }
+
+      if (visualRef.current) {
+        gsap.to(visualRef.current, {
+          x: rotateY * 1.5,
+          y: rotateX * -1.5,
+          scale: 1.04,
+          duration: 0.35,
+          ease: "power2.out",
+          overwrite: true,
+        });
+      }
+
+      if (lightRef.current) {
+        gsap.to(lightRef.current, {
+          x: x * 0.15,
+          y: y * 0.15,
+          duration: 0.3,
+          ease: "power2.out",
+          overwrite: true,
+        });
+      }
+    });
   };
 
   const resetCard = () => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
     if (!cardRef.current) return;
 
     gsap.to(cardRef.current, {
       rotateX: 0,
       rotateY: 0,
-      scale: active ? 1.015 : 1,
-      duration: 0.65,
+      scale: active ? 1.01 : 1,
+      duration: 0.5,
       ease: "power3.out",
       overwrite: true,
     });
@@ -1092,7 +1152,7 @@ function TeamVisualCard({
         x: 0,
         y: 0,
         scale: 1,
-        duration: 0.7,
+        duration: 0.55,
         ease: "power3.out",
         overwrite: true,
       });
@@ -1102,12 +1162,20 @@ function TeamVisualCard({
       gsap.to(lightRef.current, {
         x: 0,
         y: 0,
-        duration: 0.6,
-        ease: "power3.out",
+        duration: 0.5,
+        ease: "power2.out",
         overwrite: true,
       });
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
 
   return (
     <button
@@ -1119,6 +1187,7 @@ function TeamVisualCard({
       style={{
         transformStyle: "preserve-3d",
         perspective: "1200px",
+        willChange: "transform",
       }}
       className={`
         team-category-card
@@ -1131,7 +1200,7 @@ function TeamVisualCard({
         rounded-[1.8rem]
         border
         text-left
-        transition-all
+        transition-[border-color,opacity,box-shadow]
         duration-500
         sm:min-w-[330px]
         md:h-[430px]
@@ -1141,7 +1210,6 @@ function TeamVisualCard({
             ? `
               border-[#C6922E]/60
               shadow-[0_30px_100px_rgba(0,0,0,0.55)]
-              md:-translate-y-3
             `
             : `
               border-white/[0.08]
@@ -1159,6 +1227,9 @@ function TeamVisualCard({
           inset-0
           ${teamBackground(team.category)}
         `}
+        style={{
+          willChange: "transform",
+        }}
       >
         <div
           className="
@@ -1224,7 +1295,6 @@ function TeamVisualCard({
             border
             border-[#C6922E]/15
             bg-[#C6922E]/5
-            blur-[2px]
           "
         />
 
@@ -1242,6 +1312,9 @@ function TeamVisualCard({
             bg-[#C6922E]/10
             blur-[75px]
           "
+          style={{
+            willChange: "transform",
+          }}
         />
       </div>
 
@@ -1265,13 +1338,7 @@ function TeamVisualCard({
           z-20
         "
       >
-        <div
-          className="
-            flex
-            items-start
-            justify-between
-          "
-        >
+        <div className="flex items-start justify-between">
           <div>
             <span
               className="
@@ -1281,8 +1348,7 @@ function TeamVisualCard({
                 text-[#C6922E]
               "
             >
-              Team{" "}
-              {String(index + 1).padStart(2, "0")}
+              Team {String(index + 1).padStart(2, "0")}
             </span>
 
             <p
@@ -1346,14 +1412,7 @@ function TeamVisualCard({
           {team.name}
         </h4>
 
-        <div
-          className="
-            mt-5
-            flex
-            items-center
-            justify-between
-          "
-        >
+        <div className="mt-5 flex items-center justify-between">
           <span
             className="
               text-[8px]
@@ -1362,7 +1421,11 @@ function TeamVisualCard({
               text-white/30
             "
           >
-            {String(team.members.length).padStart(2, "0")} Active
+            {String(team.members.length).padStart(
+              2,
+              "0"
+            )}{" "}
+            Active
           </span>
         </div>
       </div>
@@ -1814,6 +1877,13 @@ function MemberCard({
   const imageRef =
     useRef<HTMLDivElement>(null);
 
+  const rafRef = useRef<number | null>(null);
+
+  const pointerRef = useRef({
+    x: 0,
+    y: 0,
+  });
+
   const initials = member.name
     .split(" ")
     .map((word) => word[0])
@@ -1831,55 +1901,74 @@ function MemberCard({
   ) => {
     if (
       !cardRef.current ||
-      window.innerWidth < 768
+      window.innerWidth < 768 ||
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
     ) {
       return;
     }
 
-    const rect =
-      cardRef.current.getBoundingClientRect();
+    pointerRef.current.x = event.clientX;
+    pointerRef.current.y = event.clientY;
 
-    const x =
-      event.clientX -
-      rect.left -
-      rect.width / 2;
+    if (rafRef.current !== null) return;
 
-    const y =
-      event.clientY -
-      rect.top -
-      rect.height / 2;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
 
-    gsap.to(cardRef.current, {
-      rotateX:
-        -(y / rect.height) * 6,
-      rotateY:
-        (x / rect.width) * 6,
-      scale: active ? 1.02 : 0.99,
-      duration: 0.35,
-      ease: "power2.out",
-      overwrite: true,
-    });
+      if (!cardRef.current) return;
 
-    if (imageRef.current) {
-      gsap.to(imageRef.current, {
-        x: x * 0.025,
-        y: y * 0.025,
-        scale: 1.04,
-        duration: 0.45,
+      const rect =
+        cardRef.current.getBoundingClientRect();
+
+      const x =
+        pointerRef.current.x -
+        rect.left -
+        rect.width / 2;
+
+      const y =
+        pointerRef.current.y -
+        rect.top -
+        rect.height / 2;
+
+      gsap.to(cardRef.current, {
+        rotateX:
+          -(y / rect.height) * 5,
+        rotateY:
+          (x / rect.width) * 5,
+        scale: active ? 1.015 : 1.005,
+        duration: 0.28,
         ease: "power2.out",
         overwrite: true,
       });
-    }
+
+      if (imageRef.current) {
+        gsap.to(imageRef.current, {
+          x: x * 0.02,
+          y: y * 0.02,
+          scale: 1.035,
+          duration: 0.35,
+          ease: "power2.out",
+          overwrite: true,
+        });
+      }
+    });
   };
 
   const resetCard = () => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
     if (!cardRef.current) return;
 
     gsap.to(cardRef.current, {
       rotateX: 0,
       rotateY: 0,
-      scale: active ? 1.01 : 1,
-      duration: 0.6,
+      scale: active ? 1.005 : 1,
+      duration: 0.5,
       ease: "power3.out",
       overwrite: true,
     });
@@ -1889,22 +1978,42 @@ function MemberCard({
         x: 0,
         y: 0,
         scale: 1,
-        duration: 0.7,
+        duration: 0.55,
         ease: "power3.out",
         overwrite: true,
       });
     }
   };
 
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
+
   return (
     <article
       ref={cardRef}
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(event) => {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+          event.preventDefault();
+          onClick();
+        }
+      }}
       onMouseMove={moveCard}
       onMouseLeave={resetCard}
       style={{
         transformStyle: "preserve-3d",
         perspective: "1200px",
+        willChange: "transform",
       }}
       className={`
         team-member-card
@@ -1918,8 +2027,11 @@ function MemberCard({
         border
         bg-[#12070A]
         text-left
-        transition-all
+        transition-[border-color,opacity,box-shadow]
         duration-500
+        outline-none
+        focus-visible:ring-2
+        focus-visible:ring-[#C6922E]/60
         sm:min-w-[320px]
         md:h-[450px]
         md:min-w-[340px]
@@ -1945,17 +2057,23 @@ function MemberCard({
           inset-0
           overflow-hidden
         "
+        style={{
+          willChange: "transform",
+        }}
       >
         {member.image ? (
           <img
             src={member.image}
             alt={member.name}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
             className="
               h-full
               w-full
               object-cover
               grayscale-[35%]
-              transition-all
+              transition-[transform,filter]
               duration-700
               group-hover:scale-105
               group-hover:grayscale-0
@@ -2017,7 +2135,7 @@ function MemberCard({
                 font-medium
                 tracking-[-0.08em]
                 text-[#C6922E]/35
-                transition-all
+                transition-colors
                 duration-500
                 group-hover:text-[#C6922E]/55
               "
