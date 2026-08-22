@@ -1329,8 +1329,10 @@ export default function Website() {
                       relative
                       z-10
                       flex
+                      justify-center
+                      lg:justify-start
                       whitespace-nowrap
-                      text-[clamp(4rem,9vw,9rem)]
+                      text-[clamp(3rem,8vw,9rem)]
                       font-semibold
                       leading-[0.78]
                       tracking-[-0.07em]
@@ -1394,10 +1396,12 @@ export default function Website() {
                 <div
                   className="
                     hero-line
+                    mx-auto
                     mt-9
                     h-px
                     w-24
                     bg-[#C6922E]/70
+                    lg:mx-0
                     lg:w-32
                   "
                 />
@@ -1407,12 +1411,14 @@ export default function Website() {
                 <div className="hero-description">
                   <p
                     className="
+                      mx-auto
                       mt-7
                       max-w-xl
                       text-sm
                       leading-7
                       text-white/45
                       md:text-base
+                      lg:mx-0
                     "
                   >
                     Where technology meets culture.
