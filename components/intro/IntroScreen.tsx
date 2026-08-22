@@ -20,7 +20,6 @@ export default function IntroScreen({
   const [isReady, setIsReady] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
 
   const handleCanPlay = () => {
     setIsReady(true);
@@ -55,7 +54,6 @@ export default function IntroScreen({
 
     const attemptPlay = async () => {
       try {
-        video.muted = true;
         await video.play();
       } catch {
         // Browser may delay autoplay until enough data is available.
@@ -67,13 +65,6 @@ export default function IntroScreen({
       attemptPlay();
     }
   }, []);
-
-  const handleUnmute = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = false;
-    setIsMuted(false);
-  };
 
   return (
     <div
@@ -109,9 +100,10 @@ export default function IntroScreen({
           duration-500
           ${isReady ? "opacity-100" : "opacity-0"}
         `}
-      // src="/videos/shrinik-intro.mp4"
-         src="https://res.cloudinary.com/dgrzeojzd/video/upload/v1787422660/shrinik-intro_xxvbv5.mp4"
+       // src="/videos/shrinik-intro.mp4"
+          src="https://res.cloudinary.com/dgrzeojzd/video/upload/v1787422660/shrinik-intro_xxvbv5.mp4"
         autoPlay
+        muted
         playsInline
         preload="auto"
         onCanPlay={handleCanPlay}
@@ -119,61 +111,6 @@ export default function IntroScreen({
         onEnded={handleVideoEnd}
         aria-hidden="true"
       />
-
-      {/* =====================================================
-          UNMUTE BUTTON
-      ====================================================== */}
-
-      {isReady && isMuted && (
-        <button
-          type="button"
-          onClick={handleUnmute}
-          aria-label="Tap to unmute"
-          className="
-            absolute
-            right-6
-            top-6
-            z-30
-            flex
-            items-center
-            gap-2
-            rounded-full
-            border
-            border-white/15
-            bg-white/5
-            px-4
-            py-2.5
-            text-[10px]
-            uppercase
-            tracking-[0.2em]
-            text-white/60
-            backdrop-blur-md
-            transition-all
-            duration-300
-            hover:border-[#C6922E]/40
-            hover:bg-white/10
-            hover:text-white/90
-            active:scale-95
-          "
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M11 5 6 9H2v6h4l5 4V5Z" />
-            <line x1="23" y1="9" x2="17" y2="15" />
-            <line x1="17" y1="9" x2="23" y2="15" />
-          </svg>
-          Tap to unmute
-        </button>
-      )}
 
       {/* =====================================================
           LOADING BACKGROUND
