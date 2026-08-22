@@ -63,13 +63,12 @@ export default function ContactSection() {
         md:py-40
       "
     >
+
       {/* =====================================================
           BACKGROUND ATMOSPHERE
       ====================================================== */}
 
       <div className="pointer-events-none absolute inset-0">
-
-        {/* Main burgundy glow */}
 
         <div
           className="
@@ -86,8 +85,6 @@ export default function ContactSection() {
           "
         />
 
-        {/* Gold glow */}
-
         <div
           className="
             absolute
@@ -100,8 +97,6 @@ export default function ContactSection() {
             blur-[130px]
           "
         />
-
-        {/* Grid */}
 
         <div
           className="
@@ -134,20 +129,12 @@ export default function ContactSection() {
 
       <div className="relative z-10 mx-auto max-w-7xl">
 
-        {/* ===================================================
-            HEADING
-        ==================================================== */}
-
         <SectionHeading
           eyebrow="Get involved"
           title="Let's build"
           highlight="something together."
           description="Have an idea, want to collaborate, or simply want to be part of Shrinik? We'd love to hear from you."
         />
-
-        {/* ===================================================
-            CTA CARD
-        ==================================================== */}
 
         <ScrollReveal delay={0.18} y={80}>
 
@@ -169,10 +156,6 @@ export default function ContactSection() {
               md:p-14
             "
           >
-
-            {/* =================================================
-                CARD GRID
-            ================================================== */}
 
             <div
               className="
@@ -197,10 +180,6 @@ export default function ContactSection() {
                 backgroundSize: "55px 55px",
               }}
             />
-
-            {/* =================================================
-                DECORATIVE GLOW
-            ================================================== */}
 
             <div
               className="
@@ -232,10 +211,6 @@ export default function ContactSection() {
                 blur-[100px]
               "
             />
-
-            {/* =================================================
-                ORBIT DECORATION
-            ================================================== */}
 
             <div
               className="
@@ -289,13 +264,9 @@ export default function ContactSection() {
               "
             >
 
-              {/* =================================================
-                  LEFT
-              ================================================== */}
+              {/* LEFT */}
 
               <div>
-
-                {/* Icon */}
 
                 <div
                   className="
@@ -319,8 +290,6 @@ export default function ContactSection() {
                   <Mail size={20} />
                 </div>
 
-                {/* Label */}
-
                 <div
                   className="
                     mt-8
@@ -329,7 +298,6 @@ export default function ContactSection() {
                     gap-3
                   "
                 >
-
                   <span
                     className="
                       h-px
@@ -348,10 +316,7 @@ export default function ContactSection() {
                   >
                     Start a conversation
                   </p>
-
                 </div>
-
-                {/* Heading */}
 
                 <h3
                   className="
@@ -373,8 +338,6 @@ export default function ContactSection() {
                   </span>
                 </h3>
 
-                {/* Supporting text */}
-
                 <p
                   className="
                     mt-6
@@ -392,9 +355,7 @@ export default function ContactSection() {
 
               </div>
 
-              {/* =================================================
-                  RIGHT CTA
-              ================================================== */}
+              {/* RIGHT CTA */}
 
               <div
                 className="
@@ -426,8 +387,10 @@ export default function ContactSection() {
 
                 <Magnetic strength={0.18}>
 
+                  {/* FIXED OFFICIAL EMAIL */}
+
                   <a
-                    href="mailto:shrinik@example.com"
+                    href="mailto:shrinikclub@gmail.com"
                     className="
                       group/button
                       flex
@@ -461,6 +424,7 @@ export default function ContactSection() {
                     >
                       <ArrowUpRight size={15} />
                     </span>
+
                   </a>
 
                 </Magnetic>
@@ -488,14 +452,17 @@ export default function ContactSection() {
             >
 
               {contactItems.map((item, index) => {
+
                 const Icon = item.icon;
 
                 return (
+
                   <ScrollReveal
                     key={item.label}
                     delay={0.25 + index * 0.08}
                     y={35}
                   >
+
                     <a
                       href={item.href}
                       target={
@@ -530,8 +497,6 @@ export default function ContactSection() {
                       "
                     >
 
-                      {/* Left content */}
-
                       <div
                         className="
                           flex
@@ -539,8 +504,6 @@ export default function ContactSection() {
                           gap-4
                         "
                       >
-
-                        {/* Icon */}
 
                         <div
                           className="
@@ -567,8 +530,6 @@ export default function ContactSection() {
                             strokeWidth={1.7}
                           />
                         </div>
-
-                        {/* Text */}
 
                         <div>
 
@@ -601,8 +562,6 @@ export default function ContactSection() {
 
                       </div>
 
-                      {/* Arrow */}
-
                       <div
                         className="
                           flex
@@ -626,8 +585,6 @@ export default function ContactSection() {
                         <ArrowUpRight size={14} />
                       </div>
 
-                      {/* Bottom active line */}
-
                       <div
                         className="
                           absolute
@@ -643,7 +600,9 @@ export default function ContactSection() {
                       />
 
                     </a>
+
                   </ScrollReveal>
+
                 );
               })}
 

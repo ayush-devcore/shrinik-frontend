@@ -166,8 +166,8 @@ export default function Website() {
       gsap.set(letters, {
         opacity: 0,
         y: 70,
-        rotateX: -65,
-        rotateY: 18,
+        rotationX: -65,
+        rotationY: 18,
         rotateZ: 2,
         scale: 0.8,
         filter: "blur(10px)",
@@ -249,8 +249,8 @@ export default function Website() {
         {
           opacity: 1,
           y: 0,
-          rotateX: 0,
-          rotateY: 0,
+          rotationX: 0,
+          rotationY: 0,
           rotateZ: 0,
           scale: 1,
           filter: "blur(0px)",
@@ -534,80 +534,80 @@ export default function Website() {
     const quickSetters = {
       logoX: logo
         ? gsap.quickTo(logo, "x", {
-            duration: 0.45,
-            ease: "power3.out",
-          })
+          duration: 0.45,
+          ease: "power3.out",
+        })
         : null,
 
       logoY: logo
         ? gsap.quickTo(logo, "y", {
-            duration: 0.45,
-            ease: "power3.out",
-          })
+          duration: 0.45,
+          ease: "power3.out",
+        })
         : null,
 
       contentX: content
         ? gsap.quickTo(content, "x", {
-            duration: 0.5,
-            ease: "power3.out",
-          })
+          duration: 0.5,
+          ease: "power3.out",
+        })
         : null,
 
       contentY: content
         ? gsap.quickTo(content, "y", {
-            duration: 0.5,
-            ease: "power3.out",
-          })
+          duration: 0.5,
+          ease: "power3.out",
+        })
         : null,
 
       goldX: goldGlow
         ? gsap.quickTo(goldGlow, "x", {
-            duration: 0.65,
-            ease: "power3.out",
-          })
+          duration: 0.65,
+          ease: "power3.out",
+        })
         : null,
 
       goldY: goldGlow
         ? gsap.quickTo(goldGlow, "y", {
-            duration: 0.65,
-            ease: "power3.out",
-          })
+          duration: 0.65,
+          ease: "power3.out",
+        })
         : null,
 
       burgundyX: burgundyGlow
         ? gsap.quickTo(
-            burgundyGlow,
-            "x",
-            {
-              duration: 0.65,
-              ease: "power3.out",
-            },
-          )
+          burgundyGlow,
+          "x",
+          {
+            duration: 0.65,
+            ease: "power3.out",
+          },
+        )
         : null,
 
       burgundyY: burgundyGlow
         ? gsap.quickTo(
-            burgundyGlow,
-            "y",
-            {
-              duration: 0.65,
-              ease: "power3.out",
-            },
-          )
+          burgundyGlow,
+          "y",
+          {
+            duration: 0.65,
+            ease: "power3.out",
+          },
+        )
         : null,
 
       titleX: titleGlow
         ? gsap.quickTo(titleGlow, "x", {
-            duration: 0.55,
-            ease: "power3.out",
-          })
+          duration: 0.55,
+          ease: "power3.out",
+        })
         : null,
 
       titleY: titleGlow
         ? gsap.quickTo(titleGlow, "y", {
-            duration: 0.55,
-            ease: "power3.out",
-          })
+          duration: 0.55,
+          ease: "power3.out",
+        })
         : null,
     };
 
@@ -623,18 +623,18 @@ export default function Website() {
           ease: "power3.out",
         }),
 
-        rotateX: gsap.quickTo(
+        rotationX: gsap.quickTo(
           letter,
-          "rotateX",
+          "rotationX",
           {
             duration: 0.4,
             ease: "power3.out",
           },
         ),
 
-        rotateY: gsap.quickTo(
+        rotationY: gsap.quickTo(
           letter,
-          "rotateY",
+          "rotationY",
           {
             duration: 0.4,
             ease: "power3.out",
@@ -708,31 +708,31 @@ export default function Website() {
               index -
               (letters.length -
                 1) /
-                2;
+              2;
 
             setter.x(
               x *
-                (2.5 +
-                  Math.abs(
-                    center,
-                  ) *
-                    0.35),
+              (2.5 +
+                Math.abs(
+                  center,
+                ) *
+                0.35),
             );
 
             setter.y(
               y *
-                (1.8 +
-                  Math.abs(
-                    center,
-                  ) *
-                    0.25),
+              (1.8 +
+                Math.abs(
+                  center,
+                ) *
+                0.25),
             );
 
-            setter.rotateY(
+            setter.rotationY(
               x * 2.5,
             );
 
-            setter.rotateX(
+            setter.rotationX(
               y * -1.5,
             );
           },
@@ -746,13 +746,13 @@ export default function Website() {
 
         if (
           event.clientX <
-            rect.left ||
+          rect.left ||
           event.clientX >
-            rect.right ||
+          rect.right ||
           event.clientY <
-            rect.top ||
+          rect.top ||
           event.clientY >
-            rect.bottom
+          rect.bottom
         ) {
           return;
         }
@@ -761,13 +761,13 @@ export default function Website() {
           x:
             (event.clientX -
               rect.left) /
-              rect.width -
+            rect.width -
             0.5,
 
           y:
             (event.clientY -
               rect.top) /
-              rect.height -
+            rect.height -
             0.5,
         };
 
@@ -849,8 +849,8 @@ export default function Website() {
             gsap.to(
               letter,
               {
-                rotateX: 0,
-                rotateY: 0,
+                rotationX: 0,
+                rotationY: 0,
                 duration: 0.55,
                 ease: "power3.out",
                 overwrite: true,
@@ -939,10 +939,9 @@ export default function Website() {
           bg-[#080808]
           transition-opacity
           duration-700
-          ${
-            introComplete
-              ? "opacity-100"
-              : "pointer-events-none opacity-0"
+          ${introComplete
+            ? "opacity-100"
+            : "pointer-events-none opacity-0"
           }
         `}
       >

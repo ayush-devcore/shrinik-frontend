@@ -37,6 +37,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function TeamSection() {
   const [activeTeamIndex, setActiveTeamIndex] = useState(0);
   const [activeMemberIndex, setActiveMemberIndex] = useState(0);
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   const sectionRef = useRef<HTMLElement>(null);
   const teamTrackRef = useRef<HTMLDivElement>(null);
@@ -298,6 +299,31 @@ export default function TeamSection() {
       );
     };
   }, [previousMember, nextMember]);
+
+  /*
+   * ==========================================================
+   * FULL PHOTO CARD
+   * ==========================================================
+   */
+
+  useEffect(() => {
+    if (!selectedMember) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedMember(null);
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [selectedMember]);
 
   /*
    * ==========================================================
@@ -887,6 +913,7 @@ export default function TeamSection() {
                 member={member}
                 active={index === activeMemberIndex}
                 onClick={() => changeMember(index)}
+                onPhotoClick={() => setSelectedMember(member)}
               />
             ))}
           </div>
@@ -987,10 +1014,9 @@ export default function TeamSection() {
                   rounded-full
                   transition-all
                   duration-300
-                  ${
-                    index === activeMemberIndex
-                      ? "w-8 bg-[#C6922E]"
-                      : "w-1.5 bg-white/15 hover:bg-white/30"
+                  ${index === activeMemberIndex
+                    ? "w-8 bg-[#C6922E]"
+                    : "w-1.5 bg-white/15 hover:bg-white/30"
                   }
                 `}
               />
@@ -1018,8 +1044,158 @@ export default function TeamSection() {
             <ChevronRight size={13} />
           </button>
         </div>
+
+        {selectedMember && (
+          <MemberPhotoModal
+            member={selectedMember}
+            onClose={() => setSelectedMember(null)}
+          />
+        )}
       </div>
     </section>
+  );
+}
+
+/*
+ * ============================================================
+ * FULL MEMBER PHOTO MODAL
+ * ============================================================
+ */
+
+function MemberPhotoModal({
+  member,
+  onClose,
+}: {
+  member: TeamMember;
+  onClose: () => void;
+}) {
+  const initials = member.name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  const leadership =
+    /director|president|head|lead|organizer|secretary|coordinator|expert|web master/i.test(
+      member.role
+    );
+
+  const handleBackdropClick = (
+    event: MouseEvent<HTMLDivElement>
+  ) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div
+      className="
+        fixed
+        inset-0
+        z-[200]
+        flex
+        items-center
+        justify-center
+        bg-black/80
+        p-3
+        backdrop-blur-md
+        sm:p-5
+      "
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Full photo of ${member.name}`}
+      onMouseDown={handleBackdropClick}
+    >
+      <div
+        className="
+          relative
+          w-full
+          max-w-lg
+          overflow-hidden
+          rounded-[1.5rem]
+          border
+          border-[#C6922E]/30
+          bg-[#100608]
+          shadow-[0_40px_140px_rgba(0,0,0,0.75)]
+          animate-[teamPhotoIn_0.45s_cubic-bezier(0.22,1,0.36,1)_both]
+        "
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-[#650018]/20 via-transparent to-[#C6922E]/5 pointer-events-none" />
+
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close full photo"
+          className="
+            absolute
+            right-4
+            top-4
+            z-30
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+            rounded-full
+            border
+            border-white/15
+            bg-black/50
+            text-xl
+            text-white/60
+            backdrop-blur-xl
+            transition-all
+            duration-300
+            hover:border-[#C6922E]/50
+            hover:bg-[#C6922E]/10
+            hover:text-[#C6922E]
+            active:scale-95
+          "
+        >
+          ×
+        </button>
+
+        <div className="relative aspect-[4/5] max-h-[72vh] w-full overflow-hidden bg-[#12070A]">
+          {member.image ? (
+            <MemberImage
+              src={member.image}
+              name={member.name}
+              initials={initials}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#3A0712] via-[#150509] to-[#050505]">
+              <div className="absolute h-72 w-72 rounded-full bg-[#C6922E]/10 blur-[90px]" />
+              <span className="relative z-10 text-8xl font-medium tracking-[-0.08em] text-[#C6922E]/40">
+                {initials}
+              </span>
+            </div>
+          )}
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#100608] via-[#100608]/30 to-transparent" />
+        </div>
+
+        <div className="relative z-10 flex items-end justify-between gap-6 border-t border-white/[0.07] px-6 py-5 sm:px-8 sm:py-6">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.3em] text-[#C6922E]">
+              {leadership ? "Leadership" : "Shrinik Team"}
+            </p>
+
+            <h3 className="mt-2 text-2xl font-medium tracking-[-0.035em] text-[#F5F1E8] sm:text-3xl">
+              {member.name}
+            </h3>
+
+            <p className="mt-2 text-[9px] uppercase tracking-[0.22em] text-white/35">
+              {member.role}
+            </p>
+          </div>
+
+          <span className="hidden shrink-0 text-[8px] uppercase tracking-[0.22em] text-white/20 sm:block">
+            Press Esc to close
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1092,15 +1268,15 @@ function TeamVisualCard({
         rect.top -
         rect.height / 2;
 
-      const rotateX =
+      const rotationX =
         -(y / rect.height) * 5;
 
-      const rotateY =
+      const rotationY =
         (x / rect.width) * 5;
 
       gsap.to(cardRef.current, {
-        rotateX,
-        rotateY,
+        rotationX,
+        rotationY,
         scale: active ? 1.02 : 1.01,
         duration: 0.3,
         ease: "power2.out",
@@ -1109,8 +1285,8 @@ function TeamVisualCard({
 
       if (visualRef.current) {
         gsap.to(visualRef.current, {
-          x: rotateY * 1.5,
-          y: rotateX * -1.5,
+          x: rotationY * 1.5,
+          y: rotationX * -1.5,
           scale: 1.04,
           duration: 0.35,
           ease: "power2.out",
@@ -1139,8 +1315,8 @@ function TeamVisualCard({
     if (!cardRef.current) return;
 
     gsap.to(cardRef.current, {
-      rotateX: 0,
-      rotateY: 0,
+      rotationX: 0,
+      rotationY: 0,
       scale: active ? 1.01 : 1,
       duration: 0.5,
       ease: "power3.out",
@@ -1205,13 +1381,12 @@ function TeamVisualCard({
         sm:min-w-[330px]
         md:h-[430px]
         md:min-w-[365px]
-        ${
-          active
-            ? `
+        ${active
+          ? `
               border-[#C6922E]/60
               shadow-[0_30px_100px_rgba(0,0,0,0.55)]
             `
-            : `
+          : `
               border-white/[0.08]
               opacity-75
               hover:border-[#C6922E]/35
@@ -1375,10 +1550,9 @@ function TeamVisualCard({
               border
               transition-all
               duration-500
-              ${
-                active
-                  ? "border-[#C6922E]/60 bg-[#C6922E] text-[#080707]"
-                  : "border-white/15 bg-black/20 text-white/50 group-hover:border-[#C6922E]/50 group-hover:text-[#C6922E]"
+              ${active
+                ? "border-[#C6922E]/60 bg-[#C6922E] text-[#080707]"
+                : "border-white/15 bg-black/20 text-white/50 group-hover:border-[#C6922E]/50 group-hover:text-[#C6922E]"
               }
             `}
           >
@@ -1866,10 +2040,12 @@ function MemberCard({
   member,
   active,
   onClick,
+  onPhotoClick,
 }: {
   member: TeamMember;
   active: boolean;
   onClick: () => void;
+  onPhotoClick: () => void;
 }) {
   const cardRef =
     useRef<HTMLElement>(null);
@@ -1933,9 +2109,9 @@ function MemberCard({
         rect.height / 2;
 
       gsap.to(cardRef.current, {
-        rotateX:
+        rotationX:
           -(y / rect.height) * 5,
-        rotateY:
+        rotationY:
           (x / rect.width) * 5,
         scale: active ? 1.015 : 1.005,
         duration: 0.28,
@@ -1965,8 +2141,8 @@ function MemberCard({
     if (!cardRef.current) return;
 
     gsap.to(cardRef.current, {
-      rotateX: 0,
-      rotateY: 0,
+      rotationX: 0,
+      rotationY: 0,
       scale: active ? 1.005 : 1,
       duration: 0.5,
       ease: "power3.out",
@@ -2035,13 +2211,12 @@ function MemberCard({
         sm:min-w-[320px]
         md:h-[450px]
         md:min-w-[340px]
-        ${
-          active
-            ? `
+        ${active
+          ? `
               border-[#C6922E]/50
               shadow-[0_30px_90px_rgba(0,0,0,0.45)]
             `
-            : `
+          : `
               border-white/[0.07]
               opacity-80
               hover:border-[#C6922E]/30
@@ -2062,22 +2237,14 @@ function MemberCard({
         }}
       >
         {member.image ? (
-          <img
+          <MemberImage
             src={member.image}
-            alt={member.name}
-            loading="lazy"
-            decoding="async"
-            draggable={false}
-            className="
-              h-full
-              w-full
-              object-cover
-              grayscale-[35%]
-              transition-[transform,filter]
-              duration-700
-              group-hover:scale-105
-              group-hover:grayscale-0
-            "
+            name={member.name}
+            initials={initials}
+            onClick={(event) => {
+              event.stopPropagation();
+              onPhotoClick();
+            }}
           />
         ) : (
           <div
@@ -2290,10 +2457,9 @@ function MemberCard({
             border
             transition-all
             duration-300
-            ${
-              active
-                ? "border-[#C6922E]/50 bg-[#C6922E]/10 text-[#C6922E]"
-                : "border-white/10 text-white/25 group-hover:border-[#C6922E]/40 group-hover:text-[#C6922E]"
+            ${active
+              ? "border-[#C6922E]/50 bg-[#C6922E]/10 text-[#C6922E]"
+              : "border-white/10 text-white/25 group-hover:border-[#C6922E]/40 group-hover:text-[#C6922E]"
             }
           `}
         >
@@ -2315,6 +2481,144 @@ function MemberCard({
         />
       )}
     </article>
+  );
+}
+
+/*
+ * ============================================================
+ * MEMBER IMAGE
+ * ============================================================
+ *
+ * Photos live in /public/images, so Next serves them from
+ * /images/<filename>. This component also handles stale/broken
+ * data paths without breaking the card.
+ */
+
+function MemberImage({
+  src,
+  name,
+  initials,
+  onClick,
+}: {
+  src: string;
+  name: string;
+  initials: string;
+  onClick?: (event: MouseEvent<HTMLImageElement>) => void;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  const imageSrc = useMemo(() => {
+    const value = src.trim();
+
+    if (!value) return "";
+
+    // Already a valid public URL/path.
+    if (
+      value.startsWith("/") ||
+      value.startsWith("http://") ||
+      value.startsWith("https://")
+    ) {
+      return value;
+    }
+
+    // Make relative image names work too.
+    return `/images/${value.replace(/^\/+/, "")}`;
+  }, [src]);
+
+  if (failed || !imageSrc) {
+    return (
+      <div
+        className="
+          absolute
+          inset-0
+          flex
+          items-center
+          justify-center
+          overflow-hidden
+          bg-gradient-to-br
+          from-[#3A0712]
+          via-[#150509]
+          to-[#050505]
+        "
+      >
+        <div
+          className="
+            absolute
+            inset-0
+            opacity-[0.08]
+          "
+          style={{
+            backgroundImage: `
+              linear-gradient(
+                rgba(255,255,255,.2) 1px,
+                transparent 1px
+              ),
+              linear-gradient(
+                90deg,
+                rgba(255,255,255,.2) 1px,
+                transparent 1px
+              )
+            `,
+            backgroundSize: "38px 38px",
+          }}
+        />
+
+        <div
+          className="
+            absolute
+            h-64
+            w-64
+            rounded-full
+            bg-[#C6922E]/10
+            blur-[80px]
+          "
+        />
+
+        <span
+          className="
+            relative
+            z-10
+            text-7xl
+            font-medium
+            tracking-[-0.08em]
+            text-[#C6922E]/35
+          "
+          aria-hidden="true"
+        >
+          {initials}
+        </span>
+
+        <span className="sr-only">
+          Photo unavailable for {name}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imageSrc}
+      alt={name}
+      loading="lazy"
+      decoding="async"
+      draggable={false}
+      onClick={onClick}
+      onError={() => setFailed(true)}
+      className={`
+        absolute
+        inset-0
+        h-full
+        w-full
+        object-cover
+        object-center
+        grayscale-[35%]
+        transition-[transform,filter]
+        duration-700
+        group-hover:scale-105
+        group-hover:grayscale-0
+        ${onClick ? "cursor-zoom-in" : ""}
+      `}
+    />
   );
 }
 

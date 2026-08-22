@@ -1,6 +1,10 @@
 "use client";
 
-import { ArrowUpRight, CalendarDays, Sparkles } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  Sparkles,
+} from "lucide-react";
 
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import StaggerReveal from "@/components/effects/StaggerReveal";
@@ -9,27 +13,27 @@ import SectionHeading from "@/components/effects/SectionHeading";
 const events = [
   {
     number: "01",
-    title: "Technical Events",
-    short: "TECH",
+    title: "GLB Talks",
+    short: "TALKS",
     description:
-      "Workshops, competitions and experiences built around technology.",
-    tag: "Technology",
+      "A flagship annual event organised by Shrinik Club, bringing ideas, conversations and the student community together.",
+    tag: "Ideas · Conversations · Community",
   },
   {
     number: "02",
-    title: "Cultural Events",
-    short: "CULTURE",
+    title: "Nukkad Naatak",
+    short: "AWARENESS",
     description:
-      "Music, dance and creative experiences that bring campus together.",
-    tag: "Culture",
+      "A street-play initiative organised to spread awareness among college students through performance and expression.",
+    tag: "Awareness · Performance · Expression",
   },
   {
     number: "03",
-    title: "Workshops",
-    short: "LEARN",
+    title: "Farewell",
+    short: "MEMORIES",
     description:
-      "Learn, experiment and build alongside the Shrinik community.",
-    tag: "Learning",
+      "A heartfelt and memorable goodbye created for the seniors of G.L. Bajaj, celebrating community and shared memories.",
+    tag: "Community · Celebration · Memories",
   },
 ];
 
@@ -132,10 +136,10 @@ export default function EventsSection() {
         ==================================================== */}
 
         <SectionHeading
-          eyebrow="What we do"
-          title="Experiences"
-          highlight="that stay."
-          description="A glimpse into the events, workshops and activities that bring the Shrinik community together."
+          eyebrow="Our Journey"
+          title="Moments"
+          highlight="that shaped us."
+          description="A look at the documented events that form part of Shrinik's journey into its 2026–27 chapter."
         />
 
         {/* ===================================================
@@ -153,6 +157,7 @@ export default function EventsSection() {
         >
 
           {events.map((event, index) => (
+
             <article
               key={event.number}
               className="
@@ -174,9 +179,7 @@ export default function EventsSection() {
               "
             >
 
-              {/* =================================================
-                  BACKGROUND GLOW
-              ================================================== */}
+              {/* Background glow */}
 
               <div
                 className="
@@ -210,9 +213,7 @@ export default function EventsSection() {
                 "
               />
 
-              {/* =================================================
-                  CARD GRID
-              ================================================== */}
+              {/* Card grid */}
 
               <div
                 className="
@@ -238,9 +239,7 @@ export default function EventsSection() {
                 }}
               />
 
-              {/* =================================================
-                  CARD CONTENT
-              ================================================== */}
+              {/* Card content */}
 
               <div
                 className="
@@ -289,8 +288,6 @@ export default function EventsSection() {
 
                     </div>
 
-                    {/* Arrow */}
-
                     <div
                       className="
                         flex
@@ -316,9 +313,7 @@ export default function EventsSection() {
 
                   </div>
 
-                  {/* =================================================
-                      ABSTRACT EVENT VISUAL
-                  ================================================== */}
+                  {/* Abstract visual */}
 
                   <div
                     className="
@@ -335,8 +330,6 @@ export default function EventsSection() {
                       bg-black/20
                     "
                   >
-
-                    {/* Orbit */}
 
                     <div
                       className="
@@ -369,49 +362,21 @@ export default function EventsSection() {
                       "
                     />
 
-                    {/* Icon */}
-
-                    {index === 0 && (
-                      <div
-                        className="
-                          relative
-                          z-10
-                          text-3xl
-                          font-light
-                          text-[#C6922E]/70
-                        "
-                      >
-                        &lt;/&gt;
-                      </div>
-                    )}
-
-                    {index === 1 && (
-                      <div
-                        className="
-                          relative
-                          z-10
-                          text-3xl
-                          text-[#C6922E]/70
-                        "
-                      >
-                        ✦
-                      </div>
-                    )}
-
-                    {index === 2 && (
-                      <div
-                        className="
-                          relative
-                          z-10
-                          text-3xl
-                          text-[#C6922E]/70
-                        "
-                      >
-                        +
-                      </div>
-                    )}
-
-                    {/* Light */}
+                    <div
+                      className="
+                        relative
+                        z-10
+                        text-3xl
+                        font-light
+                        text-[#C6922E]/70
+                      "
+                    >
+                      {index === 0
+                        ? "✦"
+                        : index === 1
+                          ? "◌"
+                          : "∞"}
+                    </div>
 
                     <div
                       className="
@@ -432,9 +397,7 @@ export default function EventsSection() {
 
                 </div>
 
-                {/* =================================================
-                    BOTTOM
-                ================================================== */}
+                {/* BOTTOM */}
 
                 <div>
 
@@ -475,8 +438,6 @@ export default function EventsSection() {
                     {event.description}
                   </p>
 
-                  {/* Bottom meta */}
-
                   <div
                     className="
                       mt-7
@@ -497,7 +458,7 @@ export default function EventsSection() {
                         text-white/20
                       "
                     >
-                      Shrinik
+                      Shrinik · 2026–27
                     </span>
 
                     <span
@@ -517,8 +478,6 @@ export default function EventsSection() {
 
               </div>
 
-              {/* Active bottom line */}
-
               <div
                 className="
                   absolute
@@ -534,12 +493,13 @@ export default function EventsSection() {
               />
 
             </article>
+
           ))}
 
         </StaggerReveal>
 
         {/* ===================================================
-            UPCOMING / PLACEHOLDER STRIP
+            BOTTOM STRIP
         ==================================================== */}
 
         <ScrollReveal delay={0.2}>
@@ -605,7 +565,7 @@ export default function EventsSection() {
                       text-[#C6922E]
                     "
                   >
-                    Event calendar
+                    2026–27 Chapter
                   </span>
 
                   <p
@@ -615,8 +575,8 @@ export default function EventsSection() {
                       text-white/35
                     "
                   >
-                    Upcoming experiences will
-                    appear here.
+                    More Shrinik experiences will
+                    be added as the year unfolds.
                   </p>
 
                 </div>
