@@ -99,7 +99,8 @@ export default function IntroScreen({
           duration-500
           ${isReady ? "opacity-100" : "opacity-0"}
         `}
-        src="/videos/shrinik-intro.mp4"
+        // src="/videos/shrinik-intro.mp"
+           src="https://res.cloudinary.com/dgrzeojzd/video/upload/v1787422660/shrinik-intro_xxvbv5.mp4"
         autoPlay
         muted
         playsInline
