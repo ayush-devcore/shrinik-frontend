@@ -81,23 +81,6 @@ export const teamGroups: TeamGroup[] = [
         image: "/images/aashish-pandey.jpg",
       },
       {
-        id: "tech-team-anurag-singh",
-        name: "Anurag Singh",
-        role: "Member",
-        image: "/images/anurag-singh.jpg",
-      },
-      {
-        id: "tech-team-aabgeen",
-        name: "Aabgeen",
-        role: "Member",
-        image: "/images/aabgeen-aabshar.jpg",
-      },
-      {
-        id: "tech-team-ashwani",
-        name: "Ashwani",
-        role: "Member",
-      },
-      {
         id: "tech-team-manjot-kaur",
         name: "Manjot Kaur",
         role: "Member",
@@ -114,6 +97,29 @@ export const teamGroups: TeamGroup[] = [
         name: "Ayush Bhatnagar",
         role: "Member",
         image: "/images/ayush-bhatnagar.jpg",
+      },
+      {
+        id: "tech-team-akash-kumar-singh",
+        name: "Akash Kumar Singh",
+        role: "Member",
+        image: "/images/akash-kumar-singh.jpg",
+      },
+      {
+        id: "tech-team-anurag-singh",
+        name: "Anurag Singh",
+        role: "Member",
+        image: "/images/anurag-singh.jpg",
+      },
+      {
+        id: "tech-team-aabgeen",
+        name: "Aabgeen",
+        role: "Member",
+        image: "/images/aabgeen-aabshar.jpg",
+      },
+      {
+        id: "tech-team-ashwani",
+        name: "Ashwani",
+        role: "Member",
       },
       {
         id: "tech-team-tushar-sharma",
@@ -146,6 +152,11 @@ export const teamGroups: TeamGroup[] = [
         name: "Diya Tyagi",
         role: "Co-Director",
         image: "/images/diya-tyagi.jpg",
+      },
+      {
+        id: "design-media-team-mohd-maaz",
+        name: "Mohd Maaz",
+        role: "Member",
       },
       {
         id: "design-media-team-rajeshwari-aggarwal",

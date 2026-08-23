@@ -44,6 +44,8 @@ next-env.d.ts
 *.mov
 *.mkv
 *.avi
+*.mp4
+AGENTS.md
 
 # Keep only the web-optimized MP4
 /public/videos/*

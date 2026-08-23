@@ -21,6 +21,7 @@ import GallerySection from "@/components/sections/GallerySection";
 import ContactSection from "@/components/sections/ContactSection";
 import TeamSection from "@/components/team/TeamSection";
 import Footer from "@/components/footer/Footer";
+import Chatbot from "@/components/chatbot/Chatbot";
 
 export default function Website() {
   const [introComplete, setIntroComplete] =
@@ -2065,6 +2066,11 @@ export default function Website() {
 
         <Footer />
       </main>
+
+      {/* ======================================================
+          AI CHATBOT
+      ====================================================== */}
+      {introComplete && <Chatbot />}
     </>
   );
 }

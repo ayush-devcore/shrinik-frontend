@@ -1,298 +1,11 @@
-@import "tailwindcss";
-
-/* =========================================================
-   SHRINIK DESIGN SYSTEM
-========================================================= */
-
-:root {
-  --background: #080808;
-  --foreground: #f5f1e8;
-
-  --shrinik-black: #080808;
-  --shrinik-surface: #12070a;
-
-  --shrinik-burgundy: #3a0712;
-  --shrinik-crimson: #7a001b;
-  --shrinik-maroon: #650018;
-
-  --shrinik-gold: #c6922e;
-  --shrinik-light-gold: #e3c477;
-
-  --shrinik-ivory: #f5f1e8;
-  --shrinik-muted: #8f8980;
-}
-
-/* =========================================================
-   GLOBAL RESET
-========================================================= */
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  background: var(--background);
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      rgba(101, 0, 24, 0.08),
-      transparent 35%
-    ),
-    var(--background);
-
-  color: var(--foreground);
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  overflow-x: hidden;
-}
-
-/* =========================================================
-   LINKS & BUTTONS
-========================================================= */
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button {
-  font: inherit;
-}
-
-/* =========================================================
-   MEDIA
-========================================================= */
-
-img,
-video {
-  display: block;
-  max-width: 100%;
-}
-
-/* =========================================================
-   TEXT SELECTION
-========================================================= */
-
-::selection {
-  background: var(--shrinik-gold);
-  color: var(--shrinik-black);
-}
-
-/* =========================================================
-   MAIN PAGE SCROLLBAR
-========================================================= */
-
-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-body::-webkit-scrollbar-track {
-  background: var(--shrinik-black);
-}
-
-body::-webkit-scrollbar-thumb {
-  background: var(--shrinik-burgundy);
-  border-radius: 999px;
-}
-
-body::-webkit-scrollbar-thumb:hover {
-  background: var(--shrinik-crimson);
-}
-
-/* Firefox */
-
-html {
-  scrollbar-width: thin;
-  scrollbar-color:
-    var(--shrinik-burgundy)
-    var(--shrinik-black);
-}
-
-/* =========================================================
-   HORIZONTAL CAROUSEL SCROLLBAR
-   Used by:
-   - Team selection
-   - Member carousel
-   - Stand-by members
-========================================================= */
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* =========================================================
-   SMOOTH TOUCH SCROLLING
-========================================================= */
-
-.scrollbar-hide {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-}
-
-/* =========================================================
-   INTRO ANIMATION
-========================================================= */
-
-@keyframes introProgress {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* =========================================================
-   SUBTLE SHRNIK GLOW
-   Can be used with:
-   .shrinik-glow
-========================================================= */
-
-.shrinik-glow {
-  box-shadow:
-    0 0 40px rgba(198, 146, 46, 0.08),
-    0 0 100px rgba(101, 0, 24, 0.08);
-}
-
-/* =========================================================
-   GOLD SHIMMER
-   Useful for premium buttons / highlights
-========================================================= */
-
-@keyframes goldShimmer {
-  0% {
-    background-position: -200% center;
-  }
-
-  100% {
-    background-position: 200% center;
-  }
-}
-
-.gold-shimmer {
-  background:
-    linear-gradient(
-      110deg,
-      #c6922e 0%,
-      #e3c477 35%,
-      #c6922e 50%,
-      #8f641c 65%,
-      #c6922e 100%
-    );
-
-  background-size: 200% 100%;
-
-  animation:
-    goldShimmer 5s linear infinite;
-}
-
-/* =========================================================
-   FOCUS STATES
-========================================================= */
-
-button:focus-visible,
-a:focus-visible {
-  outline: 1px solid var(--shrinik-gold);
-  outline-offset: 4px;
-}
-
-/* =========================================================
-   REDUCE MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* =========================================================
-   MOBILE OPTIMIZATION
-========================================================= */
-
-@media (max-width: 768px) {
-  body {
-    overflow-x: hidden;
-  }
-}
-
-/* =========================================================
-   UTILITY
-========================================================= */
-
-.pointer-events-none {
-  pointer-events: none;
-}
-
-/* =========================================================
-   HORIZONTAL CAROUSEL
-========================================================= */
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
 /* =========================================================
    SHRINIK AI CHATBOT
    Design tokens inherited from the Shrinik design system.
 ========================================================= */
+
+/* -------------------------------------------------------
+   DESIGN TOKENS
+------------------------------------------------------- */
 
 :root {
   --chat-bg: #0a0506;
@@ -322,8 +35,10 @@ a:focus-visible {
   bottom: 24px;
   right: 24px;
   z-index: 99998;
+
   width: 62px;
   height: 62px;
+
   border: 1px solid var(--chat-border);
   border-radius: 50%;
   background: linear-gradient(
@@ -331,9 +46,11 @@ a:focus-visible {
     var(--chat-burgundy),
     #1a0810
   );
+
   cursor: pointer;
   outline: none;
   padding: 0;
+
   transition:
     transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
     border-color 0.3s ease,
@@ -359,6 +76,8 @@ a:focus-visible {
   transform: scale(0.5) translateY(20px);
 }
 
+/* --- Glow ring --- */
+
 .shrinik-chat-launcher__glow {
   position: absolute;
   inset: -6px;
@@ -371,6 +90,8 @@ a:focus-visible {
   pointer-events: none;
 }
 
+/* --- Icon --- */
+
 .shrinik-chat-launcher__icon {
   position: relative;
   z-index: 2;
@@ -380,6 +101,8 @@ a:focus-visible {
   color: var(--chat-gold);
   filter: drop-shadow(0 0 6px rgba(198, 146, 46, 0.3));
 }
+
+/* --- Pulse animation --- */
 
 .shrinik-chat-launcher__pulse {
   position: absolute;
@@ -412,21 +135,28 @@ a:focus-visible {
   bottom: 24px;
   right: 24px;
   z-index: 99999;
+
   width: var(--chat-panel-width);
   height: var(--chat-panel-height);
+
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
   border: 1px solid var(--chat-border);
   border-radius: var(--chat-radius);
   background: var(--chat-bg);
+
   box-shadow:
     0 25px 80px rgba(0, 0, 0, 0.55),
     0 0 60px rgba(101, 0, 24, 0.08),
     inset 0 1px 0 rgba(198, 146, 46, 0.06);
+
+  /* Closed state */
   opacity: 0;
   transform: translateY(20px) scale(0.95);
   pointer-events: none;
+
   transition:
     opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
     transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -448,12 +178,14 @@ a:focus-visible {
   align-items: center;
   gap: 12px;
   padding: 16px 18px;
+
   background: linear-gradient(
     135deg,
     var(--chat-burgundy),
     #1a0810 60%,
     #0e0508
   );
+
   border-bottom: 1px solid var(--chat-border);
   flex-shrink: 0;
 }
@@ -470,22 +202,29 @@ a:focus-visible {
   pointer-events: none;
 }
 
+/* --- Avatar --- */
+
 .shrinik-chat-header__avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   flex-shrink: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: linear-gradient(
     135deg,
     rgba(198, 146, 46, 0.2),
     rgba(198, 146, 46, 0.05)
   );
+
   border: 1px solid rgba(198, 146, 46, 0.25);
   color: var(--chat-gold);
 }
+
+/* --- Info --- */
 
 .shrinik-chat-header__info {
   flex: 1;
@@ -528,6 +267,8 @@ a:focus-visible {
   }
 }
 
+/* --- Close button --- */
+
 .shrinik-chat-header__close {
   margin-left: auto;
   width: 34px;
@@ -540,6 +281,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
+
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
@@ -560,9 +302,11 @@ a:focus-visible {
   flex: 1;
   overflow-y: auto;
   padding: 18px 14px;
+
   display: flex;
   flex-direction: column;
   gap: 14px;
+
   background:
     radial-gradient(
       ellipse at 20% 10%,
@@ -571,6 +315,8 @@ a:focus-visible {
     ),
     var(--chat-bg);
 }
+
+/* --- Scrollbar --- */
 
 .shrinik-chat-messages::-webkit-scrollbar {
   width: 5px;
@@ -610,6 +356,8 @@ a:focus-visible {
   }
 }
 
+/* User message alignment */
+
 .shrinik-chat-msg--user {
   flex-direction: row-reverse;
 }
@@ -618,23 +366,30 @@ a:focus-visible {
   flex-direction: row;
 }
 
+/* --- Avatar (bot) --- */
+
 .shrinik-chat-msg__avatar {
   width: 26px;
   height: 26px;
   border-radius: 50%;
   flex-shrink: 0;
   margin-top: 2px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: linear-gradient(
     135deg,
     rgba(198, 146, 46, 0.15),
     rgba(198, 146, 46, 0.04)
   );
+
   border: 1px solid rgba(198, 146, 46, 0.18);
   color: var(--chat-gold);
 }
+
+/* --- Content wrapper --- */
 
 .shrinik-chat-msg__content {
   max-width: 82%;
@@ -645,6 +400,8 @@ a:focus-visible {
 .shrinik-chat-msg--user .shrinik-chat-msg__content {
   align-items: flex-end;
 }
+
+/* --- Time --- */
 
 .shrinik-chat-msg__time {
   font-size: 9px;
@@ -666,12 +423,16 @@ a:focus-visible {
   word-break: break-word;
 }
 
+/* --- Bot bubble --- */
+
 .shrinik-chat-bubble--bot {
   background: var(--chat-surface-2);
   color: var(--chat-text);
   border: 1px solid rgba(198, 146, 46, 0.08);
   border-bottom-left-radius: 4px;
 }
+
+/* --- User bubble --- */
 
 .shrinik-chat-bubble--user {
   background: linear-gradient(
@@ -683,6 +444,8 @@ a:focus-visible {
   border: 1px solid rgba(198, 146, 46, 0.15);
   border-bottom-right-radius: 4px;
 }
+
+/* --- Error bubble --- */
 
 .shrinik-chat-bubble--error {
   background: rgba(122, 0, 27, 0.15);
@@ -786,6 +549,7 @@ a:focus-visible {
   align-items: center;
   gap: 5px;
   padding: 12px 16px;
+
   background: var(--chat-surface-2);
   border: 1px solid rgba(198, 146, 46, 0.08);
   border-radius: 16px;
@@ -832,6 +596,7 @@ a:focus-visible {
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
+
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -839,13 +604,16 @@ a:focus-visible {
   background: var(--chat-surface-2);
   color: var(--chat-gold);
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
+
   animation: msgAppear 0.25s ease both;
 }
 
@@ -863,6 +631,7 @@ a:focus-visible {
   align-items: center;
   gap: 8px;
   padding: 12px 14px;
+
   border-top: 1px solid var(--chat-border);
   background: var(--chat-surface);
   flex-shrink: 0;
@@ -873,13 +642,16 @@ a:focus-visible {
   min-width: 0;
   height: 42px;
   padding: 0 14px;
+
   border: 1px solid rgba(198, 146, 46, 0.1);
   border-radius: 14px;
   background: var(--chat-surface-2);
   color: var(--chat-ivory);
+
   font-family: inherit;
   font-size: 13.5px;
   outline: none;
+
   transition:
     border-color 0.25s ease,
     box-shadow 0.25s ease;
@@ -900,22 +672,28 @@ a:focus-visible {
   cursor: not-allowed;
 }
 
+/* --- Send button --- */
+
 .shrinik-chat-send {
   width: 42px;
   height: 42px;
   flex-shrink: 0;
   border-radius: 14px;
   border: 1px solid rgba(198, 146, 46, 0.25);
+
   background: linear-gradient(
     135deg,
     var(--chat-gold),
     #a87a22
   );
+
   color: #080808;
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   transition:
     filter 0.2s ease,
     transform 0.15s ease,
