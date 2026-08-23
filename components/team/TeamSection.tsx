@@ -2381,8 +2381,8 @@ function MemberCard({
         <div
           className="
             absolute
-            bottom-6
             left-5
+            top-5
             z-20
             rounded-full
             border

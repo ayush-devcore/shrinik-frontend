@@ -26,6 +26,7 @@ export const teamGroups: TeamGroup[] = [
         id: "core-team-vibhor-sharma",
         name: "Vibhor Sharma",
         role: "President",
+        image: "/images/vibhor-sharma.jpg",
       },
       {
         id: "core-team-prajjval-verma",
@@ -105,12 +106,6 @@ export const teamGroups: TeamGroup[] = [
         image: "/images/akash-kumar-singh.jpg",
       },
       {
-        id: "tech-team-anurag-singh",
-        name: "Anurag Singh",
-        role: "Member",
-        image: "/images/anurag-singh.jpg",
-      },
-      {
         id: "tech-team-aabgeen",
         name: "Aabgeen",
         role: "Member",
@@ -120,6 +115,13 @@ export const teamGroups: TeamGroup[] = [
         id: "tech-team-ashwani",
         name: "Ashwani",
         role: "Member",
+        image: "/images/ashwani-kumar.jpg",
+      },
+      {
+        id: "tech-team-anurag-singh",
+        name: "Anurag Singh",
+        role: "Member",
+        image: "/images/anurag-singh.jpg",
       },
       {
         id: "tech-team-tushar-sharma",
@@ -157,11 +159,13 @@ export const teamGroups: TeamGroup[] = [
         id: "design-media-team-mohd-maaz",
         name: "Mohd Maaz",
         role: "Member",
+        image: "/images/mohd-maaz.jpg",
       },
       {
         id: "design-media-team-rajeshwari-aggarwal",
         name: "Rajeshwari Aggarwal",
         role: "Member",
+        image: "/images/rajeshwari-agrawal.jpg",
       },
       {
         id: "design-media-team-stuti-jain",
@@ -212,6 +216,7 @@ export const teamGroups: TeamGroup[] = [
         id: "editorial-team-pratap",
         name: "Pratap",
         role: "Member",
+        image: "/images/pratap-singh-rana.jpg",
       },
       {
         id: "editorial-team-parikshita-agrawal",
@@ -223,6 +228,7 @@ export const teamGroups: TeamGroup[] = [
         id: "editorial-team-jigyasha-rath",
         name: "Jigyasha Rath",
         role: "Member",
+        image: "/images/jigyasha-rath.jpg",
       },
       {
         id: "editorial-team-riya",
@@ -295,6 +301,7 @@ export const teamGroups: TeamGroup[] = [
         id: "pr-team-suhani",
         name: "Suhani",
         role: "Member",
+        image: "/images/suhani-rastogi.jpg",
       },
     ],
   },
@@ -337,6 +344,7 @@ export const teamGroups: TeamGroup[] = [
         id: "social-media-team-sharad-kumar",
         name: "Sharad Kumar",
         role: "Member",
+        image: "/images/sharad-verma.jpg",
       },
       {
         id: "social-media-team-anni-rai",
@@ -513,6 +521,7 @@ export const teamGroups: TeamGroup[] = [
         id: "music-avenue-harshvardhan",
         name: "Harshvardhan",
         role: "Lead",
+        image: "/images/harsh-vardhan-singh.jpg",
       },
       {
         id: "music-avenue-prasiddhi-dwivedi",
@@ -570,6 +579,7 @@ export const teamGroups: TeamGroup[] = [
         id: "music-avenue-devanshi",
         name: "Devanshi",
         role: "Ukulele",
+        image: "/images/devanshi-nand.jpg",
       },
       {
         id: "music-avenue-aryan",
