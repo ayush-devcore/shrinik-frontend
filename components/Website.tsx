@@ -1337,9 +1337,9 @@ export default function Website() {
                       leading-[0.78]
                       tracking-[-0.07em]
                     "
-                    aria-label="SHRINIK"
+                    aria-label="SHRINIK CLUB"
                   >
-                    {"SHRINIK".split("").map(
+                    {"SHRINIK CLUB".split("").map(
                       (
                         letter,
                         index,
@@ -1357,7 +1357,7 @@ export default function Website() {
                             will-change-transform
                           "
                         >
-                          {letter}
+                          {letter === " " ? "\u00A0" : letter}
                         </span>
                       ),
                     )}
