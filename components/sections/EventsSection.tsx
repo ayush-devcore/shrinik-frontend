@@ -18,34 +18,41 @@ interface EventItem {
   title: string;
   subtitle: string;
   description: string;
+
+  // Right-side event information
+  highlight: string;
+  type: string;
+  community: string;
+
   images: string[];
 }
+
+/* =========================================================
+   EVENTS DATA
+========================================================= */
 
 const events: EventItem[] = [
   {
     id: "valorant-gameplay",
-    number: "03",
+    number: "01",
     date: "14 APR 2025",
     title: "Valorant Gameplay",
     subtitle: "COMPETE · CONNECT · PLAY",
     description:
       "A competitive gaming experience bringing students together through strategy, teamwork and competition.",
+
+    highlight: "Where strategy met teamwork.",
+    type: "Gaming Event",
+    community: "Shrinik Community",
+
     images: [
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.45 PM.jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.46 PM.jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.47 PM (1).jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.47 PM.jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.48 PM (1).jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.48 PM (2).jpeg",
       "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.48 PM.jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.49 PM.jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.50 PM (1).jpeg",
-      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.50 PM (2).jpeg",
       "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.50 PM.jpeg",
       "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.11.23 PM (1).jpeg",
       "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.11.23 PM.jpeg",
     ],
   },
+
   {
     id: "aurora-orientation",
     number: "02",
@@ -54,8 +61,12 @@ const events: EventItem[] = [
     subtitle: "A NEW BEGINNING",
     description:
       "An orientation experience bringing students together and marking the beginning of a new chapter.",
+
+    highlight: "Where new journeys began.",
+    type: "Orientation",
+    community: "Shrinik Community",
+
     images: [
-      "/images/events/aurora-orientation/IMG_8215.JPG",
       "/images/events/aurora-orientation/IMG_20250913_151116.jpg",
       "/images/events/aurora-orientation/IMG_20250913_143340451.jpg",
       "/images/events/aurora-orientation/IMG_20250913_145037469.jpg",
@@ -64,6 +75,7 @@ const events: EventItem[] = [
       "/images/events/aurora-orientation/IMG_20250913_152309564.jpg",
       "/images/events/aurora-orientation/IMG20250913150734.jpg",
       "/images/events/aurora-orientation/IMG20250913163142.jpg",
+      "/images/events/aurora-orientation/IMG_8215.JPG",
     ],
   },
 
@@ -75,11 +87,16 @@ const events: EventItem[] = [
     subtitle: "AWARENESS · PERFORMANCE · EXPRESSION",
     description:
       "A street-play initiative using performance and expression as a powerful medium for awareness and engagement.",
+
+    highlight: "Stories that speak. Messages that stay.",
+    type: "Cultural Event",
+    community: "Shrinik Community",
+
     images: [
+      "/images/events/nukkad-naatak/IMG_2350.JPG",
       "/images/events/nukkad-naatak/nukkad-01.jpg",
       "/images/events/nukkad-naatak/IMG20251031124328.jpg",
       "/images/events/nukkad-naatak/IMG_2337.JPG",
-      "/images/events/nukkad-naatak/IMG_2350.JPG",
     ],
   },
 
@@ -91,14 +108,19 @@ const events: EventItem[] = [
     subtitle: "IDEAS · VOICES · DEBATE",
     description:
       "A platform for students to express ideas, exchange perspectives and engage in meaningful debate.",
+
+    highlight: "Ideas. Voices. Meaningful debate.",
+    type: "Debate & Discussion",
+    community: "Shrinik Community",
+
     images: [
+      "/images/events/sansad-25/IMG_9574.JPG",
       "/images/events/sansad-25/IMG20251108140908.jpg",
       "/images/events/sansad-25/IMG20251108142702.jpg",
       "/images/events/sansad-25/IMG_3036.jpg",
       "/images/events/sansad-25/IMG_9501.JPG",
       "/images/events/sansad-25/IMG_9514.JPG",
       "/images/events/sansad-25/IMG_9515.JPG",
-      "/images/events/sansad-25/IMG_9574.JPG",
     ],
   },
 
@@ -110,6 +132,11 @@ const events: EventItem[] = [
     subtitle: "CELEBRATING THE JOURNEY",
     description:
       "A celebration of memories, friendships and the journey shared by the graduating batch.",
+
+    highlight: "Goodbyes today. Memories forever.",
+    type: "Farewell",
+    community: "Shrinik Community",
+
     images: [
       "/images/events/farewell-batch-26/DSC05377.JPG",
       "/images/events/farewell-batch-26/DSC05390.JPG",
@@ -135,6 +162,10 @@ const events: EventItem[] = [
   },
 ];
 
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
+
 export default function EventsSection() {
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
@@ -142,15 +173,27 @@ export default function EventsSection() {
 
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
+  /* =======================================================
+     OPEN EVENT
+  ======================================================= */
+
   const openEvent = (event: EventItem) => {
     setSelectedEvent(event);
     setCurrentImage(0);
   };
 
+  /* =======================================================
+     CLOSE EVENT
+  ======================================================= */
+
   const closeEvent = () => {
     setSelectedEvent(null);
     setCurrentImage(0);
   };
+
+  /* =======================================================
+     NEXT IMAGE
+  ======================================================= */
 
   const nextImage = () => {
     if (!selectedEvent?.images.length) return;
@@ -160,6 +203,10 @@ export default function EventsSection() {
     );
   };
 
+  /* =======================================================
+     PREVIOUS IMAGE
+  ======================================================= */
+
   const previousImage = () => {
     if (!selectedEvent?.images.length) return;
 
@@ -167,6 +214,10 @@ export default function EventsSection() {
       prev === 0 ? selectedEvent.images.length - 1 : prev - 1,
     );
   };
+
+  /* =======================================================
+     KEYBOARD CONTROLS
+  ======================================================= */
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -196,6 +247,10 @@ export default function EventsSection() {
     };
   }, [selectedEvent, zoomedImage]);
 
+  /* =======================================================
+     LOCK BODY SCROLL WHEN MODAL IS OPEN
+  ======================================================= */
+
   useEffect(() => {
     if (selectedEvent || zoomedImage) {
       document.body.style.overflow = "hidden";
@@ -210,6 +265,10 @@ export default function EventsSection() {
 
   return (
     <>
+      {/* =====================================================
+          EVENTS SECTION
+      ====================================================== */}
+
       <section
         id="events"
         className="
@@ -222,7 +281,9 @@ export default function EventsSection() {
           md:py-40
         "
       >
-        {/* Background glow */}
+        {/* =================================================
+            BACKGROUND GLOW
+        ================================================== */}
 
         <div
           className="
@@ -251,6 +312,8 @@ export default function EventsSection() {
             blur-[160px]
           "
         />
+
+        {/* Background grid */}
 
         <div
           className="
@@ -283,7 +346,9 @@ export default function EventsSection() {
             max-w-7xl
           "
         >
-          {/* Header */}
+          {/* =================================================
+              HEADER
+          ================================================== */}
 
           <ScrollReveal>
             <div className="max-w-3xl">
@@ -321,7 +386,9 @@ export default function EventsSection() {
               >
                 Moments
                 <br />
-                <span className="text-white/25">that shaped us.</span>
+                <span className="text-white/25">
+                  that shaped us.
+                </span>
               </h2>
 
               <p
@@ -334,15 +401,19 @@ export default function EventsSection() {
                   md:text-base
                 "
               >
-                From competition and orientation to expression, debate and
-                celebration — these moments form the journey of Shrinik.
+                From competition and orientation to expression,
+                debate and celebration — these moments form the
+                journey of Shrinik.
               </p>
             </div>
           </ScrollReveal>
 
-          {/* Timeline */}
+          {/* =================================================
+              TIMELINE
+          ================================================== */}
 
           <div className="relative mt-24">
+
             {/* Central line */}
 
             <div
@@ -361,153 +432,152 @@ export default function EventsSection() {
               "
             />
 
-            <div
-              className="
-                space-y-20
-                md:space-y-28
-              "
-            >
-              {events.map((event, index) => {
-                const leftSide = index % 2 === 0;
+            <div className="space-y-20 md:space-y-28">
 
-                return (
-                  <ScrollReveal key={event.id} delay={index * 0.05} y={45}>
+              {events.map((event, index) => (
+                <ScrollReveal
+                  key={event.id}
+                  delay={index * 0.05}
+                  y={45}
+                >
+                  <div
+                    className="
+                      relative
+                      grid
+                      grid-cols-[40px_1fr]
+                      gap-6
+                      md:grid-cols-[1fr_40px_1fr]
+                      md:gap-10
+                      lg:gap-16
+                    "
+                  >
+
+                    {/* =================================================
+                        MOBILE NODE
+                    ================================================== */}
+
                     <div
                       className="
-                        relative
-                        grid
-                        grid-cols-[40px_1fr]
-                        gap-6
-                        md:grid-cols-2
-                        md:gap-20
+                        absolute
+                        left-[13px]
+                        top-8
+                        z-20
+                        h-3
+                        w-3
+                        rounded-full
+                        border
+                        border-[#C6922E]
+                        bg-[#080808]
+                        shadow-[0_0_20px_rgba(198,146,46,0.35)]
+                        md:hidden
                       "
                     >
-                      {/* Mobile node */}
-
-                      <div
-                        className="
-                          absolute
-                          left-[13px]
-                          top-8
-                          z-20
-                          h-3
-                          w-3
-                          rounded-full
-                          border
-                          border-[#C6922E]
-                          bg-[#080808]
-                          shadow-[0_0_20px_rgba(198,146,46,0.35)]
-                          md:hidden
-                        "
-                      >
-                        <div
-                          className="
-                            absolute
-                            left-1/2
-                            top-1/2
-                            h-1
-                            w-1
-                            -translate-x-1/2
-                            -translate-y-1/2
-                            rounded-full
-                            bg-[#C6922E]
-                          "
-                        />
-                      </div>
-
-                      {/* Desktop left */}
-
-                      <div
-                        className={`
-                          hidden
-                          md:block
-                          ${leftSide ? "md:col-start-1" : "md:col-start-2"}
-                        `}
-                      >
-                        {leftSide && (
-                          <TimelineCard
-                            event={event}
-                            align="right"
-                            onClick={() => openEvent(event)}
-                          />
-                        )}
-                      </div>
-
-                      {/* Desktop right */}
-
-                      <div
-                        className={`
-                          hidden
-                          md:block
-                          ${leftSide ? "md:col-start-2" : "md:col-start-1"}
-                        `}
-                      >
-                        {!leftSide && (
-                          <TimelineCard
-                            event={event}
-                            align="left"
-                            onClick={() => openEvent(event)}
-                          />
-                        )}
-                      </div>
-
-                      {/* Mobile */}
-
-                      <div
-                        className="
-                          col-start-2
-                          md:hidden
-                        "
-                      >
-                        <TimelineCard
-                          event={event}
-                          align="left"
-                          onClick={() => openEvent(event)}
-                        />
-                      </div>
-
-                      {/* Desktop node */}
-
                       <div
                         className="
                           absolute
                           left-1/2
-                          top-8
-                          z-30
-                          hidden
-                          h-4
-                          w-4
+                          top-1/2
+                          h-1
+                          w-1
                           -translate-x-1/2
+                          -translate-y-1/2
                           rounded-full
-                          border
-                          border-[#C6922E]
-                          bg-[#080808]
-                          shadow-[0_0_25px_rgba(198,146,46,0.3)]
-                          md:block
+                          bg-[#C6922E]
                         "
-                      >
-                        <div
-                          className="
-                            absolute
-                            left-1/2
-                            top-1/2
-                            h-1.5
-                            w-1.5
-                            -translate-x-1/2
-                            -translate-y-1/2
-                            rounded-full
-                            bg-[#C6922E]
-                          "
-                        />
-                      </div>
+                      />
                     </div>
-                  </ScrollReveal>
-                );
-              })}
+
+                    {/* =================================================
+                        LEFT — EVENT CARD
+                    ================================================== */}
+
+                    <div
+                      className="
+                        col-start-2
+                        md:col-start-1
+                      "
+                    >
+                      <TimelineCard
+                        event={event}
+                        onClick={() => openEvent(event)}
+                      />
+                    </div>
+
+                    {/* =================================================
+                        CENTER — DESKTOP NODE
+                    ================================================== */}
+
+                    <div
+                      className="
+                        absolute
+                        left-1/2
+                        top-8
+                        z-30
+                        hidden
+                        h-4
+                        w-4
+                        -translate-x-1/2
+                        rounded-full
+                        border
+                        border-[#C6922E]
+                        bg-[#080808]
+                        shadow-[0_0_25px_rgba(198,146,46,0.3)]
+                        md:block
+                      "
+                    >
+                      <div
+                        className="
+                          absolute
+                          left-1/2
+                          top-1/2
+                          h-1.5
+                          w-1.5
+                          -translate-x-1/2
+                          -translate-y-1/2
+                          rounded-full
+                          bg-[#C6922E]
+                        "
+                      />
+                    </div>
+
+                    {/* =================================================
+                        RIGHT — EVENT SPECIFIC CONTENT
+                    ================================================== */}
+
+                    <div
+                      className="
+                        hidden
+                        md:col-start-3
+                        md:block
+                      "
+                    >
+                      <EventInformation event={event} />
+                    </div>
+
+                    {/* =================================================
+                        MOBILE EVENT INFORMATION
+                    ================================================== */}
+
+                    <div
+                      className="
+                        col-start-2
+                        mt-[-8px]
+                        md:hidden
+                      "
+                    >
+                      <MobileEventInformation event={event} />
+                    </div>
+
+                  </div>
+                </ScrollReveal>
+              ))}
+
             </div>
           </div>
 
-          {/* End */}
+          {/* =================================================
+              END OF TIMELINE
+          ================================================== */}
 
           <ScrollReveal delay={0.2}>
             <div
@@ -545,7 +615,7 @@ export default function EventsSection() {
       </section>
 
       {/* =====================================================
-          EVENT GALLERY
+          EVENT GALLERY MODAL
       ====================================================== */}
 
       {selectedEvent && (
@@ -581,7 +651,10 @@ export default function EventsSection() {
               shadow-[0_40px_140px_rgba(0,0,0,0.8)]
             "
           >
-            {/* Close */}
+
+            {/* =================================================
+                CLOSE BUTTON
+            ================================================== */}
 
             <button
               type="button"
@@ -612,7 +685,9 @@ export default function EventsSection() {
               <X size={17} />
             </button>
 
-            {/* Header */}
+            {/* =================================================
+                MODAL HEADER
+            ================================================== */}
 
             <div
               className="
@@ -674,7 +749,9 @@ export default function EventsSection() {
               </h3>
             </div>
 
-            {/* Carousel */}
+            {/* =================================================
+                CAROUSEL
+            ================================================== */}
 
             {selectedEvent.images.length > 0 ? (
               <div
@@ -695,10 +772,15 @@ export default function EventsSection() {
                     bg-black
                   "
                 >
+
+                  {/* Main image */}
+
                   <img
                     key={selectedEvent.images[currentImage]}
                     src={selectedEvent.images[currentImage]}
-                    alt={`${selectedEvent.title} photo ${currentImage + 1}`}
+                    alt={`${selectedEvent.title} photo ${
+                      currentImage + 1
+                    }`}
                     className="
                       h-full
                       w-full
@@ -709,11 +791,15 @@ export default function EventsSection() {
                       hover:scale-[1.015]
                     "
                     onClick={() =>
-                      setZoomedImage(selectedEvent.images[currentImage])
+                      setZoomedImage(
+                        selectedEvent.images[currentImage],
+                      )
                     }
                   />
 
-                  {/* Previous */}
+                  {/* =================================================
+                      PREVIOUS BUTTON
+                  ================================================== */}
 
                   <button
                     type="button"
@@ -744,7 +830,9 @@ export default function EventsSection() {
                     <ArrowLeft size={17} />
                   </button>
 
-                  {/* Next */}
+                  {/* =================================================
+                      NEXT BUTTON
+                  ================================================== */}
 
                   <button
                     type="button"
@@ -775,7 +863,9 @@ export default function EventsSection() {
                     <ArrowRight size={17} />
                   </button>
 
-                  {/* Counter */}
+                  {/* =================================================
+                      IMAGE COUNTER
+                  ================================================== */}
 
                   <div
                     className="
@@ -799,11 +889,15 @@ export default function EventsSection() {
 
                     {" / "}
 
-                    {String(selectedEvent.images.length).padStart(2, "0")}
+                    {String(
+                      selectedEvent.images.length,
+                    ).padStart(2, "0")}
                   </div>
                 </div>
 
-                {/* Dots */}
+                {/* =================================================
+                    CAROUSEL DOTS
+                ================================================== */}
 
                 <div
                   className="
@@ -823,21 +917,25 @@ export default function EventsSection() {
                       onClick={() => setCurrentImage(index)}
                       aria-label={`View photo ${index + 1}`}
                       className={`
-                          h-1
-                          rounded-full
-                          transition-all
-                          duration-300
-                          ${
-                            index === currentImage
-                              ? "w-7 bg-[#C6922E]"
-                              : "w-1.5 bg-white/20 hover:bg-white/40"
-                          }
-                        `}
+                        h-1
+                        rounded-full
+                        transition-all
+                        duration-300
+                        ${
+                          index === currentImage
+                            ? "w-7 bg-[#C6922E]"
+                            : "w-1.5 bg-white/20 hover:bg-white/40"
+                        }
+                      `}
                     />
                   ))}
                 </div>
               </div>
             ) : (
+              /* =================================================
+                 NO PHOTOS
+              ================================================== */
+
               <div
                 className="
                   mx-4
@@ -892,7 +990,7 @@ export default function EventsSection() {
       )}
 
       {/* =====================================================
-          COMPACT PHOTO ZOOM
+          FULL PHOTO ZOOM
       ====================================================== */}
 
       {zoomedImage && (
@@ -922,8 +1020,13 @@ export default function EventsSection() {
               bg-[#100608]
               shadow-[0_40px_120px_rgba(0,0,0,0.8)]
             "
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
+
+            {/* Close */}
+
             <button
               type="button"
               onClick={() => setZoomedImage(null)}
@@ -952,6 +1055,8 @@ export default function EventsSection() {
               <X size={15} />
             </button>
 
+            {/* Full photo */}
+
             <img
               src={zoomedImage}
               alt="Full event photo"
@@ -968,24 +1073,317 @@ export default function EventsSection() {
   );
 }
 
-/*
-|--------------------------------------------------------------------------
-| TIMELINE CARD
-|--------------------------------------------------------------------------
-*/
+/* ============================================================
+   EVENT INFORMATION — DESKTOP
+============================================================ */
+
+interface EventInformationProps {
+  event: EventItem;
+}
+
+function EventInformation({
+  event,
+}: EventInformationProps) {
+  return (
+    <div
+      className="
+        relative
+        flex
+        min-h-[330px]
+        flex-col
+        justify-center
+        px-4
+        py-8
+        lg:px-8
+      "
+    >
+
+      {/* Small label */}
+
+      <div
+        className="
+          flex
+          items-center
+          gap-4
+        "
+      >
+        <span
+          className="
+            text-[9px]
+            uppercase
+            tracking-[0.35em]
+            text-[#C6922E]
+          "
+        >
+          Event Highlight
+        </span>
+
+        <span
+          className="
+            h-px
+            w-12
+            bg-[#C6922E]/35
+          "
+        />
+      </div>
+
+      {/* Highlight */}
+
+      <h3
+        className="
+          mt-7
+          max-w-lg
+          text-3xl
+          font-medium
+          leading-[1]
+          tracking-[-0.045em]
+          text-[#F5F1E8]
+          lg:text-4xl
+        "
+      >
+        {event.highlight}
+      </h3>
+
+      {/* Description */}
+
+      <p
+        className="
+          mt-6
+          max-w-lg
+          text-sm
+          leading-7
+          text-white/30
+        "
+      >
+        {event.description}
+      </p>
+
+      {/* Metadata */}
+
+      <div
+        className="
+          mt-8
+          grid
+          grid-cols-2
+          gap-x-8
+          gap-y-6
+          border-t
+          border-white/[0.07]
+          pt-6
+          lg:grid-cols-3
+        "
+      >
+
+        {/* Date */}
+
+        <div>
+          <p
+            className="
+              text-[8px]
+              uppercase
+              tracking-[0.3em]
+              text-white/20
+            "
+          >
+            Date
+          </p>
+
+          <p
+            className="
+              mt-2
+              text-[10px]
+              uppercase
+              tracking-[0.15em]
+              text-white/55
+            "
+          >
+            {event.date}
+          </p>
+        </div>
+
+        {/* Type */}
+
+        <div>
+          <p
+            className="
+              text-[8px]
+              uppercase
+              tracking-[0.3em]
+              text-white/20
+            "
+          >
+            Type
+          </p>
+
+          <p
+            className="
+              mt-2
+              text-[10px]
+              uppercase
+              tracking-[0.15em]
+              text-white/55
+            "
+          >
+            {event.type}
+          </p>
+        </div>
+
+        {/* Community */}
+
+        <div>
+          <p
+            className="
+              text-[8px]
+              uppercase
+              tracking-[0.3em]
+              text-white/20
+            "
+          >
+            Community
+          </p>
+
+          <p
+            className="
+              mt-2
+              text-[10px]
+              uppercase
+              tracking-[0.15em]
+              text-white/55
+            "
+          >
+            {event.community}
+          </p>
+        </div>
+      </div>
+
+      {/* Decorative line */}
+
+      <div
+        className="
+          mt-8
+          h-px
+          w-16
+          bg-[#C6922E]/40
+        "
+      />
+    </div>
+  );
+}
+
+/* ============================================================
+   EVENT INFORMATION — MOBILE
+============================================================ */
+
+function MobileEventInformation({
+  event,
+}: EventInformationProps) {
+  return (
+    <div
+      className="
+        border-l
+        border-[#C6922E]/20
+        pl-5
+      "
+    >
+
+      <span
+        className="
+          text-[8px]
+          uppercase
+          tracking-[0.3em]
+          text-[#C6922E]
+        "
+      >
+        Event Highlight
+      </span>
+
+      <h4
+        className="
+          mt-3
+          text-2xl
+          font-medium
+          tracking-[-0.035em]
+          text-[#F5F1E8]
+        "
+      >
+        {event.highlight}
+      </h4>
+
+      <p
+        className="
+          mt-4
+          text-xs
+          leading-6
+          text-white/30
+        "
+      >
+        {event.description}
+      </p>
+
+      <div
+        className="
+          mt-5
+          flex
+          flex-wrap
+          gap-x-6
+          gap-y-3
+        "
+      >
+        <span
+          className="
+            text-[8px]
+            uppercase
+            tracking-[0.2em]
+            text-white/30
+          "
+        >
+          {event.date}
+        </span>
+
+        <span
+          className="
+            text-[8px]
+            uppercase
+            tracking-[0.2em]
+            text-white/30
+          "
+        >
+          {event.type}
+        </span>
+
+        <span
+          className="
+            text-[8px]
+            uppercase
+            tracking-[0.2em]
+            text-white/30
+          "
+        >
+          {event.community}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   TIMELINE EVENT CARD
+============================================================ */
 
 interface TimelineCardProps {
   event: EventItem;
-  align: "left" | "right";
   onClick: () => void;
 }
 
-function TimelineCard({ event, align, onClick }: TimelineCardProps) {
+function TimelineCard({
+  event,
+  onClick,
+}: TimelineCardProps) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`
+      className="
         group
         relative
         w-full
@@ -1001,10 +1399,12 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
         hover:-translate-y-2
         hover:border-[#C6922E]/35
         hover:shadow-[0_30px_100px_rgba(0,0,0,0.35)]
-        ${align === "right" ? "md:text-right" : "md:text-left"}
-      `}
+      "
     >
-      {/* Glow */}
+
+      {/* =================================================
+          GOLD GLOW
+      ================================================== */}
 
       <div
         className="
@@ -1023,6 +1423,10 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
         "
       />
 
+      {/* =================================================
+          RED GLOW
+      ================================================== */}
+
       <div
         className="
           pointer-events-none
@@ -1037,7 +1441,9 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
         "
       />
 
-      {/* Grid */}
+      {/* =================================================
+          BACKGROUND GRID
+      ================================================== */}
 
       <div
         className="
@@ -1063,15 +1469,17 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
       />
 
       <div className="relative z-10">
-        {/* Date */}
+
+        {/* =================================================
+            TOP — NUMBER + DATE + ARROW
+        ================================================== */}
 
         <div
-          className={`
+          className="
             flex
             items-center
             justify-between
-            ${align === "right" ? "md:flex-row-reverse" : ""}
-          `}
+          "
         >
           <div
             className="
@@ -1123,11 +1531,14 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
           />
         </div>
 
-        {/* Title */}
+        {/* =================================================
+            TITLE
+        ================================================== */}
 
         <div className="mt-12">
+
           <div
-            className={`
+            className="
               mb-5
               h-px
               w-10
@@ -1135,8 +1546,7 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
               transition-all
               duration-500
               group-hover:w-20
-              ${align === "right" ? "md:ml-auto" : ""}
-            `}
+            "
           />
 
           <p
@@ -1165,33 +1575,36 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
           </h3>
         </div>
 
-        {/* Description */}
+        {/* =================================================
+            DESCRIPTION
+        ================================================== */}
 
         <p
-          className={`
+          className="
             mt-6
             max-w-md
             text-sm
             leading-7
             text-white/30
-            ${align === "right" ? "md:ml-auto" : ""}
-          `}
+          "
         >
           {event.description}
         </p>
 
-        {/* Footer */}
+        {/* =================================================
+            FOOTER
+        ================================================== */}
 
         <div
-          className={`
+          className="
             mt-7
             flex
             items-center
+            justify-between
             border-t
             border-white/[0.06]
             pt-5
-            ${align === "right" ? "justify-end" : "justify-between"}
-          `}
+          "
         >
           <span
             className="
@@ -1206,11 +1619,12 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
 
           <span
             className="
-              ml-6
               text-[8px]
               uppercase
               tracking-[0.25em]
-              text-[#C6922E]/50
+              text-[#C6922E]/60
+              transition-colors
+              group-hover:text-[#C6922E]
             "
           >
             View gallery →
@@ -1218,7 +1632,9 @@ function TimelineCard({ event, align, onClick }: TimelineCardProps) {
         </div>
       </div>
 
-      {/* Bottom gold line */}
+      {/* =================================================
+          HOVER GOLD LINE
+      ================================================== */}
 
       <div
         className="
