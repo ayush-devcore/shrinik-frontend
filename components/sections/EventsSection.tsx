@@ -24,15 +24,28 @@ interface EventItem {
 const events: EventItem[] = [
   {
     id: "valorant-gameplay",
-    number: "01",
+    number: "03",
     date: "14 APR 2025",
     title: "Valorant Gameplay",
     subtitle: "COMPETE · CONNECT · PLAY",
     description:
       "A competitive gaming experience bringing students together through strategy, teamwork and competition.",
-    images: [],
+    images: [
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.45 PM.jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.46 PM.jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.47 PM (1).jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.47 PM.jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.48 PM (1).jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.48 PM (2).jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.48 PM.jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.49 PM.jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.50 PM (1).jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.50 PM (2).jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.50 PM.jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.11.23 PM (1).jpeg",
+      "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.11.23 PM.jpeg",
+    ],
   },
-
   {
     id: "aurora-orientation",
     number: "02",
@@ -62,7 +75,12 @@ const events: EventItem[] = [
     subtitle: "AWARENESS · PERFORMANCE · EXPRESSION",
     description:
       "A street-play initiative using performance and expression as a powerful medium for awareness and engagement.",
-    images: [],
+    images: [
+      "/images/events/nukkad-naatak/nukkad-01.jpg",
+      "/images/events/nukkad-naatak/IMG20251031124328.jpg",
+      "/images/events/nukkad-naatak/IMG_2337.JPG",
+      "/images/events/nukkad-naatak/IMG_2350.JPG",
+    ],
   },
 
   {
@@ -73,7 +91,15 @@ const events: EventItem[] = [
     subtitle: "IDEAS · VOICES · DEBATE",
     description:
       "A platform for students to express ideas, exchange perspectives and engage in meaningful debate.",
-    images: [],
+    images: [
+      "/images/events/sansad-25/IMG20251108140908.jpg",
+      "/images/events/sansad-25/IMG20251108142702.jpg",
+      "/images/events/sansad-25/IMG_3036.jpg",
+      "/images/events/sansad-25/IMG_9501.JPG",
+      "/images/events/sansad-25/IMG_9514.JPG",
+      "/images/events/sansad-25/IMG_9515.JPG",
+      "/images/events/sansad-25/IMG_9574.JPG",
+    ],
   },
 
   {
@@ -84,19 +110,37 @@ const events: EventItem[] = [
     subtitle: "CELEBRATING THE JOURNEY",
     description:
       "A celebration of memories, friendships and the journey shared by the graduating batch.",
-    images: [],
+    images: [
+      "/images/events/farewell-batch-26/DSC05377.JPG",
+      "/images/events/farewell-batch-26/DSC05390.JPG",
+      "/images/events/farewell-batch-26/DSC05393.JPG",
+      "/images/events/farewell-batch-26/DSC05396.JPG",
+      "/images/events/farewell-batch-26/DSC05415.JPG",
+      "/images/events/farewell-batch-26/DSC05426.JPG",
+      "/images/events/farewell-batch-26/DSC05441.JPG",
+      "/images/events/farewell-batch-26/DSC05456.JPG",
+      "/images/events/farewell-batch-26/DSC05470.JPG",
+      "/images/events/farewell-batch-26/DSC05527.JPG",
+      "/images/events/farewell-batch-26/DSC05529.JPG",
+      "/images/events/farewell-batch-26/DSC05541.JPG",
+      "/images/events/farewell-batch-26/DSC05547.JPG",
+      "/images/events/farewell-batch-26/DSC05550.JPG",
+      "/images/events/farewell-batch-26/DSC05551.JPG",
+      "/images/events/farewell-batch-26/DSC05552.JPG",
+      "/images/events/farewell-batch-26/DSC05606.JPG",
+      "/images/events/farewell-batch-26/IMG_20260526_165253.jpg",
+      "/images/events/farewell-batch-26/IMG_20260526_165343.jpg",
+      "/images/events/farewell-batch-26/IMG_20260526_165419.jpg",
+    ],
   },
 ];
 
 export default function EventsSection() {
-  const [selectedEvent, setSelectedEvent] =
-    useState<EventItem | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
-  const [currentImage, setCurrentImage] =
-    useState(0);
+  const [currentImage, setCurrentImage] = useState(0);
 
-  const [zoomedImage, setZoomedImage] =
-    useState<string | null>(null);
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
   const openEvent = (event: EventItem) => {
     setSelectedEvent(event);
@@ -112,9 +156,7 @@ export default function EventsSection() {
     if (!selectedEvent?.images.length) return;
 
     setCurrentImage((prev) =>
-      prev === selectedEvent.images.length - 1
-        ? 0
-        : prev + 1
+      prev === selectedEvent.images.length - 1 ? 0 : prev + 1,
     );
   };
 
@@ -122,9 +164,7 @@ export default function EventsSection() {
     if (!selectedEvent?.images.length) return;
 
     setCurrentImage((prev) =>
-      prev === 0
-        ? selectedEvent.images.length - 1
-        : prev - 1
+      prev === 0 ? selectedEvent.images.length - 1 : prev - 1,
     );
   };
 
@@ -152,10 +192,7 @@ export default function EventsSection() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedEvent, zoomedImage]);
 
@@ -250,7 +287,6 @@ export default function EventsSection() {
 
           <ScrollReveal>
             <div className="max-w-3xl">
-
               <div className="flex items-center gap-3">
                 <span
                   className="
@@ -285,9 +321,7 @@ export default function EventsSection() {
               >
                 Moments
                 <br />
-                <span className="text-white/25">
-                  that shaped us.
-                </span>
+                <span className="text-white/25">that shaped us.</span>
               </h2>
 
               <p
@@ -300,19 +334,15 @@ export default function EventsSection() {
                   md:text-base
                 "
               >
-                From competition and orientation
-                to expression, debate and
-                celebration — these moments form
-                the journey of Shrinik.
+                From competition and orientation to expression, debate and
+                celebration — these moments form the journey of Shrinik.
               </p>
-
             </div>
           </ScrollReveal>
 
           {/* Timeline */}
 
           <div className="relative mt-24">
-
             {/* Central line */}
 
             <div
@@ -341,11 +371,7 @@ export default function EventsSection() {
                 const leftSide = index % 2 === 0;
 
                 return (
-                  <ScrollReveal
-                    key={event.id}
-                    delay={index * 0.05}
-                    y={45}
-                  >
+                  <ScrollReveal key={event.id} delay={index * 0.05} y={45}>
                     <div
                       className="
                         relative
@@ -356,7 +382,6 @@ export default function EventsSection() {
                         md:gap-20
                       "
                     >
-
                       {/* Mobile node */}
 
                       <div
@@ -396,19 +421,14 @@ export default function EventsSection() {
                         className={`
                           hidden
                           md:block
-                          ${leftSide
-                            ? "md:col-start-1"
-                            : "md:col-start-2"
-                          }
+                          ${leftSide ? "md:col-start-1" : "md:col-start-2"}
                         `}
                       >
                         {leftSide && (
                           <TimelineCard
                             event={event}
                             align="right"
-                            onClick={() =>
-                              openEvent(event)
-                            }
+                            onClick={() => openEvent(event)}
                           />
                         )}
                       </div>
@@ -419,19 +439,14 @@ export default function EventsSection() {
                         className={`
                           hidden
                           md:block
-                          ${leftSide
-                            ? "md:col-start-2"
-                            : "md:col-start-1"
-                          }
+                          ${leftSide ? "md:col-start-2" : "md:col-start-1"}
                         `}
                       >
                         {!leftSide && (
                           <TimelineCard
                             event={event}
                             align="left"
-                            onClick={() =>
-                              openEvent(event)
-                            }
+                            onClick={() => openEvent(event)}
                           />
                         )}
                       </div>
@@ -447,9 +462,7 @@ export default function EventsSection() {
                         <TimelineCard
                           event={event}
                           align="left"
-                          onClick={() =>
-                            openEvent(event)
-                          }
+                          onClick={() => openEvent(event)}
                         />
                       </div>
 
@@ -487,7 +500,6 @@ export default function EventsSection() {
                           "
                         />
                       </div>
-
                     </div>
                   </ScrollReveal>
                 );
@@ -551,10 +563,7 @@ export default function EventsSection() {
             md:p-8
           "
           onClick={(event) => {
-            if (
-              event.target ===
-              event.currentTarget
-            ) {
+            if (event.target === event.currentTarget) {
               closeEvent();
             }
           }}
@@ -572,7 +581,6 @@ export default function EventsSection() {
               shadow-[0_40px_140px_rgba(0,0,0,0.8)]
             "
           >
-
             {/* Close */}
 
             <button
@@ -687,20 +695,10 @@ export default function EventsSection() {
                     bg-black
                   "
                 >
-
                   <img
-                    key={
-                      selectedEvent.images[
-                      currentImage
-                      ]
-                    }
-                    src={
-                      selectedEvent.images[
-                      currentImage
-                      ]
-                    }
-                    alt={`${selectedEvent.title} photo ${currentImage + 1
-                      }`}
+                    key={selectedEvent.images[currentImage]}
+                    src={selectedEvent.images[currentImage]}
+                    alt={`${selectedEvent.title} photo ${currentImage + 1}`}
                     className="
                       h-full
                       w-full
@@ -711,11 +709,7 @@ export default function EventsSection() {
                       hover:scale-[1.015]
                     "
                     onClick={() =>
-                      setZoomedImage(
-                        selectedEvent.images[
-                        currentImage
-                        ]
-                      )
+                      setZoomedImage(selectedEvent.images[currentImage])
                     }
                   />
 
@@ -801,15 +795,11 @@ export default function EventsSection() {
                       backdrop-blur-xl
                     "
                   >
-                    {String(
-                      currentImage + 1
-                    ).padStart(2, "0")}
+                    {String(currentImage + 1).padStart(2, "0")}
 
                     {" / "}
 
-                    {String(
-                      selectedEvent.images.length
-                    ).padStart(2, "0")}
+                    {String(selectedEvent.images.length).padStart(2, "0")}
                   </div>
                 </div>
 
@@ -826,32 +816,25 @@ export default function EventsSection() {
                     overflow-hidden
                   "
                 >
-                  {selectedEvent.images.map(
-                    (_, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() =>
-                          setCurrentImage(
-                            index
-                          )
-                        }
-                        aria-label={`View photo ${index + 1
-                          }`}
-                        className={`
+                  {selectedEvent.images.map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setCurrentImage(index)}
+                      aria-label={`View photo ${index + 1}`}
+                      className={`
                           h-1
                           rounded-full
                           transition-all
                           duration-300
-                          ${index ===
-                            currentImage
-                            ? "w-7 bg-[#C6922E]"
-                            : "w-1.5 bg-white/20 hover:bg-white/40"
+                          ${
+                            index === currentImage
+                              ? "w-7 bg-[#C6922E]"
+                              : "w-1.5 bg-white/20 hover:bg-white/40"
                           }
                         `}
-                      />
-                    )
-                  )}
+                    />
+                  ))}
                 </div>
               </div>
             ) : (
@@ -925,9 +908,7 @@ export default function EventsSection() {
             p-4
             backdrop-blur-2xl
           "
-          onClick={() =>
-            setZoomedImage(null)
-          }
+          onClick={() => setZoomedImage(null)}
         >
           <div
             className="
@@ -941,15 +922,11 @@ export default function EventsSection() {
               bg-[#100608]
               shadow-[0_40px_120px_rgba(0,0,0,0.8)]
             "
-            onClick={(event) =>
-              event.stopPropagation()
-            }
+            onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
-              onClick={() =>
-                setZoomedImage(null)
-              }
+              onClick={() => setZoomedImage(null)}
               aria-label="Close full photo"
               className="
                 absolute
@@ -1003,11 +980,7 @@ interface TimelineCardProps {
   onClick: () => void;
 }
 
-function TimelineCard({
-  event,
-  align,
-  onClick,
-}: TimelineCardProps) {
+function TimelineCard({ event, align, onClick }: TimelineCardProps) {
   return (
     <button
       type="button"
@@ -1028,13 +1001,9 @@ function TimelineCard({
         hover:-translate-y-2
         hover:border-[#C6922E]/35
         hover:shadow-[0_30px_100px_rgba(0,0,0,0.35)]
-        ${align === "right"
-          ? "md:text-right"
-          : "md:text-left"
-        }
+        ${align === "right" ? "md:text-right" : "md:text-left"}
       `}
     >
-
       {/* Glow */}
 
       <div
@@ -1094,7 +1063,6 @@ function TimelineCard({
       />
 
       <div className="relative z-10">
-
         {/* Date */}
 
         <div
@@ -1102,10 +1070,7 @@ function TimelineCard({
             flex
             items-center
             justify-between
-            ${align === "right"
-              ? "md:flex-row-reverse"
-              : ""
-            }
+            ${align === "right" ? "md:flex-row-reverse" : ""}
           `}
         >
           <div
@@ -1161,7 +1126,6 @@ function TimelineCard({
         {/* Title */}
 
         <div className="mt-12">
-
           <div
             className={`
               mb-5
@@ -1171,10 +1135,7 @@ function TimelineCard({
               transition-all
               duration-500
               group-hover:w-20
-              ${align === "right"
-                ? "md:ml-auto"
-                : ""
-              }
+              ${align === "right" ? "md:ml-auto" : ""}
             `}
           />
 
@@ -1213,10 +1174,7 @@ function TimelineCard({
             text-sm
             leading-7
             text-white/30
-            ${align === "right"
-              ? "md:ml-auto"
-              : ""
-            }
+            ${align === "right" ? "md:ml-auto" : ""}
           `}
         >
           {event.description}
@@ -1232,10 +1190,7 @@ function TimelineCard({
             border-t
             border-white/[0.06]
             pt-5
-            ${align === "right"
-              ? "justify-end"
-              : "justify-between"
-            }
+            ${align === "right" ? "justify-end" : "justify-between"}
           `}
         >
           <span
