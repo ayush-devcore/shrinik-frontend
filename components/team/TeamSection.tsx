@@ -1,4 +1,4 @@
-"use client";
+
 
 import type { MouseEvent, ReactNode } from "react";
 import {
@@ -19,12 +19,10 @@ import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
+  Target,
 } from "lucide-react";
 
-import {
-  teamGroups,
-  type TeamMember,
-} from "@/data/team";
+import { teamGroups, type TeamMember } from "@/data/team";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -38,19 +36,15 @@ export default function TeamSection() {
   const [activeTeamIndex, setActiveTeamIndex] = useState(0);
   const [activeMemberIndex, setActiveMemberIndex] = useState(0);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [selectedMemberTeam, setSelectedMemberTeam] = useState<string>("");
 
   const sectionRef = useRef<HTMLElement>(null);
   const teamTrackRef = useRef<HTMLDivElement>(null);
   const memberTrackRef = useRef<HTMLDivElement>(null);
 
-  const isAnimatingRef = useRef(false);
-
   const activeTeam = teamGroups[activeTeamIndex];
 
-  const members = useMemo(
-    () => activeTeam?.members ?? [],
-    [activeTeam]
-  );
+  const members = useMemo(() => activeTeam?.members ?? [], [activeTeam]);
 
   /*
    * ==========================================================
@@ -61,9 +55,7 @@ export default function TeamSection() {
   const prefersReducedMotion = useRef(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     prefersReducedMotion.current = mediaQuery.matches;
 
@@ -74,10 +66,7 @@ export default function TeamSection() {
     mediaQuery.addEventListener("change", handleChange);
 
     return () => {
-      mediaQuery.removeEventListener(
-        "change",
-        handleChange
-      );
+      mediaQuery.removeEventListener("change", handleChange);
     };
   }, []);
 
@@ -88,25 +77,18 @@ export default function TeamSection() {
    */
 
   const scrollTrackToIndex = useCallback(
-    (
-      track: HTMLDivElement | null,
-      selector: string,
-      index: number
-    ) => {
+    (track: HTMLDivElement | null, selector: string, index: number) => {
       if (!track) return;
 
-      const items =
-        track.querySelectorAll<HTMLElement>(selector);
+      const items = track.querySelectorAll<HTMLElement>(selector);
 
       const item = items[index];
 
       if (!item) return;
 
-      const trackRect =
-        track.getBoundingClientRect();
+      const trackRect = track.getBoundingClientRect();
 
-      const itemRect =
-        item.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
 
       const isVisible =
         itemRect.left >= trackRect.left + 10 &&
@@ -115,18 +97,14 @@ export default function TeamSection() {
       if (isVisible) return;
 
       const targetLeft =
-        item.offsetLeft -
-        track.clientWidth / 2 +
-        item.offsetWidth / 2;
+        item.offsetLeft - track.clientWidth / 2 + item.offsetWidth / 2;
 
       track.scrollTo({
         left: Math.max(0, targetLeft),
-        behavior: prefersReducedMotion.current
-          ? "auto"
-          : "smooth",
+        behavior: prefersReducedMotion.current ? "auto" : "smooth",
       });
     },
-    []
+    [],
   );
 
   /*
@@ -139,9 +117,7 @@ export default function TeamSection() {
     (index: number) => {
       if (!teamGroups.length) return;
 
-      const next =
-        (index + teamGroups.length) %
-        teamGroups.length;
+      const next = (index + teamGroups.length) % teamGroups.length;
 
       if (next === activeTeamIndex) return;
 
@@ -149,17 +125,10 @@ export default function TeamSection() {
       setActiveMemberIndex(0);
 
       requestAnimationFrame(() => {
-        scrollTrackToIndex(
-          teamTrackRef.current,
-          ".team-category-card",
-          next
-        );
+        scrollTrackToIndex(teamTrackRef.current, ".team-category-card", next);
       });
     },
-    [
-      activeTeamIndex,
-      scrollTrackToIndex,
-    ]
+    [activeTeamIndex, scrollTrackToIndex],
   );
 
   const previousTeam = useCallback(() => {
@@ -180,42 +149,28 @@ export default function TeamSection() {
     (index: number) => {
       if (!members.length) return;
 
-      const next =
-        (index + members.length) %
-        members.length;
+      const next = (index + members.length) % members.length;
 
       setActiveMemberIndex(next);
 
       requestAnimationFrame(() => {
-        scrollTrackToIndex(
-          memberTrackRef.current,
-          ".team-member-card",
-          next
-        );
+        scrollTrackToIndex(memberTrackRef.current, ".team-member-card", next);
       });
     },
-    [members.length, scrollTrackToIndex]
+    [members.length, scrollTrackToIndex],
   );
 
   const previousMember = useCallback(() => {
     if (!members.length) return;
 
     changeMember(activeMemberIndex - 1);
-  }, [
-    activeMemberIndex,
-    changeMember,
-    members.length,
-  ]);
+  }, [activeMemberIndex, changeMember, members.length]);
 
   const nextMember = useCallback(() => {
     if (!members.length) return;
 
     changeMember(activeMemberIndex + 1);
-  }, [
-    activeMemberIndex,
-    changeMember,
-    members.length,
-  ]);
+  }, [activeMemberIndex, changeMember, members.length]);
 
   /*
    * ==========================================================
@@ -249,11 +204,8 @@ export default function TeamSection() {
    */
 
   useEffect(() => {
-    const handleKeyboard = (
-      event: KeyboardEvent
-    ) => {
-      const target =
-        event.target as HTMLElement | null;
+    const handleKeyboard = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
 
       if (
         target?.tagName === "INPUT" ||
@@ -267,12 +219,9 @@ export default function TeamSection() {
 
       if (!section) return;
 
-      const rect =
-        section.getBoundingClientRect();
+      const rect = section.getBoundingClientRect();
 
-      const visible =
-        rect.bottom > 0 &&
-        rect.top < window.innerHeight;
+      const visible = rect.bottom > 0 && rect.top < window.innerHeight;
 
       if (!visible) return;
 
@@ -287,16 +236,10 @@ export default function TeamSection() {
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      handleKeyboard
-    );
+    window.addEventListener("keydown", handleKeyboard);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        handleKeyboard
-      );
+      window.removeEventListener("keydown", handleKeyboard);
     };
   }, [previousMember, nextMember]);
 
@@ -349,7 +292,7 @@ export default function TeamSection() {
             opacity: 1,
             y: 0,
             clearProps: "filter,transform",
-          }
+          },
         );
 
         return;
@@ -377,7 +320,7 @@ export default function TeamSection() {
             filter: "blur(0px)",
             duration: 0.65,
             ease: "power3.out",
-          }
+          },
         )
         .fromTo(
           ".team-heading",
@@ -393,7 +336,7 @@ export default function TeamSection() {
             duration: 0.8,
             ease: "power3.out",
           },
-          "-=0.35"
+          "-=0.35",
         )
         .fromTo(
           ".team-description",
@@ -407,7 +350,7 @@ export default function TeamSection() {
             duration: 0.6,
             ease: "power3.out",
           },
-          "-=0.4"
+          "-=0.4",
         )
         .fromTo(
           ".team-category-card",
@@ -424,7 +367,7 @@ export default function TeamSection() {
             stagger: 0.06,
             ease: "power3.out",
           },
-          "-=0.3"
+          "-=0.3",
         );
     }, section);
 
@@ -449,20 +392,14 @@ export default function TeamSection() {
     }
 
     const ctx = gsap.context(() => {
-      const elements =
-        section.querySelectorAll<HTMLElement>(
-          ".team-content-animate"
-        );
+      const elements = section.querySelectorAll<HTMLElement>(
+        ".team-content-animate",
+      );
 
       const memberCards =
-        section.querySelectorAll<HTMLElement>(
-          ".team-member-card"
-        );
+        section.querySelectorAll<HTMLElement>(".team-member-card");
 
-      gsap.killTweensOf([
-        elements,
-        memberCards,
-      ]);
+      gsap.killTweensOf([elements, memberCards]);
 
       gsap.fromTo(
         elements,
@@ -477,7 +414,7 @@ export default function TeamSection() {
           stagger: 0.04,
           ease: "power3.out",
           overwrite: true,
-        }
+        },
       );
 
       gsap.fromTo(
@@ -495,7 +432,7 @@ export default function TeamSection() {
           stagger: 0.045,
           ease: "power3.out",
           overwrite: true,
-        }
+        },
       );
     }, section);
 
@@ -657,10 +594,7 @@ export default function TeamSection() {
             >
               Meet the
               <br />
-
-              <span className="text-white/25">
-                people behind Shrinik.
-              </span>
+              <span className="text-white/25">people behind Shrinik.</span>
             </h2>
           </div>
 
@@ -679,9 +613,8 @@ export default function TeamSection() {
                 md:text-base
               "
             >
-              One community. Different skills.
-              Different ideas. One team building
-              the Shrinik experience.
+              One community. Different skills. Different ideas. One team
+              building the Shrinik experience.
             </p>
           </div>
         </div>
@@ -715,17 +648,11 @@ export default function TeamSection() {
             </div>
 
             <div className="flex gap-2">
-              <RoundButton
-                label="Previous team"
-                onClick={previousTeam}
-              >
+              <RoundButton label="Previous team" onClick={previousTeam}>
                 <ArrowLeft size={15} />
               </RoundButton>
 
-              <RoundButton
-                label="Next team"
-                onClick={nextTeam}
-              >
+              <RoundButton label="Next team" onClick={nextTeam}>
                 <ArrowRight size={15} />
               </RoundButton>
             </div>
@@ -803,9 +730,7 @@ export default function TeamSection() {
                     text-white/20
                   "
                 >
-                  {teamCategoryLabel(
-                    activeTeam.category
-                  )}
+                  {teamCategoryLabel(activeTeam.category)}
                 </span>
               </div>
 
@@ -832,10 +757,7 @@ export default function TeamSection() {
                   text-[#C6922E]
                 "
               >
-                {String(members.length).padStart(
-                  2,
-                  "0"
-                )}
+                {String(members.length).padStart(2, "0")}
               </span>
 
               <p
@@ -911,9 +833,13 @@ export default function TeamSection() {
               <MemberCard
                 key={member.id}
                 member={member}
+                category={activeTeam?.category ?? "core"}
                 active={index === activeMemberIndex}
                 onClick={() => changeMember(index)}
-                onPhotoClick={() => setSelectedMember(member)}
+                onPhotoClick={() => {
+                  setSelectedMember(member);
+                  setSelectedMemberTeam(activeTeam.category);
+                }}
               />
             ))}
           </div>
@@ -1002,11 +928,7 @@ export default function TeamSection() {
                 key={member.id}
                 type="button"
                 aria-label={`View ${member.name}`}
-                aria-current={
-                  index === activeMemberIndex
-                    ? "true"
-                    : undefined
-                }
+                aria-current={index === activeMemberIndex ? "true" : undefined}
                 onClick={() => changeMember(index)}
                 className={`
                   h-1.5
@@ -1014,9 +936,10 @@ export default function TeamSection() {
                   rounded-full
                   transition-all
                   duration-300
-                  ${index === activeMemberIndex
-                    ? "w-8 bg-[#C6922E]"
-                    : "w-1.5 bg-white/15 hover:bg-white/30"
+                  ${
+                    index === activeMemberIndex
+                      ? "w-8 bg-[#C6922E]"
+                      : "w-1.5 bg-white/15 hover:bg-white/30"
                   }
                 `}
               />
@@ -1048,6 +971,7 @@ export default function TeamSection() {
         {selectedMember && (
           <MemberPhotoModal
             member={selectedMember}
+            teamCategory={selectedMemberTeam}
             onClose={() => setSelectedMember(null)}
           />
         )}
@@ -1064,9 +988,11 @@ export default function TeamSection() {
 
 function MemberPhotoModal({
   member,
+  teamCategory,
   onClose,
 }: {
   member: TeamMember;
+  teamCategory: string;
   onClose: () => void;
 }) {
   const initials = member.name
@@ -1078,12 +1004,10 @@ function MemberPhotoModal({
 
   const leadership =
     /director|president|head|lead|organizer|secretary|coordinator|expert|web master/i.test(
-      member.role
+      member.role,
     );
 
-  const handleBackdropClick = (
-    event: MouseEvent<HTMLDivElement>
-  ) => {
+  const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
@@ -1203,6 +1127,10 @@ function MemberPhotoModal({
  * ============================================================
  * TEAM VISUAL CARD
  * ============================================================
+ *
+ * Every team intentionally has its own visual language. The
+ * layout stays consistent so the carousel feels like one system,
+ * but the artwork changes according to what the team actually does.
  */
 
 function TeamVisualCard({
@@ -1216,31 +1144,18 @@ function TeamVisualCard({
   active: boolean;
   onClick: () => void;
 }) {
-  const cardRef =
-    useRef<HTMLButtonElement>(null);
-
-  const visualRef =
-    useRef<HTMLDivElement>(null);
-
-  const lightRef =
-    useRef<HTMLDivElement>(null);
-
+  const cardRef = useRef<HTMLButtonElement>(null);
+  const visualRef = useRef<HTMLDivElement>(null);
+  const lightRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
 
-  const pointerRef = useRef({
-    x: 0,
-    y: 0,
-  });
+  const pointerRef = useRef({ x: 0, y: 0 });
 
-  const moveCard = (
-    event: MouseEvent<HTMLButtonElement>
-  ) => {
+  const moveCard = (event: MouseEvent<HTMLButtonElement>) => {
     if (
       !cardRef.current ||
       window.innerWidth < 768 ||
-      window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
       return;
     }
@@ -1255,29 +1170,14 @@ function TeamVisualCard({
 
       if (!cardRef.current) return;
 
-      const rect =
-        cardRef.current.getBoundingClientRect();
-
-      const x =
-        pointerRef.current.x -
-        rect.left -
-        rect.width / 2;
-
-      const y =
-        pointerRef.current.y -
-        rect.top -
-        rect.height / 2;
-
-      const rotationX =
-        -(y / rect.height) * 5;
-
-      const rotationY =
-        (x / rect.width) * 5;
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = pointerRef.current.x - rect.left - rect.width / 2;
+      const y = pointerRef.current.y - rect.top - rect.height / 2;
 
       gsap.to(cardRef.current, {
-        rotationX,
-        rotationY,
-        scale: active ? 1.02 : 1.01,
+        rotationX: -(y / rect.height) * 4.5,
+        rotationY: (x / rect.width) * 4.5,
+        scale: active ? 1.012 : 1.006,
         duration: 0.3,
         ease: "power2.out",
         overwrite: true,
@@ -1285,10 +1185,10 @@ function TeamVisualCard({
 
       if (visualRef.current) {
         gsap.to(visualRef.current, {
-          x: rotationY * 1.5,
-          y: rotationX * -1.5,
-          scale: 1.04,
-          duration: 0.35,
+          x: (x / rect.width) * 8,
+          y: (y / rect.height) * 6,
+          scale: 1.025,
+          duration: 0.4,
           ease: "power2.out",
           overwrite: true,
         });
@@ -1296,9 +1196,9 @@ function TeamVisualCard({
 
       if (lightRef.current) {
         gsap.to(lightRef.current, {
-          x: x * 0.15,
-          y: y * 0.15,
-          duration: 0.3,
+          x: x * 0.12,
+          y: y * 0.12,
+          duration: 0.35,
           ease: "power2.out",
           overwrite: true,
         });
@@ -1317,8 +1217,8 @@ function TeamVisualCard({
     gsap.to(cardRef.current, {
       rotationX: 0,
       rotationY: 0,
-      scale: active ? 1.01 : 1,
-      duration: 0.5,
+      scale: active ? 1.005 : 1,
+      duration: 0.55,
       ease: "power3.out",
       overwrite: true,
     });
@@ -1328,7 +1228,7 @@ function TeamVisualCard({
         x: 0,
         y: 0,
         scale: 1,
-        duration: 0.55,
+        duration: 0.6,
         ease: "power3.out",
         overwrite: true,
       });
@@ -1353,6 +1253,8 @@ function TeamVisualCard({
     };
   }, []);
 
+  const theme = teamTheme(team.category);
+
   return (
     <button
       ref={cardRef}
@@ -1376,165 +1278,75 @@ function TeamVisualCard({
         rounded-[1.8rem]
         border
         text-left
-        transition-[border-color,opacity,box-shadow]
+        transition-[border-color,opacity,box-shadow,transform]
         duration-500
         sm:min-w-[330px]
         md:h-[430px]
         md:min-w-[365px]
-        ${active
-          ? `
-              border-[#C6922E]/60
-              shadow-[0_30px_100px_rgba(0,0,0,0.55)]
-            `
-          : `
-              border-white/[0.08]
-              opacity-75
-              hover:border-[#C6922E]/35
-              hover:opacity-100
-            `
+        ${
+          active
+            ? `${theme.activeBorder} ${theme.activeShadow}`
+            : `border-white/[0.08] opacity-[0.78] hover:border-[#C6922E]/35 hover:opacity-100`
         }
       `}
     >
+      {/* Moving visual layer */}
       <div
         ref={visualRef}
-        className={`
-          absolute
-          inset-0
-          ${teamBackground(team.category)}
-        `}
-        style={{
-          willChange: "transform",
-        }}
+        className={`absolute inset-0 ${theme.background}`}
+        style={{ willChange: "transform" }}
       >
+        {/* Fine technical grid */}
         <div
-          className="
-            absolute
-            inset-0
-            opacity-[0.12]
-          "
+          className="absolute inset-0 opacity-[0.075]"
           style={{
             backgroundImage: `
-              linear-gradient(
-                rgba(255,255,255,.12) 1px,
-                transparent 1px
-              ),
-              linear-gradient(
-                90deg,
-                rgba(255,255,255,.12) 1px,
-                transparent 1px
-              )
+              linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px)
             `,
             backgroundSize: "44px 44px",
           }}
         />
 
-        <div
-          className="
-            absolute
-            left-[18%]
-            top-0
-            h-full
-            w-px
-            bg-gradient-to-b
-            from-transparent
-            via-[#C6922E]/20
-            to-transparent
-          "
-        />
-
-        <div
-          className="
-            absolute
-            right-[18%]
-            top-0
-            h-full
-            w-px
-            bg-gradient-to-b
-            from-transparent
-            via-[#C6922E]/10
-            to-transparent
-          "
-        />
-
+        {/* Team-specific artwork */}
         <TeamArtwork category={team.category} />
 
-        <div
-          className="
-            absolute
-            bottom-[-15%]
-            left-1/2
-            h-[35%]
-            w-[130%]
-            -translate-x-1/2
-            rounded-[50%]
-            border
-            border-[#C6922E]/15
-            bg-[#C6922E]/5
-          "
-        />
-
+        {/* Cursor-responsive atmospheric light */}
         <div
           ref={lightRef}
-          className="
+          className={`
+            pointer-events-none
             absolute
             left-1/2
-            top-[47%]
-            h-48
-            w-48
+            top-[48%]
+            h-56
+            w-56
             -translate-x-1/2
             -translate-y-1/2
             rounded-full
-            bg-[#C6922E]/10
-            blur-[75px]
-          "
-          style={{
-            willChange: "transform",
-          }}
+            blur-[85px]
+            ${theme.glow}
+          `}
+          style={{ willChange: "transform" }}
         />
       </div>
 
-      <div
-        className="
-          absolute
-          inset-0
-          bg-gradient-to-b
-          from-black/25
-          via-transparent
-          to-[#070507]/95
-        "
-      />
+      {/* Depth / readability layer */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent via-[45%] to-[#060506]/95" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/80 to-transparent" />
 
-      <div
-        className="
-          absolute
-          left-6
-          right-6
-          top-6
-          z-20
-        "
-      >
+      {/* Top information */}
+      <div className="absolute left-6 right-6 top-6 z-20">
         <div className="flex items-start justify-between">
           <div>
-            <span
-              className="
-                text-[9px]
-                uppercase
-                tracking-[0.3em]
-                text-[#C6922E]
-              "
-            >
-              Team {String(index + 1).padStart(2, "0")}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-[9px] uppercase tracking-[0.34em] text-[#C6922E]">
+                Team {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="h-px w-8 bg-[#C6922E]/45" />
+            </div>
 
-            <p
-              className="
-                mt-2
-                text-[9px]
-                uppercase
-                tracking-[0.2em]
-                text-white/35
-              "
-            >
+            <p className="mt-2 text-[9px] uppercase tracking-[0.22em] text-white/35">
               {teamCategoryLabel(team.category)}
             </p>
           </div>
@@ -1550,9 +1362,10 @@ function TeamVisualCard({
               border
               transition-all
               duration-500
-              ${active
-                ? "border-[#C6922E]/60 bg-[#C6922E] text-[#080707]"
-                : "border-white/15 bg-black/20 text-white/50 group-hover:border-[#C6922E]/50 group-hover:text-[#C6922E]"
+              ${
+                active
+                  ? "border-[#C6922E]/60 bg-[#C6922E] text-[#080707]"
+                  : "border-white/15 bg-black/20 text-white/50 group-hover:border-[#C6922E]/50 group-hover:text-[#C6922E]"
               }
             `}
           >
@@ -1561,61 +1374,54 @@ function TeamVisualCard({
         </div>
       </div>
 
-      <div
-        className="
-          absolute
-          bottom-6
-          left-6
-          right-6
-          z-20
-        "
-      >
-        <h4
-          className="
-            max-w-[310px]
-            text-3xl
-            font-medium
-            leading-[0.95]
-            tracking-[-0.045em]
-            text-[#F5F1E8]
-            transition-transform
-            duration-500
-            group-hover:-translate-y-1
-          "
-        >
-          {team.name}
-        </h4>
+      {/* Small identity marker */}
+      <div className="absolute bottom-[116px] left-6 z-20 max-w-[76%]">
+        <p className="text-[8px] uppercase tracking-[0.28em] text-[#C6922E]/75">
+          {theme.microLabel}
+        </p>
+        <p className="mt-2 max-w-[250px] text-[11px] leading-5 text-white/35">
+          {theme.shortDescription}
+        </p>
+      </div>
 
-        <div className="mt-5 flex items-center justify-between">
-          <span
-            className="
-              text-[8px]
-              uppercase
-              tracking-[0.2em]
-              text-white/30
-            "
-          >
-            {String(team.members.length).padStart(
-              2,
-              "0"
-            )}{" "}
-            Active
-          </span>
+      {/* Bottom title */}
+      <div className="absolute bottom-6 left-6 right-6 z-20">
+        <div className="mb-4 h-px w-full bg-gradient-to-r from-white/15 via-white/5 to-transparent" />
+
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h4 className="max-w-[310px] text-3xl font-medium leading-[0.94] tracking-[-0.05em] text-[#F5F1E8] transition-transform duration-500 group-hover:-translate-y-1">
+              {team.name}
+            </h4>
+
+            <span className="mt-3 block text-[8px] uppercase tracking-[0.22em] text-white/30">
+              {String(team.members.length).padStart(2, "0")} Active Members
+            </span>
+          </div>
+
+          <div className="hidden shrink-0 text-right sm:block">
+            <span className="block text-[8px] uppercase tracking-[0.22em] text-white/20">
+              {theme.indexLabel}
+            </span>
+          </div>
         </div>
       </div>
 
-      {active && (
-        <div
-          className="
-            pointer-events-none
-            absolute
-            inset-0
-            rounded-[1.8rem]
-            border
-            border-[#C6922E]/20
-          "
-        />
-      )}
+      {/* Active edge */}
+      <div
+        className={`pointer-events-none absolute inset-0 rounded-[1.8rem] border transition-opacity duration-500 ${
+          active
+            ? "border-[#C6922E]/20 opacity-100"
+            : "border-transparent opacity-0"
+        }`}
+      />
+
+      {/* Subtle active sweep */}
+      <div
+        className={`pointer-events-none absolute bottom-0 left-0 h-px transition-all duration-700 ${
+          active ? "w-full bg-[#C6922E]/70" : "w-0 bg-transparent"
+        }`}
+      />
     </button>
   );
 }
@@ -1624,60 +1430,52 @@ function TeamVisualCard({
  * ============================================================
  * TEAM ARTWORK
  * ============================================================
+ *
+ * Core       = command / orbit / connected leadership
+ * Technical  = terminal / circuits / data flow
+ * Creative   = layered canvas / frames / composition
+ * Management = organisation / strategy / hierarchy
+ * Cultural   = sound / rhythm / stage energy
  */
 
-function TeamArtwork({
-  category,
-}: {
-  category: string;
-}) {
+function TeamArtwork({ category }: { category: string }) {
   if (category === "core") {
     return (
-      <div
-        className="
-          absolute
-          left-1/2
-          top-[47%]
-          -translate-x-1/2
-          -translate-y-1/2
-        "
-      >
-        <div className="relative h-44 w-44">
-          <div className="absolute inset-0 rounded-full border border-[#C6922E]/30" />
-          <div className="absolute inset-5 rounded-full border border-[#C6922E]/20" />
-          <div className="absolute inset-10 rounded-full border border-[#C6922E]/30" />
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-x-[10%] top-[18%] bottom-[24%]">
+          <div className="absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-400/20" />
+          <div className="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-300/15" />
+          <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-amber-300/25" />
 
-          <div
-            className="
-              absolute
-              left-1/2
-              top-1/2
-              h-20
-              w-20
-              -translate-x-1/2
-              -translate-y-1/2
-              rotate-45
-              rounded-[1.2rem]
-              border-2
-              border-[#C6922E]/60
-              bg-[#C6922E]/10
-              shadow-[0_0_50px_rgba(198,146,46,0.18)]
-            "
-          />
-
-          <div
-            className="
-              absolute
-              left-1/2
-              top-1/2
-              -translate-x-1/2
-              -translate-y-1/2
-              text-4xl
-              text-[#E3C477]
-            "
-          >
-            ✦
+          <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[1.2rem] border border-amber-300/65 bg-amber-400/[0.08] shadow-[0_0_55px_rgba(245,158,11,.12)] transition-transform duration-700 group-hover:rotate-[135deg]" />
+          <div className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-amber-200/25 bg-black/20">
+            <span className="text-2xl text-amber-200">✦</span>
           </div>
+
+          {[
+            "left-1/2 top-[-3px] -translate-x-1/2",
+            "right-[-3px] top-1/2 -translate-y-1/2",
+            "bottom-[-3px] left-1/2 -translate-x-1/2",
+            "left-[-3px] top-1/2 -translate-y-1/2",
+          ].map((position) => (
+            <span
+              key={position}
+              className={`absolute ${position} h-2.5 w-2.5 rounded-full bg-amber-300 shadow-[0_0_18px_rgba(245,158,11,.55)]`}
+            />
+          ))}
+
+          <div className="absolute left-[10%] top-[23%] h-px w-[27%] rotate-[24deg] bg-gradient-to-r from-transparent to-amber-400/30" />
+          <div className="absolute right-[10%] top-[23%] h-px w-[27%] -rotate-[24deg] bg-gradient-to-l from-transparent to-amber-400/30" />
+          <div className="absolute bottom-[22%] left-[15%] h-px w-[22%] -rotate-[28deg] bg-gradient-to-r from-transparent to-amber-400/20" />
+          <div className="absolute bottom-[22%] right-[15%] h-px w-[22%] rotate-[28deg] bg-gradient-to-l from-transparent to-amber-400/20" />
+        </div>
+
+        <div className="absolute left-6 top-[35%] text-[8px] font-medium uppercase tracking-[0.35em] text-amber-200/35">
+          COMMAND // AUTHORITY
+        </div>
+
+        <div className="absolute bottom-[92px] right-6 text-[8px] uppercase tracking-[0.3em] text-amber-200/40">
+          STEER / DECIDE / LEAD
         </div>
       </div>
     );
@@ -1685,76 +1483,49 @@ function TeamArtwork({
 
   if (category === "technical") {
     return (
-      <div
-        className="
-          absolute
-          left-1/2
-          top-[46%]
-          -translate-x-1/2
-          -translate-y-1/2
-        "
-      >
-        <div className="relative h-48 w-64">
-          <div
-            className="
-              absolute
-              left-1/2
-              top-1/2
-              h-28
-              w-44
-              -translate-x-1/2
-              -translate-y-1/2
-              rounded-2xl
-              border
-              border-[#C6922E]/35
-              bg-black/25
-              shadow-[0_0_50px_rgba(198,146,46,0.12)]
-            "
-          />
+      <div className="absolute inset-0 overflow-hidden font-mono">
+        <div className="absolute left-1/2 top-[43%] h-56 w-64 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute left-1/2 top-1/2 h-40 w-56 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-cyan-400/30 bg-[#02080A]/40 shadow-[0_0_55px_rgba(34,211,238,.08)]" />
 
-          <div
-            className="
-              absolute
-              left-1/2
-              top-[48%]
-              h-16
-              w-28
-              -translate-x-1/2
-              -translate-y-1/2
-              rounded-lg
-              border
-              border-[#E3C477]/20
-              bg-[#C6922E]/5
-            "
-          />
+          <div className="absolute left-[13%] top-[18%] h-px w-[74%] bg-cyan-300/20" />
+          <span className="absolute left-[15%] top-[12%] h-1.5 w-1.5 rounded-full bg-cyan-300/70" />
+          <span className="absolute left-[20%] top-[12%] h-1.5 w-1.5 rounded-full bg-cyan-300/35" />
+          <span className="absolute left-[25%] top-[12%] h-1.5 w-1.5 rounded-full bg-cyan-300/20" />
 
-          <div className="absolute left-[22%] top-[26%] h-2 w-2 rounded-full bg-[#C6922E]/60" />
-          <div className="absolute left-[30%] top-[26%] h-2 w-2 rounded-full bg-[#C6922E]/30" />
-          <div className="absolute left-[38%] top-[26%] h-2 w-2 rounded-full bg-[#C6922E]/20" />
+          <div className="absolute left-[20%] top-[30%] text-[25px] tracking-[-0.15em] text-cyan-200/65">
+            {"</>"}
+          </div>
 
-          <div
-            className="
-              absolute
-              bottom-[16%]
-              left-1/2
-              h-1
-              w-28
-              -translate-x-1/2
-              bg-[#C6922E]/30
-            "
-          />
+          <div className="absolute left-[21%] top-[52%] space-y-2">
+            <div className="h-1 w-28 bg-cyan-300/25" />
+            <div className="h-1 w-20 bg-cyan-300/15" />
+            <div className="h-1 w-32 bg-cyan-300/10" />
+          </div>
 
-          <div
-            className="
-              absolute
-              bottom-[8%]
-              left-1/2
-              h-1
-              w-16
-              -translate-x-1/2
-              bg-[#C6922E]/15
-            "
-          />
+          <div className="absolute right-[-2%] top-[29%] h-px w-12 bg-cyan-300/40" />
+          <div className="absolute right-[-2%] top-[29%] h-10 w-px bg-cyan-300/20" />
+          <span className="absolute right-[-4%] top-[25%] h-2 w-2 rounded-full border border-cyan-300/60" />
+
+          <div className="absolute left-[-2%] bottom-[28%] h-px w-12 bg-cyan-300/30" />
+          <div className="absolute left-[-2%] bottom-[28%] h-8 w-px bg-cyan-300/15" />
+          <span className="absolute left-[-4%] bottom-[23%] h-2 w-2 rounded-full border border-cyan-300/45" />
+
+          <div className="absolute bottom-[5%] left-1/2 h-px w-36 -translate-x-1/2 bg-cyan-300/20" />
+
+          {/* CRT scanline */}
+          <div className="pointer-events-none absolute left-[13%] top-[18%] h-[64%] w-[74%] bg-gradient-to-b from-transparent via-cyan-300/[0.035] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </div>
+
+        <div className="absolute left-6 top-[34%] text-[8px] uppercase tracking-[0.2em] text-cyan-300/45">
+          STATUS: ONLINE
+        </div>
+
+        <div className="absolute right-6 top-[35%] text-[8px] uppercase tracking-[0.22em] text-cyan-300/30">
+          // BUILD_02
+        </div>
+
+        <div className="absolute bottom-[92px] right-6 text-[8px] uppercase tracking-[0.25em] text-cyan-300/40">
+          BUILD / TEST / SHIP
         </div>
       </div>
     );
@@ -1762,87 +1533,34 @@ function TeamArtwork({
 
   if (category === "creative") {
     return (
-      <div
-        className="
-          absolute
-          left-1/2
-          top-[46%]
-          -translate-x-1/2
-          -translate-y-1/2
-        "
-      >
-        <div className="relative h-48 w-56">
-          <div
-            className="
-              absolute
-              left-1/2
-              top-1/2
-              h-36
-              w-36
-              -translate-x-1/2
-              -translate-y-1/2
-              rotate-12
-              rounded-[2rem]
-              border
-              border-[#C6922E]/30
-            "
-          />
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-[43%] h-56 w-64 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute left-[12%] top-[13%] h-40 w-48 rotate-[-10deg] rounded-[1.5rem] border border-fuchsia-400/20 bg-fuchsia-950/15 transition-transform duration-700 group-hover:rotate-[-15deg] group-hover:-translate-x-2" />
+          <div className="absolute left-[12%] top-[13%] h-40 w-48 rotate-[8deg] rounded-[1.5rem] border border-purple-300/25 bg-purple-950/10 transition-transform duration-700 group-hover:rotate-[13deg] group-hover:translate-x-2" />
 
-          <div
-            className="
-              absolute
-              left-1/2
-              top-1/2
-              h-28
-              w-28
-              -translate-x-1/2
-              -translate-y-1/2
-              -rotate-12
-              rounded-full
-              border
-              border-dashed
-              border-[#E3C477]/30
-            "
-          />
+          <div className="absolute left-1/2 top-1/2 h-32 w-44 -translate-x-1/2 -translate-y-1/2 rotate-[-3deg] rounded-[1rem] border border-fuchsia-300/35 bg-black/20">
+            <span className="absolute left-[-8px] top-[-8px] h-5 w-5 border-l border-t border-fuchsia-200/65" />
+            <span className="absolute right-[-8px] bottom-[-8px] h-5 w-5 border-b border-r border-fuchsia-200/45" />
 
-          <div
-            className="
-              absolute
-              left-1/2
-              top-1/2
-              -translate-x-1/2
-              -translate-y-1/2
-              text-6xl
-              text-[#E3C477]/65
-            "
-          >
-            ✦
+            <div className="absolute left-[25%] top-[27%] h-12 w-12 rounded-full bg-fuchsia-400/10 blur-[2px]" />
+            <div className="absolute left-[42%] top-[25%] h-16 w-10 rotate-[35deg] rounded-full border border-fuchsia-200/35" />
+            <div className="absolute right-[12%] top-[45%] h-10 w-20 rotate-[-25deg] rounded-full border border-purple-300/30" />
+            <span className="absolute left-[46%] top-[42%] text-4xl text-fuchsia-200/65">
+              ✦
+            </span>
           </div>
 
-          <div
-            className="
-              absolute
-              left-4
-              top-10
-              h-8
-              w-8
-              rounded-full
-              bg-[#C6922E]/10
-            "
-          />
+          <span className="absolute left-[5%] top-[53%] h-2.5 w-2.5 rounded-full bg-fuchsia-300/50" />
+          <span className="absolute right-[4%] top-[31%] h-2 w-2 rounded-full bg-purple-300/50" />
+          <span className="absolute right-[11%] bottom-[16%] h-4 w-4 rounded-full border border-fuchsia-300/40" />
+        </div>
 
-          <div
-            className="
-              absolute
-              bottom-4
-              right-3
-              h-12
-              w-12
-              rounded-full
-              bg-[#650018]/40
-              blur-md
-            "
-          />
+        <div className="absolute left-6 top-[34%] text-[8px] uppercase tracking-[0.34em] text-fuchsia-200/40">
+          FRAME / FORM / FEEL
+        </div>
+
+        <div className="absolute right-6 top-[35%] text-[18px] font-light tracking-[0.18em] text-fuchsia-200/15">
+          Aa
         </div>
       </div>
     );
@@ -1850,184 +1568,336 @@ function TeamArtwork({
 
   if (category === "management") {
     return (
-      <div
-        className="
-          absolute
-          left-1/2
-          top-[46%]
-          -translate-x-1/2
-          -translate-y-1/2
-        "
-      >
-        <div className="relative h-48 w-60">
-          <div
-            className="
-              absolute
-              bottom-10
-              left-1/2
-              h-20
-              w-48
-              -translate-x-1/2
-              rounded-xl
-              border
-              border-[#C6922E]/40
-              bg-[#C6922E]/5
-            "
-          />
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-[43%] h-56 w-64 -translate-x-1/2 -translate-y-1/2">
+          {/* Architectural frame */}
+          <div className="absolute inset-[8%] border border-emerald-300/15" />
+          <div className="absolute left-[8%] top-[8%] h-5 w-5 border-l border-t border-emerald-300/40" />
+          <div className="absolute right-[8%] top-[8%] h-5 w-5 border-r border-t border-emerald-300/40" />
 
-          <div
-            className="
-              absolute
-              bottom-[82px]
-              left-1/2
-              h-3
-              w-52
-              -translate-x-1/2
-              rounded-full
-              bg-[#C6922E]/30
-            "
-          />
+          {/* Network */}
+          <div className="absolute left-1/2 top-[24%] h-12 w-px -translate-x-1/2 bg-emerald-300/25" />
+          <div className="absolute left-[25%] top-[46%] h-px w-[50%] bg-emerald-300/25" />
+          <div className="absolute left-[25%] top-[46%] h-12 w-px bg-emerald-300/20" />
+          <div className="absolute right-[25%] top-[46%] h-12 w-px bg-emerald-300/20" />
 
-          <div
-            className="
-              absolute
-              left-[22%]
-              top-[55px]
-              h-16
-              w-16
-              rounded-full
-              border
-              border-[#E3C477]/40
-            "
-          />
-
-          <div
-            className="
-              absolute
-              left-1/2
-              top-[42px]
-              h-20
-              w-20
-              -translate-x-1/2
-              rounded-full
-              border
-              border-[#E3C477]/50
-            "
-          />
-
-          <div
-            className="
-              absolute
-              right-[22%]
-              top-[55px]
-              h-16
-              w-16
-              rounded-full
-              border
-              border-[#E3C477]/40
-            "
-          />
-
-          <div
-            className="
-              absolute
-              left-1/2
-              top-0
-              -translate-x-1/2
-              text-4xl
-              text-[#C6922E]/70
-            "
-          >
-            ◆
+          <div className="absolute left-1/2 top-[15%] flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-xl border border-emerald-300/45 bg-emerald-400/[0.06] rotate-45 transition-transform duration-700 group-hover:rotate-[135deg]">
+            <Target
+              className="-rotate-45 text-emerald-200/70"
+              size={22}
+              strokeWidth={1.2}
+            />
           </div>
+
+          {[
+            "left-[11%] top-[49%]",
+            "left-1/2 top-[49%] -translate-x-1/2",
+            "right-[11%] top-[49%]",
+          ].map((position) => (
+            <div
+              key={position}
+              className={`absolute ${position} h-14 w-14 rounded-xl border border-emerald-300/25 bg-emerald-950/10`}
+            />
+          ))}
+
+          <span className="absolute left-[20%] top-[69%] text-[7px] uppercase tracking-[0.18em] text-emerald-200/35">
+            PLAN
+          </span>
+          <span className="absolute left-[44%] top-[69%] text-[7px] uppercase tracking-[0.18em] text-emerald-200/45">
+            ALIGN
+          </span>
+          <span className="absolute right-[17%] top-[69%] text-[7px] uppercase tracking-[0.18em] text-emerald-200/35">
+            DELIVER
+          </span>
+
+          {/* Light sweep */}
+          <div className="absolute left-[-20%] top-0 h-full w-[18%] rotate-[14deg] bg-gradient-to-r from-transparent via-emerald-200/[0.06] to-transparent opacity-0 transition-all duration-700 group-hover:left-[105%] group-hover:opacity-100" />
+        </div>
+
+        <div className="absolute left-6 top-[35%] text-[8px] uppercase tracking-[0.3em] text-emerald-200/40">
+          STRUCTURE / NETWORK
+        </div>
+
+        <div className="absolute bottom-[92px] right-6 text-[8px] uppercase tracking-[0.26em] text-emerald-200/40">
+          ALIGN → EXECUTE
         </div>
       </div>
     );
   }
 
+  // Culture / Dance / Music — rhythm and stage energy.
   return (
-    <div
-      className="
-        absolute
-        left-1/2
-        top-[46%]
-        -translate-x-1/2
-        -translate-y-1/2
-      "
-    >
-      <div className="relative h-48 w-56">
-        <div
-          className="
-            absolute
-            left-1/2
-            top-1/2
-            h-36
-            w-36
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            border
-            border-[#C6922E]/25
-          "
-        />
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute left-1/2 top-[43%] h-56 w-64 -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-[7%] h-40 w-40 -translate-x-1/2 rounded-full border border-orange-300/15" />
+        <div className="absolute left-1/2 top-[16%] h-28 w-28 -translate-x-1/2 rounded-full border border-dashed border-orange-200/25" />
 
-        <div
-          className="
-            absolute
-            left-1/2
-            top-1/2
-            h-28
-            w-28
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            border
-            border-dashed
-            border-[#E3C477]/35
-          "
-        />
+        {/* Stage spotlight */}
+        <div className="absolute left-1/2 top-[8%] h-36 w-24 -translate-x-1/2 rotate-[8deg] bg-gradient-to-b from-orange-300/[0.08] to-transparent blur-[8px]" />
 
-        <div
-          className="
-            absolute
-            left-1/2
-            top-1/2
-            -translate-x-1/2
-            -translate-y-1/2
-            text-6xl
-            text-[#E3C477]/70
-          "
-        >
-          ♫
+        {/* Equalizer */}
+        <div className="absolute left-1/2 top-1/2 flex h-28 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5">
+          {["h-8", "h-14", "h-20", "h-28", "h-18", "h-24", "h-12", "h-7"].map(
+            (height, index) => (
+              <span
+                key={index}
+                className={`w-1 rounded-full ${
+                  index === 3 || index === 5
+                    ? "bg-orange-200/75"
+                    : "bg-orange-300/35"
+                } transition-transform duration-500 group-hover:scale-y-125`}
+              >
+                <span className={`block w-full rounded-full ${height}`} />
+              </span>
+            ),
+          )}
         </div>
 
-        <div
-          className="
-            absolute
-            left-2
-            top-10
-            h-8
-            w-8
-            rounded-full
-            bg-[#C6922E]/10
-          "
-        />
+        <span className="absolute left-[43%] top-[30%] text-5xl text-orange-200/55 transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-6">
+          ♫
+        </span>
 
-        <div
-          className="
-            absolute
-            bottom-4
-            right-3
-            h-12
-            w-12
-            rounded-full
-            bg-[#650018]/40
-            blur-md
-          "
-        />
+        <span className="absolute left-[8%] top-[30%] h-2.5 w-2.5 rounded-full bg-orange-300/50" />
+        <span className="absolute right-[8%] top-[37%] h-2 w-2 rounded-full bg-orange-200/60" />
+        <span className="absolute left-[18%] bottom-[17%] h-2 w-2 rounded-full border border-orange-300/45" />
+        <span className="absolute right-[18%] bottom-[14%] h-3 w-3 rounded-full border border-orange-200/30" />
+
+        <div className="absolute bottom-[8%] left-1/2 h-px w-52 -translate-x-1/2 bg-gradient-to-r from-transparent via-orange-300/35 to-transparent" />
+      </div>
+
+      <div className="absolute left-6 top-[34%] rotate-90 text-[8px] uppercase tracking-[0.34em] text-orange-200/35">
+        RHYTHM / EXPRESSION
+      </div>
+
+      <div className="absolute right-6 top-[34%] text-[8px] uppercase tracking-[0.28em] text-orange-200/35">
+        ♫ LIVE
       </div>
     </div>
   );
+}
+
+/*
+ * ============================================================
+ * TEAM THEMES
+ * ============================================================
+ */
+
+function teamTheme(category: string) {
+  switch (category) {
+    case "core":
+      return {
+        background:
+          "bg-gradient-to-br from-[#5E0018] via-[#1C070D] to-[#050505]",
+        glow: "bg-amber-400/[0.06]",
+        activeBorder: "border-amber-400/55",
+        activeShadow: "shadow-[0_28px_100px_rgba(245,158,11,.12)]",
+        microLabel: "COMMAND // CORE",
+        shortDescription:
+          "Direction, decisions and the people steering the community.",
+        indexLabel: "01 / COMMAND",
+      };
+
+    case "technical":
+      return {
+        background:
+          "bg-gradient-to-br from-[#10262A] via-[#091214] to-[#040607]",
+        glow: "bg-cyan-400/[0.05]",
+        activeBorder: "border-cyan-400/45",
+        activeShadow: "shadow-[0_28px_100px_rgba(34,211,238,.10)]",
+        microLabel: "SYSTEM // ONLINE",
+        shortDescription:
+          "Code, systems and digital experiences built from the ground up.",
+        indexLabel: "02 / SYSTEM",
+      };
+
+    case "creative":
+      return {
+        background:
+          "bg-gradient-to-br from-[#47001B] via-[#190817] to-[#060507]",
+        glow: "bg-fuchsia-400/[0.06]",
+        activeBorder: "border-fuchsia-400/45",
+        activeShadow: "shadow-[0_28px_100px_rgba(217,70,239,.10)]",
+        microLabel: "FRAME // EXPRESSION",
+        shortDescription:
+          "Visual ideas, media and design with a distinct point of view.",
+        indexLabel: "03 / STUDIO",
+      };
+
+    case "management":
+      return {
+        background:
+          "bg-gradient-to-br from-[#09271F] via-[#081412] to-[#040605]",
+        glow: "bg-emerald-400/[0.05]",
+        activeBorder: "border-emerald-400/40",
+        activeShadow: "shadow-[0_28px_100px_rgba(52,211,153,.09)]",
+        microLabel: "NETWORK // ALIGN",
+        shortDescription:
+          "Planning, coordination and execution behind every moving part.",
+        indexLabel: "04 / NETWORK",
+      };
+
+    case "cultural":
+      return {
+        background:
+          "bg-gradient-to-br from-[#4B0A16] via-[#1B070C] to-[#060506]",
+        glow: "bg-orange-400/[0.06]",
+        activeBorder: "border-orange-400/45",
+        activeShadow: "shadow-[0_28px_100px_rgba(251,146,60,.10)]",
+        microLabel: "RHYTHM // LIVE",
+        shortDescription:
+          "Music, dance and performance powering Shrinik's cultural side.",
+        indexLabel: "05 / RHYTHM",
+      };
+
+    default:
+      return {
+        background:
+          "bg-gradient-to-br from-[#40000F] via-[#16040A] to-[#050505]",
+        glow: "bg-[#C6922E]/10",
+        activeBorder: "border-[#C6922E]/60",
+        activeShadow: "shadow-[0_28px_100px_rgba(198,146,46,.10)]",
+        microLabel: "SHRINIK",
+        shortDescription: "Different skills. Different ideas. One community.",
+        indexLabel: "SHRINIK",
+      };
+  }
+}
+
+/*
+ * ============================================================
+ * MEMBER CARD THEMES
+ * ============================================================
+ *
+ * The team card artwork and the member cards share the same
+ * department identity, so the visual language continues after
+ * opening a team.
+ */
+function memberCardTheme(category: string) {
+  switch (category) {
+    case "core":
+      return {
+        imageTint:
+          "bg-gradient-to-br from-[#5A0017]/35 via-transparent to-[#0A0808]",
+        activeBorder: "border-amber-400/45",
+        activeShadow: "shadow-[0_30px_90px_rgba(245,158,11,.14)]",
+        badgeBorder: "border-amber-400/25",
+        badgeText: "text-amber-200/70",
+        leadershipBorder: "border-amber-400/30",
+        accentText: "text-amber-300",
+        initials: "text-amber-300/35",
+        initialsHover: "group-hover:text-amber-300/60",
+        decorBorder: "border-amber-300/10",
+        actionBorder: "border-amber-400/50",
+        actionBg: "bg-amber-400/10",
+        actionText: "text-amber-300",
+        actionHover:
+          "group-hover:border-amber-400/40 group-hover:text-amber-300",
+        outerBorder: "border-amber-300/15",
+      };
+
+    case "technical":
+      return {
+        imageTint:
+          "bg-gradient-to-br from-cyan-950/35 via-transparent to-[#050708]",
+        activeBorder: "border-cyan-400/45",
+        activeShadow: "shadow-[0_30px_90px_rgba(34,211,238,.12)]",
+        badgeBorder: "border-cyan-400/25",
+        badgeText: "text-cyan-200/70",
+        leadershipBorder: "border-cyan-400/25",
+        accentText: "text-cyan-300",
+        initials: "text-cyan-300/30",
+        initialsHover: "group-hover:text-cyan-300/55",
+        decorBorder: "border-cyan-300/10",
+        actionBorder: "border-cyan-400/45",
+        actionBg: "bg-cyan-400/10",
+        actionText: "text-cyan-300",
+        actionHover: "group-hover:border-cyan-400/40 group-hover:text-cyan-300",
+        outerBorder: "border-cyan-300/15",
+      };
+
+    case "creative":
+      return {
+        imageTint:
+          "bg-gradient-to-br from-fuchsia-950/30 via-purple-950/15 to-[#070507]",
+        activeBorder: "border-fuchsia-400/45",
+        activeShadow: "shadow-[0_30px_90px_rgba(217,70,239,.13)]",
+        badgeBorder: "border-fuchsia-400/25",
+        badgeText: "text-fuchsia-200/70",
+        leadershipBorder: "border-fuchsia-400/25",
+        accentText: "text-fuchsia-300",
+        initials: "text-fuchsia-300/30",
+        initialsHover: "group-hover:text-fuchsia-300/55",
+        decorBorder: "border-fuchsia-300/10",
+        actionBorder: "border-fuchsia-400/45",
+        actionBg: "bg-fuchsia-400/10",
+        actionText: "text-fuchsia-300",
+        actionHover:
+          "group-hover:border-fuchsia-400/40 group-hover:text-fuchsia-300",
+        outerBorder: "border-fuchsia-300/15",
+      };
+
+    case "management":
+      return {
+        imageTint:
+          "bg-gradient-to-br from-emerald-950/30 via-blue-950/10 to-[#050706]",
+        activeBorder: "border-emerald-400/40",
+        activeShadow: "shadow-[0_30px_90px_rgba(52,211,153,.11)]",
+        badgeBorder: "border-emerald-400/25",
+        badgeText: "text-emerald-200/70",
+        leadershipBorder: "border-emerald-400/25",
+        accentText: "text-emerald-300",
+        initials: "text-emerald-300/30",
+        initialsHover: "group-hover:text-emerald-300/55",
+        decorBorder: "border-emerald-300/10",
+        actionBorder: "border-emerald-400/40",
+        actionBg: "bg-emerald-400/10",
+        actionText: "text-emerald-300",
+        actionHover:
+          "group-hover:border-emerald-400/35 group-hover:text-emerald-300",
+        outerBorder: "border-emerald-300/15",
+      };
+
+    case "cultural":
+      return {
+        imageTint:
+          "bg-gradient-to-br from-orange-950/30 via-rose-950/15 to-[#070506]",
+        activeBorder: "border-orange-400/45",
+        activeShadow: "shadow-[0_30px_90px_rgba(251,146,60,.13)]",
+        badgeBorder: "border-orange-400/25",
+        badgeText: "text-orange-200/70",
+        leadershipBorder: "border-orange-400/25",
+        accentText: "text-orange-300",
+        initials: "text-orange-300/30",
+        initialsHover: "group-hover:text-orange-300/55",
+        decorBorder: "border-orange-300/10",
+        actionBorder: "border-orange-400/45",
+        actionBg: "bg-orange-400/10",
+        actionText: "text-orange-300",
+        actionHover:
+          "group-hover:border-orange-400/40 group-hover:text-orange-300",
+        outerBorder: "border-orange-300/15",
+      };
+
+    default:
+      return {
+        imageTint: "bg-gradient-to-br from-red-950/25 via-transparent to-black",
+        activeBorder: "border-[#C6922E]/45",
+        activeShadow: "shadow-[0_30px_90px_rgba(198,146,46,.12)]",
+        badgeBorder: "border-[#C6922E]/25",
+        badgeText: "text-[#C6922E]/70",
+        leadershipBorder: "border-[#C6922E]/30",
+        accentText: "text-[#C6922E]",
+        initials: "text-[#C6922E]/35",
+        initialsHover: "group-hover:text-[#C6922E]/55",
+        decorBorder: "border-[#C6922E]/10",
+        actionBorder: "border-[#C6922E]/50",
+        actionBg: "bg-[#C6922E]/10",
+        actionText: "text-[#C6922E]",
+        actionHover:
+          "group-hover:border-[#C6922E]/40 group-hover:text-[#C6922E]",
+        outerBorder: "border-[#C6922E]/15",
+      };
+  }
 }
 
 /*
@@ -2038,20 +1908,20 @@ function TeamArtwork({
 
 function MemberCard({
   member,
+  category,
   active,
   onClick,
   onPhotoClick,
 }: {
   member: TeamMember;
+  category: string;
   active: boolean;
   onClick: () => void;
   onPhotoClick: () => void;
 }) {
-  const cardRef =
-    useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
 
-  const imageRef =
-    useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const rafRef = useRef<number | null>(null);
 
@@ -2069,18 +1939,16 @@ function MemberCard({
 
   const leadership =
     /director|president|head|lead|organizer|secretary|coordinator|expert|web master/i.test(
-      member.role
+      member.role,
     );
 
-  const moveCard = (
-    event: MouseEvent<HTMLElement>
-  ) => {
+  const memberTheme = memberCardTheme(category);
+
+  const moveCard = (event: MouseEvent<HTMLElement>) => {
     if (
       !cardRef.current ||
       window.innerWidth < 768 ||
-      window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
       return;
     }
@@ -2095,24 +1963,15 @@ function MemberCard({
 
       if (!cardRef.current) return;
 
-      const rect =
-        cardRef.current.getBoundingClientRect();
+      const rect = cardRef.current.getBoundingClientRect();
 
-      const x =
-        pointerRef.current.x -
-        rect.left -
-        rect.width / 2;
+      const x = pointerRef.current.x - rect.left - rect.width / 2;
 
-      const y =
-        pointerRef.current.y -
-        rect.top -
-        rect.height / 2;
+      const y = pointerRef.current.y - rect.top - rect.height / 2;
 
       gsap.to(cardRef.current, {
-        rotationX:
-          -(y / rect.height) * 5,
-        rotationY:
-          (x / rect.width) * 5,
+        rotationX: -(y / rect.height) * 5,
+        rotationY: (x / rect.width) * 5,
         scale: active ? 1.015 : 1.005,
         duration: 0.28,
         ease: "power2.out",
@@ -2176,10 +2035,7 @@ function MemberCard({
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(event) => {
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
+        if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           onClick();
         }
@@ -2211,15 +2067,13 @@ function MemberCard({
         sm:min-w-[320px]
         md:h-[450px]
         md:min-w-[340px]
-        ${active
-          ? `
-              border-[#C6922E]/50
-              shadow-[0_30px_90px_rgba(0,0,0,0.45)]
-            `
-          : `
+        ${
+          active
+            ? `${memberTheme.activeBorder} ${memberTheme.activeShadow}`
+            : `
               border-white/[0.07]
               opacity-80
-              hover:border-[#C6922E]/30
+              hover:border-white/20
               hover:opacity-100
             `
         }
@@ -2227,11 +2081,12 @@ function MemberCard({
     >
       <div
         ref={imageRef}
-        className="
+        className={`
           absolute
           inset-0
           overflow-hidden
-        "
+          ${memberTheme.imageTint}
+        `}
         style={{
           willChange: "transform",
         }}
@@ -2295,42 +2150,42 @@ function MemberCard({
             />
 
             <span
-              className="
+              className={`
                 relative
                 z-10
                 text-7xl
                 font-medium
                 tracking-[-0.08em]
-                text-[#C6922E]/35
+                ${memberTheme.initials}
                 transition-colors
                 duration-500
-                group-hover:text-[#C6922E]/55
-              "
+                ${memberTheme.initialsHover}
+              `}
             >
               {initials}
             </span>
 
             <div
-              className="
+              className={`
                 absolute
                 h-48
                 w-48
                 rounded-full
                 border
-                border-[#C6922E]/10
-              "
+                ${memberTheme.decorBorder}
+              `}
             />
 
             <div
-              className="
+              className={`
                 absolute
                 h-36
                 w-36
                 rounded-full
                 border
                 border-dashed
-                border-[#C6922E]/10
-              "
+                ${memberTheme.decorBorder}
+              `}
             />
           </div>
         )}
@@ -2351,27 +2206,27 @@ function MemberCard({
       />
 
       <div
-        className="
+        className={`
           absolute
           right-5
           top-5
           z-20
           rounded-full
           border
-          border-white/10
+          ${memberTheme.badgeBorder}
           bg-black/30
           px-3
           py-1.5
           backdrop-blur-md
-        "
+        `}
       >
         <span
-          className="
+          className={`
             text-[8px]
             uppercase
             tracking-[0.18em]
-            text-white/45
-          "
+            ${memberTheme.badgeText}
+          `}
         >
           {member.role}
         </span>
@@ -2379,27 +2234,27 @@ function MemberCard({
 
       {leadership && (
         <div
-          className="
+          className={`
             absolute
             left-5
             top-5
             z-20
             rounded-full
             border
-            border-[#C6922E]/30
+            ${memberTheme.leadershipBorder}
             bg-[#12070A]/75
             px-3
             py-1.5
             backdrop-blur-md
-          "
+          `}
         >
           <span
-            className="
+            className={`
               text-[8px]
               uppercase
               tracking-[0.18em]
-              text-[#C6922E]
-            "
+              ${memberTheme.accentText}
+            `}
           >
             Leadership
           </span>
@@ -2433,13 +2288,13 @@ function MemberCard({
           </h4>
 
           <p
-            className="
+            className={`
               mt-2
               text-[8px]
               uppercase
               tracking-[0.2em]
-              text-[#C6922E]
-            "
+              ${memberTheme.accentText}
+            `}
           >
             {member.role}
           </p>
@@ -2457,9 +2312,10 @@ function MemberCard({
             border
             transition-all
             duration-300
-            ${active
-              ? "border-[#C6922E]/50 bg-[#C6922E]/10 text-[#C6922E]"
-              : "border-white/10 text-white/25 group-hover:border-[#C6922E]/40 group-hover:text-[#C6922E]"
+            ${
+              active
+                ? `${memberTheme.actionBorder} ${memberTheme.actionBg} ${memberTheme.actionText}`
+                : `border-white/10 text-white/25 ${memberTheme.actionHover}`
             }
           `}
         >
@@ -2469,15 +2325,15 @@ function MemberCard({
 
       {active && (
         <div
-          className="
+          className={`
             pointer-events-none
             absolute
             inset-0
             z-30
             rounded-[1.8rem]
             border
-            border-[#C6922E]/15
-          "
+            ${memberTheme.outerBorder}
+          `}
         />
       )}
     </article>
@@ -2588,9 +2444,7 @@ function MemberImage({
           {initials}
         </span>
 
-        <span className="sr-only">
-          Photo unavailable for {name}
-        </span>
+        <span className="sr-only">Photo unavailable for {name}</span>
       </div>
     );
   }
@@ -2663,64 +2517,6 @@ function RoundButton({
       {children}
     </button>
   );
-}
-
-/*
- * ============================================================
- * TEAM BACKGROUNDS
- * ============================================================
- */
-
-function teamBackground(category: string) {
-  switch (category) {
-    case "core":
-      return `
-        bg-gradient-to-br
-        from-[#6A0019]
-        via-[#26070D]
-        to-[#050505]
-      `;
-
-    case "technical":
-      return `
-        bg-gradient-to-br
-        from-[#40230B]
-        via-[#190D06]
-        to-[#050505]
-      `;
-
-    case "creative":
-      return `
-        bg-gradient-to-br
-        from-[#54001A]
-        via-[#23070F]
-        to-[#050505]
-      `;
-
-    case "management":
-      return `
-        bg-gradient-to-br
-        from-[#54210B]
-        via-[#1D0B06]
-        to-[#050505]
-      `;
-
-    case "cultural":
-      return `
-        bg-gradient-to-br
-        from-[#430817]
-        via-[#19050C]
-        to-[#050505]
-      `;
-
-    default:
-      return `
-        bg-gradient-to-br
-        from-[#40000F]
-        via-[#16040A]
-        to-[#050505]
-      `;
-  }
 }
 
 /*
