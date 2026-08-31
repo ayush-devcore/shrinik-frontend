@@ -837,9 +837,9 @@ export default function TeamSection() {
                 active={index === activeMemberIndex}
                 onClick={() => changeMember(index)}
                 onPhotoClick={() => {
-                  setSelectedMember(member);
-                  setSelectedMemberTeam(activeTeam.category);
-                }}
+  setSelectedMember(member);
+  setSelectedMemberTeam(activeTeam.category);
+}}
               />
             ))}
           </div>
@@ -968,13 +968,16 @@ export default function TeamSection() {
           </button>
         </div>
 
-        {selectedMember && (
-          <MemberPhotoModal
-            member={selectedMember}
-            teamCategory={selectedMemberTeam}
-            onClose={() => setSelectedMember(null)}
-          />
-        )}
+{selectedMember && (
+  <MemberPhotoModal
+    member={selectedMember}
+    teamCategory={selectedMemberTeam}
+    onClose={() => {
+      setSelectedMember(null);
+      setSelectedMemberTeam("");
+    }}
+  />
+)}
       </div>
     </section>
   );
