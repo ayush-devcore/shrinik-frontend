@@ -32,21 +32,25 @@ export const teamGroups: TeamGroup[] = [
         id: "core-team-prajjval-verma",
         name: "Prajjval Verma",
         role: "Vice President",
+        image: "/images/prajjval-verma.jpg",
       },
       {
         id: "core-team-anushka-shukla",
         name: "Anushka Shukla",
         role: "Organizer",
+        image: "/images/anushka-shukla.jpg",
       },
       {
         id: "core-team-siddhant-singh",
         name: "Siddhant Singh",
         role: "Secretary",
+        image: "/images/siddhant-singh.jpg",
       },
       {
         id: "core-team-kritika",
         name: "Kritika",
         role: "Joint Secretary",
+        image: "/images/kritika.jpg",
       },
       {
         id: "core-team-gaurang-aggarwal",
@@ -142,6 +146,7 @@ export const teamGroups: TeamGroup[] = [
         id: "design-media-team-khyati-prakash",
         name: "Khyati Prakash",
         role: "Director",
+        image: "/images/khyati-prakash.jpg",
       },
       {
         id: "design-media-team-ujjwal-maheshwari",
@@ -248,6 +253,7 @@ export const teamGroups: TeamGroup[] = [
         id: "pr-team-abhinav-raj",
         name: "Abhinav Raj",
         role: "Director",
+        image: "/images/abhinav-raj.jpg",
       },
       {
         id: "pr-team-ashwani-mishra",
@@ -377,6 +383,7 @@ export const teamGroups: TeamGroup[] = [
         id: "event-management-team-abhay-shukla",
         name: "Abhay Shukla",
         role: "Head",
+        image: "/images/abhay-shukla.jpg",
       },
       {
         id: "event-management-team-tanish-solanki",

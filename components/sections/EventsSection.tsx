@@ -24,7 +24,11 @@ interface EventItem {
   type: string;
   community: string;
 
+  // Gallery images
   images: string[];
+
+  // Full visual used as the left timeline card
+  coverImage: string;
 }
 
 /* =========================================================
@@ -44,6 +48,9 @@ const events: EventItem[] = [
     highlight: "Where strategy met teamwork.",
     type: "Gaming Event",
     community: "Shrinik Community",
+
+    coverImage:
+      "/images/events/valorant-gameplay/valorant-cover.png",
 
     images: [
       "/images/events/valorant-gameplay/WhatsApp Image 2026-04-03 at 4.10.48 PM.jpeg",
@@ -65,6 +72,9 @@ const events: EventItem[] = [
     highlight: "Where new journeys began.",
     type: "Orientation",
     community: "Shrinik Community",
+
+    coverImage:
+      "/images/events/aurora-orientation/aurora-cover.png",
 
     images: [
       "/images/events/aurora-orientation/IMG_20250913_151116.jpg",
@@ -92,6 +102,9 @@ const events: EventItem[] = [
     type: "Cultural Event",
     community: "Shrinik Community",
 
+    coverImage:
+      "/images/events/nukkad-naatak/nukkad-cover.png",
+
     images: [
       "/images/events/nukkad-naatak/IMG_2350.JPG",
       "/images/events/nukkad-naatak/nukkad-01.jpg",
@@ -112,6 +125,9 @@ const events: EventItem[] = [
     highlight: "Ideas. Voices. Meaningful debate.",
     type: "Debate & Discussion",
     community: "Shrinik Community",
+
+    coverImage:
+      "/images/events/sansad-25/sansad-cover.png",
 
     images: [
       "/images/events/sansad-25/IMG_9574.JPG",
@@ -136,6 +152,9 @@ const events: EventItem[] = [
     highlight: "Goodbyes today. Memories forever.",
     type: "Farewell",
     community: "Shrinik Community",
+
+    coverImage:
+      "/images/events/farewell-batch-26/farewell-cover.jpeg",
 
     images: [
       "/images/events/farewell-batch-26/DSC05377.JPG",
@@ -167,11 +186,13 @@ const events: EventItem[] = [
 ========================================================= */
 
 export default function EventsSection() {
-  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [selectedEvent, setSelectedEvent] =
+    useState<EventItem | null>(null);
 
   const [currentImage, setCurrentImage] = useState(0);
 
-  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [zoomedImage, setZoomedImage] =
+    useState<string | null>(null);
 
   /* =======================================================
      OPEN EVENT
@@ -199,7 +220,9 @@ export default function EventsSection() {
     if (!selectedEvent?.images.length) return;
 
     setCurrentImage((prev) =>
-      prev === selectedEvent.images.length - 1 ? 0 : prev + 1,
+      prev === selectedEvent.images.length - 1
+        ? 0
+        : prev + 1,
     );
   };
 
@@ -211,7 +234,9 @@ export default function EventsSection() {
     if (!selectedEvent?.images.length) return;
 
     setCurrentImage((prev) =>
-      prev === 0 ? selectedEvent.images.length - 1 : prev - 1,
+      prev === 0
+        ? selectedEvent.images.length - 1
+        : prev - 1,
     );
   };
 
@@ -243,7 +268,10 @@ export default function EventsSection() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
     };
   }, [selectedEvent, zoomedImage]);
 
@@ -386,6 +414,7 @@ export default function EventsSection() {
               >
                 Moments
                 <br />
+
                 <span className="text-white/25">
                   that shaped us.
                 </span>
@@ -401,9 +430,10 @@ export default function EventsSection() {
                   md:text-base
                 "
               >
-                From competition and orientation to expression,
-                debate and celebration — these moments form the
-                journey of Shrinik.
+                From competition and orientation to
+                expression, debate and celebration —
+                these moments form the journey of
+                Shrinik.
               </p>
             </div>
           </ScrollReveal>
@@ -488,7 +518,7 @@ export default function EventsSection() {
                     </div>
 
                     {/* =================================================
-                        LEFT — EVENT CARD
+                        LEFT — EVENT IMAGE CARD
                     ================================================== */}
 
                     <div
@@ -551,7 +581,9 @@ export default function EventsSection() {
                         md:block
                       "
                     >
-                      <EventInformation event={event} />
+                      <EventInformation
+                        event={event}
+                      />
                     </div>
 
                     {/* =================================================
@@ -565,7 +597,9 @@ export default function EventsSection() {
                         md:hidden
                       "
                     >
-                      <MobileEventInformation event={event} />
+                      <MobileEventInformation
+                        event={event}
+                      />
                     </div>
 
                   </div>
@@ -652,9 +686,7 @@ export default function EventsSection() {
             "
           >
 
-            {/* =================================================
-                CLOSE BUTTON
-            ================================================== */}
+            {/* CLOSE BUTTON */}
 
             <button
               type="button"
@@ -685,9 +717,7 @@ export default function EventsSection() {
               <X size={17} />
             </button>
 
-            {/* =================================================
-                MODAL HEADER
-            ================================================== */}
+            {/* MODAL HEADER */}
 
             <div
               className="
@@ -749,9 +779,7 @@ export default function EventsSection() {
               </h3>
             </div>
 
-            {/* =================================================
-                CAROUSEL
-            ================================================== */}
+            {/* CAROUSEL */}
 
             {selectedEvent.images.length > 0 ? (
               <div
@@ -776,8 +804,16 @@ export default function EventsSection() {
                   {/* Main image */}
 
                   <img
-                    key={selectedEvent.images[currentImage]}
-                    src={selectedEvent.images[currentImage]}
+                    key={
+                      selectedEvent.images[
+                        currentImage
+                      ]
+                    }
+                    src={
+                      selectedEvent.images[
+                        currentImage
+                      ]
+                    }
                     alt={`${selectedEvent.title} photo ${
                       currentImage + 1
                     }`}
@@ -792,14 +828,14 @@ export default function EventsSection() {
                     "
                     onClick={() =>
                       setZoomedImage(
-                        selectedEvent.images[currentImage],
+                        selectedEvent.images[
+                          currentImage
+                        ],
                       )
                     }
                   />
 
-                  {/* =================================================
-                      PREVIOUS BUTTON
-                  ================================================== */}
+                  {/* PREVIOUS */}
 
                   <button
                     type="button"
@@ -830,9 +866,7 @@ export default function EventsSection() {
                     <ArrowLeft size={17} />
                   </button>
 
-                  {/* =================================================
-                      NEXT BUTTON
-                  ================================================== */}
+                  {/* NEXT */}
 
                   <button
                     type="button"
@@ -863,9 +897,7 @@ export default function EventsSection() {
                     <ArrowRight size={17} />
                   </button>
 
-                  {/* =================================================
-                      IMAGE COUNTER
-                  ================================================== */}
+                  {/* IMAGE COUNTER */}
 
                   <div
                     className="
@@ -885,7 +917,9 @@ export default function EventsSection() {
                       backdrop-blur-xl
                     "
                   >
-                    {String(currentImage + 1).padStart(2, "0")}
+                    {String(
+                      currentImage + 1,
+                    ).padStart(2, "0")}
 
                     {" / "}
 
@@ -895,9 +929,7 @@ export default function EventsSection() {
                   </div>
                 </div>
 
-                {/* =================================================
-                    CAROUSEL DOTS
-                ================================================== */}
+                {/* CAROUSEL DOTS */}
 
                 <div
                   className="
@@ -910,31 +942,35 @@ export default function EventsSection() {
                     overflow-hidden
                   "
                 >
-                  {selectedEvent.images.map((_, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => setCurrentImage(index)}
-                      aria-label={`View photo ${index + 1}`}
-                      className={`
-                        h-1
-                        rounded-full
-                        transition-all
-                        duration-300
-                        ${
-                          index === currentImage
-                            ? "w-7 bg-[#C6922E]"
-                            : "w-1.5 bg-white/20 hover:bg-white/40"
+                  {selectedEvent.images.map(
+                    (_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() =>
+                          setCurrentImage(index)
                         }
-                      `}
-                    />
-                  ))}
+                        aria-label={`View photo ${
+                          index + 1
+                        }`}
+                        className={`
+                          h-1
+                          rounded-full
+                          transition-all
+                          duration-300
+                          ${
+                            index === currentImage
+                              ? "w-7 bg-[#C6922E]"
+                              : "w-1.5 bg-white/20 hover:bg-white/40"
+                          }
+                        `}
+                      />
+                    ),
+                  )}
                 </div>
               </div>
             ) : (
-              /* =================================================
-                 NO PHOTOS
-              ================================================== */
+              /* NO PHOTOS */
 
               <div
                 className="
@@ -1029,7 +1065,9 @@ export default function EventsSection() {
 
             <button
               type="button"
-              onClick={() => setZoomedImage(null)}
+              onClick={() =>
+                setZoomedImage(null)
+              }
               aria-label="Close full photo"
               className="
                 absolute
@@ -1097,7 +1135,6 @@ function EventInformation({
         lg:px-8
       "
     >
-
       {/* Small label */}
 
       <div
@@ -1173,7 +1210,6 @@ function EventInformation({
           lg:grid-cols-3
         "
       >
-
         {/* Date */}
 
         <div>
@@ -1285,7 +1321,6 @@ function MobileEventInformation({
         pl-5
       "
     >
-
       <span
         className="
           text-[8px]
@@ -1367,7 +1402,7 @@ function MobileEventInformation({
 }
 
 /* ============================================================
-   TIMELINE EVENT CARD
+   TIMELINE EVENT CARD — IMAGE POSTER
 ============================================================ */
 
 interface TimelineCardProps {
@@ -1383,99 +1418,121 @@ function TimelineCard({
     <button
       type="button"
       onClick={onClick}
+      aria-label={`Open ${event.title}`}
       className="
         group
         relative
+        block
         w-full
         overflow-hidden
         rounded-[2rem]
         border
-        border-white/[0.07]
+        border-white/[0.08]
         bg-[#12070A]
-        p-7
         text-left
+        shadow-[0_25px_80px_rgba(0,0,0,0.25)]
         transition-all
         duration-700
         hover:-translate-y-2
-        hover:border-[#C6922E]/35
-        hover:shadow-[0_30px_100px_rgba(0,0,0,0.35)]
+        hover:border-[#C6922E]/45
+        hover:shadow-[0_35px_100px_rgba(0,0,0,0.55)]
+        focus:outline-none
+        focus:ring-1
+        focus:ring-[#C6922E]/50
       "
     >
-
       {/* =================================================
-          GOLD GLOW
+          IMAGE
       ================================================== */}
 
       <div
         className="
-          pointer-events-none
-          absolute
-          right-[-20%]
-          top-[-25%]
-          h-64
-          w-64
-          rounded-full
-          bg-[#C6922E]/[0.035]
-          blur-[80px]
-          transition-all
-          duration-700
-          group-hover:bg-[#C6922E]/10
+          relative
+          aspect-[16/9]
+          w-full
+          overflow-hidden
+          bg-[#100608]
         "
-      />
-
-      {/* =================================================
-          RED GLOW
-      ================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          bottom-[-25%]
-          left-[-20%]
-          h-48
-          w-48
-          rounded-full
-          bg-[#650018]/20
-          blur-[80px]
-        "
-      />
-
-      {/* =================================================
-          BACKGROUND GRID
-      ================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          opacity-[0.025]
-        "
-        style={{
-          backgroundImage: `
-            linear-gradient(
-              rgba(255,255,255,.5) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              90deg,
-              rgba(255,255,255,.5) 1px,
-              transparent 1px
-            )
-          `,
-          backgroundSize: "45px 45px",
-        }}
-      />
-
-      <div className="relative z-10">
+      >
+        <img
+          src={event.coverImage}
+          alt={`${event.title} cover`}
+          className="
+            absolute
+            inset-0
+            h-full
+            w-full
+            object-cover
+            transition-transform
+            duration-[1200ms]
+            ease-out
+            group-hover:scale-[1.035]
+          "
+        />
 
         {/* =================================================
-            TOP — NUMBER + DATE + ARROW
+            CINEMATIC OVERLAY
         ================================================== */}
 
         <div
           className="
+            pointer-events-none
+            absolute
+            inset-0
+            bg-gradient-to-t
+            from-black/45
+            via-black/[0.02]
+            to-black/10
+          "
+        />
+
+        {/* =================================================
+            EDGE VIGNETTE
+        ================================================== */}
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            bg-[radial-gradient(circle_at_center,transparent_45%,rgba(0,0,0,0.32)_100%)]
+            opacity-60
+          "
+        />
+
+        {/* =================================================
+            SUBTLE GOLD LIGHT
+        ================================================== */}
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -right-20
+            -top-20
+            h-48
+            w-48
+            rounded-full
+            bg-[#C6922E]/10
+            blur-[70px]
+            transition-opacity
+            duration-700
+            group-hover:opacity-100
+            opacity-40
+          "
+        />
+
+        {/* =================================================
+            TOP META
+        ================================================== */}
+
+        <div
+          className="
+            absolute
+            left-6
+            right-6
+            top-5
+            z-10
             flex
             items-center
             justify-between
@@ -1486,6 +1543,13 @@ function TimelineCard({
               flex
               items-center
               gap-3
+              rounded-full
+              border
+              border-white/10
+              bg-black/25
+              px-3
+              py-1.5
+              backdrop-blur-md
             "
           >
             <span
@@ -1501,48 +1565,76 @@ function TimelineCard({
             <span
               className="
                 h-px
-                w-6
-                bg-[#C6922E]/30
+                w-5
+                bg-[#C6922E]/40
               "
             />
 
             <span
               className="
-                text-[9px]
+                text-[8px]
                 uppercase
-                tracking-[0.25em]
-                text-white/35
+                tracking-[0.2em]
+                text-white/60
               "
             >
               {event.date}
             </span>
           </div>
 
-          <ArrowUpRight
-            size={16}
-            className="
-              text-white/20
-              transition-all
-              duration-500
-              group-hover:-translate-y-1
-              group-hover:translate-x-1
-              group-hover:text-[#C6922E]
-            "
-          />
-        </div>
-
-        {/* =================================================
-            TITLE
-        ================================================== */}
-
-        <div className="mt-12">
+          {/* Arrow */}
 
           <div
             className="
-              mb-5
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-white/10
+              bg-black/25
+              text-white/60
+              backdrop-blur-md
+              transition-all
+              duration-500
+              group-hover:border-[#C6922E]/50
+              group-hover:bg-[#C6922E]/10
+              group-hover:text-[#C6922E]
+            "
+          >
+            <ArrowUpRight
+              size={17}
+              className="
+                transition-transform
+                duration-500
+                group-hover:-translate-y-0.5
+                group-hover:translate-x-0.5
+              "
+            />
+          </div>
+        </div>
+
+        {/* =================================================
+            BOTTOM EVENT LABEL
+        ================================================== */}
+
+        <div
+          className="
+            absolute
+            bottom-6
+            left-6
+            right-6
+            z-10
+          "
+        >
+          <div
+            className="
+              mb-3
               h-px
               w-10
-              bg-[#C6922E]/50
+              bg-[#C6922E]
               transition-all
               duration-500
               group-hover:w-20
@@ -1554,7 +1646,8 @@ function TimelineCard({
               text-[8px]
               uppercase
               tracking-[0.3em]
-              text-white/20
+              text-white/65
+              drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]
             "
           >
             {event.subtitle}
@@ -1562,13 +1655,14 @@ function TimelineCard({
 
           <h3
             className="
-              mt-3
-              text-3xl
+              mt-2
+              text-2xl
               font-medium
               leading-[0.95]
               tracking-[-0.045em]
-              text-[#F5F1E8]
-              md:text-4xl
+              text-white
+              drop-shadow-[0_4px_20px_rgba(0,0,0,0.65)]
+              md:text-3xl
             "
           >
             {event.title}
@@ -1576,79 +1670,65 @@ function TimelineCard({
         </div>
 
         {/* =================================================
-            DESCRIPTION
-        ================================================== */}
-
-        <p
-          className="
-            mt-6
-            max-w-md
-            text-sm
-            leading-7
-            text-white/30
-          "
-        >
-          {event.description}
-        </p>
-
-        {/* =================================================
-            FOOTER
+            HOVER GOLD LINE
         ================================================== */}
 
         <div
           className="
-            mt-7
-            flex
-            items-center
-            justify-between
-            border-t
-            border-white/[0.06]
-            pt-5
+            absolute
+            bottom-0
+            left-0
+            z-20
+            h-[2px]
+            w-0
+            bg-[#C6922E]
+            transition-all
+            duration-700
+            group-hover:w-full
           "
-        >
-          <span
-            className="
-              text-[8px]
-              uppercase
-              tracking-[0.25em]
-              text-white/20
-            "
-          >
-            Explore event
-          </span>
-
-          <span
-            className="
-              text-[8px]
-              uppercase
-              tracking-[0.25em]
-              text-[#C6922E]/60
-              transition-colors
-              group-hover:text-[#C6922E]
-            "
-          >
-            View gallery →
-          </span>
-        </div>
+        />
       </div>
 
       {/* =================================================
-          HOVER GOLD LINE
+          CARD FOOTER
       ================================================== */}
 
       <div
         className="
-          absolute
-          bottom-0
-          left-7
-          h-px
-          w-0
-          bg-[#C6922E]
-          transition-all
-          duration-700
-          group-hover:w-[calc(100%-3.5rem)]
+          flex
+          items-center
+          justify-between
+          border-t
+          border-white/[0.06]
+          bg-[#100608]/95
+          px-6
+          py-4
         "
-      />
+      >
+        <span
+          className="
+            text-[8px]
+            uppercase
+            tracking-[0.25em]
+            text-white/25
+          "
+        >
+          Explore event
+        </span>
+
+        <span
+          className="
+            text-[8px]
+            uppercase
+            tracking-[0.25em]
+            text-[#C6922E]/65
+            transition-colors
+            group-hover:text-[#C6922E]
+          "
+        >
+          View gallery →
+        </span>
+      </div>
     </button>
   );
 }
