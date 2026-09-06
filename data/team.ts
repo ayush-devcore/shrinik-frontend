@@ -184,7 +184,7 @@ export const teamGroups: TeamGroup[] = [
       { id: "music-avenue-ruchi-mishra", name: "Ruchi Mishra", role: "Co-Lead", image: "/images/ruchi-mishra.webp" },
       { id: "music-avenue-shubh", name: "Shubh", role: "Vocalist", image: "/images/shubh.webp" },
       { id: "music-avenue-satakshi", name: "Satakshi", role: "Vocalist", image: "/images/satakshi.webp" },
-      { id: "music-avenue-kanishk", name: "Kanishk", role: "Vocalist" },
+      { id: "music-avenue-kanishk", name: "Kanishk", role: "Vocalist", image: "/images/kanishk.webp" },
       { id: "music-avenue-prakhar", name: "Prakhar", role: "Vocalist", image: "/images/prakhar.webp" },
       { id: "music-avenue-ankit", name: "Ankit", role: "Vocalist" },
       { id: "music-avenue-aditya", name: "Aditya", role: "Vocalist" },
