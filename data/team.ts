@@ -50,7 +50,7 @@ export const teamGroups: TeamGroup[] = [
       { id: "tech-team-akshat-mishra", name: "Akshat Mishra", role: "Member", image: "/images/akshat-mishra.jpg" },
       { id: "tech-team-saksham-kaushik", name: "Saksham Kaushik", role: "Member", image: "/images/saksham-kaushik.jpg" },
       { id: "tech-team-dev-agarwal", name: "Dev Agarwal", role: "Member", image: "/images/dev-agarwal.jpg" },
-      { id: "tech-team-raj-thakur", name: "Raj Thakur", role: "Member", image: "/images/raj-thakur.jpg" },
+      { id: "tech-team-raj-thakur", name: "Raj Thakur", role: "Member", image: "/images/raj.jpeg" },
       { id: "tech-team-ojasv-agarwal", name: "Ojasv Agarwal", role: "Member", image: "/images/ojasv-agarwal.jpg" },
     ],
   },
