@@ -333,7 +333,7 @@ export const teamGroups: TeamGroup[] = [
         id: "social-media-team-deepesh-ojha",
         name: "Deepesh Ojha",
         role: "Member",
-        image: "/images/deepesh-ojha.jpg",
+        image: "/images/deepesh-ojha.jpeg",
       },
       {
         id: "social-media-team-tanu-mishra",
