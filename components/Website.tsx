@@ -1998,7 +1998,7 @@ export default function Website() {
                     />
 
                     <img
-                      src="/images/hod-sansar-chauhan.jpg"
+                      src="/images/hod-sansar-chauhan.webp"
                       alt="Dr. Sansar S. Chauhan"
                       width={360}
                       height={360}
