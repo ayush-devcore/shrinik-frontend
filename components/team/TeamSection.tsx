@@ -62,6 +62,8 @@ const teamCoverImages: Record<string, string> = {
     "/images/team-covers/dance-avenue.png",
   "music avenue":
     "/images/team-covers/music-avenue.png",
+    "art avenue":
+    "/images/team-covers/art-avenue.png",
 };
 
 const teamCoverByCategory: Record<string, string> = {
@@ -1829,9 +1831,6 @@ function TeamArtwork({
     category,
   );
 
-  const isArtAvenue =
-    teamName.trim().toLowerCase() === "art avenue";
-
   return (
     <div
       className="
@@ -1845,49 +1844,28 @@ function TeamArtwork({
           REAL TEAM COVER IMAGE
           ==================================================== */}
 
-      {isArtAvenue ? (
-        <div
-          className="
-            absolute
-            inset-0
-            overflow-hidden
-            bg-[#20101A]
-          "
-        >
-          <div className="absolute -left-[12%] -top-[8%] h-[52%] w-[62%] rotate-[-14deg] rounded-[38%] bg-[#D17A52]/55 blur-[2px] transition-transform duration-1000 ease-out group-hover:scale-[1.07]" />
-          <div className="absolute -right-[16%] top-[4%] h-[58%] w-[64%] rotate-[18deg] rounded-[42%] bg-[#7A2F5B]/70 transition-transform duration-1000 ease-out group-hover:scale-[1.06]" />
-          <div className="absolute left-[18%] top-[18%] h-[42%] w-[48%] rotate-[11deg] rounded-[48%] border-[18px] border-[#F0B83F]/35 transition-transform duration-1000 ease-out group-hover:rotate-[17deg] group-hover:scale-[1.05]" />
-          <div className="absolute bottom-[-12%] left-[8%] h-[52%] w-[72%] -rotate-[10deg] rounded-[46%] bg-[#6B1838]/80 blur-[1px]" />
-          <div className="absolute bottom-[20%] right-[10%] h-28 w-28 rounded-full bg-[#F5F1E8]/12 blur-2xl" />
-          <div className="absolute left-[17%] top-[43%] h-[2px] w-[58%] rotate-[-24deg] bg-[#F5F1E8]/50" />
-          <div className="absolute left-[27%] top-[55%] h-[2px] w-[42%] rotate-[31deg] bg-[#C6922E]/55" />
-          <div className="absolute left-[42%] top-[29%] h-5 w-5 rounded-full border border-[#F5F1E8]/60" />
-          <div className="absolute left-[49%] top-[24%] h-2 w-2 rounded-full bg-[#F5F1E8]/70" />
-        </div>
-      ) : (
-        <img
-          src={imageSrc}
-          alt=""
-          aria-hidden="true"
-          draggable={false}
-          className="
-            absolute
-            inset-0
-            h-full
-            w-full
-            select-none
-            object-cover
-            object-center
-            transition-transform
-            duration-1000
-            ease-out
-            group-hover:scale-[1.045]
-          "
-          style={{
-            willChange: "transform",
-          }}
-        />
-      )}
+      <img
+        src={imageSrc}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        className="
+          absolute
+          inset-0
+          h-full
+          w-full
+          select-none
+          object-cover
+          object-center
+          transition-transform
+          duration-1000
+          ease-out
+          group-hover:scale-[1.045]
+        "
+        style={{
+          willChange: "transform",
+        }}
+      />
 
       {/* ====================================================
           CINEMATIC IMAGE OVERLAYS
