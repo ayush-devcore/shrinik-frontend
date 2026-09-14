@@ -168,7 +168,7 @@ export const teamGroups: TeamGroup[] = [
       { id: "dance-avenue-avni", name: "Avni", role: "Member", image: "/images/avni.webp" },
       { id: "dance-avenue-atifa-zareef", name: "Atifa Zareef", role: "Member", image: "/images/atifa.webp" },
       { id: "dance-avenue-aayushi-sharma", name: "Aayushi Sharma", role: "Member", image: "/images/aayushi-sharma.webp" },
-      { id: "dance-avenue-meghna-pandey", name: "Meghna Pandey", role: "Member", image: "/images/meghna-pandey.webp" },
+      { id: "dance-avenue-meghna-pandey", name: "Meghna Pandey", role: "Member", image: "/images/meghna.webp" },
       { id: "dance-avenue-divyanshi-agrahari", name: "Divyanshi Agrahari", role: "Member", image: "/images/divyanshi-agrahari.webp" },
     ],
   },
