@@ -18,7 +18,6 @@ const footerLinks = [
   { label: "About", href: "#about" },
   { label: "Team", href: "#team" },
   { label: "Events", href: "#events" },
-  { label: "Gallery", href: "#gallery" },
   { label: "Contact", href: "#contact" },
 ];
 
