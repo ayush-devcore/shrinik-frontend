@@ -27,6 +27,7 @@ export default function Website() {
 
   const [hodPhotoOpen, setHodPhotoOpen] = useState(false);
   const [facultyPhotoOpen, setFacultyPhotoOpen] = useState(false);
+  const [kiranPhotoOpen, setKiranPhotoOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
 
@@ -1732,144 +1733,230 @@ export default function Website() {
               </div>
             </article>
 
-            {/* FACULTY COORDINATOR */}
-            <div className="mt-10 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-stretch">
-              <article
-                className="
-    relative
-    overflow-hidden
-    rounded-[1.75rem]
-    border
-    border-white/[0.08]
-    bg-gradient-to-br
-    from-[#10080A]
-    via-[#0C090A]
-    to-[#080808]
-    p-8
-    sm:p-10
-    lg:p-12
-  "
-              >
-                <div className="pointer-events-none absolute right-[-20%] top-[-30%] h-64 w-64 rounded-full bg-[#650018]/10 blur-[90px]" />
+            {/* FACULTY COORDINATORS */}
 
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3">
-                    <span className="h-px w-7 bg-[#C6922E]/70" />
-                    <span className="text-[12px] uppercase tracking-[0.34em] text-[#C6922E]">
-                      Faculty Coordinator
-                    </span>
-                  </div>
+            <div className="mt-10">
+              <div className="mb-6 flex items-center gap-3">
+                <span className="h-px w-8 bg-[#C6922E]/70" />
+                <span className="text-[10px] uppercase tracking-[0.34em] text-[#C6922E]">
+                  Faculty Coordinators
+                </span>
+                <span className="h-px flex-1 bg-white/[0.07]" />
+              </div>
 
-                  <div className="mt-7 grid grid-cols-1 items-center gap-6 sm:grid-cols-[300px_1fr] lg:grid-cols-[330px_1fr]">
-                    <button
-                      type="button"
-                      onClick={() => setFacultyPhotoOpen(true)}
-                      aria-label="View enlarged photo of Faculty Coordinator Saijshree Shrivastava"
-                      className="group relative block w-full cursor-zoom-in rounded-[1.35rem] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#C6922E]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[#080808]"
-                    >
-                      <div className="relative aspect-square overflow-hidden rounded-[1.35rem] border border-[#C6922E]/30 bg-[#16090C] p-2 shadow-[0_0_55px_rgba(198,146,46,0.07)]">
-                        <div className="pointer-events-none absolute inset-1.5 z-20 rounded-[1.05rem] border border-white/10" />
-                        <img
-                          src="/images/faculty-coordinator.webp"
-                          alt="Saijshree Shrivastava, Faculty Coordinator"
-                          width={360}
-                          height={360}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-full w-full rounded-[1.05rem] object-cover object-center transition-transform duration-500 group-hover:scale-[1.025]"
-                          draggable={false}
-                        />
-                      </div>
-                    </button>
+              <div className="grid gap-8 lg:grid-cols-2">
+                {/* SAIJSHREE SHRIVASTAVA */}
+                <article
+                  className="
+                    relative
+                    overflow-hidden
+                    rounded-[1.75rem]
+                    border
+                    border-white/[0.08]
+                    bg-gradient-to-br
+                    from-[#10080A]
+                    via-[#0C090A]
+                    to-[#080808]
+                    p-6
+                    sm:p-8
+                  "
+                >
+                  <div className="pointer-events-none absolute right-[-18%] top-[-28%] h-64 w-64 rounded-full bg-[#650018]/10 blur-[90px]" />
 
-                    <div>
-                      <p className="text-[8px] uppercase tracking-[0.3em] text-white/25">
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3">
+                      <span className="h-px w-7 bg-[#C6922E]/70" />
+                      <span className="text-[9px] uppercase tracking-[0.34em] text-[#C6922E]">
                         Faculty Coordinator
-                      </p>
-                      <h3 className="mt-2 text-8xl font-medium tracking-[-0.035em] text-[#F5F1E8] sm:text-4xl">
-                        Saijshree Shrivastava
-                      </h3>
-                      <p className="mt-3 text-sm leading-6 text-white/35">
-                        Faculty support and guidance for the Shrinik student
-                        community.
-                      </p>
+                      </span>
+                    </div>
+
+                    <div className="mt-6 grid items-center gap-6 sm:grid-cols-[220px_1fr]">
+                      <button
+                        type="button"
+                        onClick={() => setFacultyPhotoOpen(true)}
+                        aria-label="View enlarged photo of Faculty Coordinator Saijshree Shrivastava"
+                        className="group relative block w-full cursor-zoom-in rounded-[1.35rem] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#C6922E]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[#080808]"
+                      >
+                        <div className="relative aspect-square overflow-hidden rounded-[1.35rem] border border-[#C6922E]/30 bg-[#16090C] p-2 shadow-[0_0_55px_rgba(198,146,46,0.07)]">
+                          <div className="pointer-events-none absolute inset-1.5 z-20 rounded-[1.05rem] border border-white/10" />
+                          <img
+                            src="/images/faculty-coordinator.webp"
+                            alt="Saijshree Shrivastava, Faculty Coordinator"
+                            width={360}
+                            height={360}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-full w-full rounded-[1.05rem] object-cover object-center transition-transform duration-500 group-hover:scale-[1.025]"
+                            draggable={false}
+                          />
+                        </div>
+                      </button>
+
+                      <div>
+                        <p className="text-[8px] uppercase tracking-[0.3em] text-white/25">
+                          Faculty Coordinator
+                        </p>
+                        <h3 className="mt-2 text-3xl font-medium tracking-[-0.035em] text-[#F5F1E8] sm:text-4xl">
+                          Saijshree Shrivastava
+                        </h3>
+                        <p className="mt-3 text-xs font-medium uppercase tracking-[0.16em] text-[#C6922E]/80">
+                          Faculty Coordinator · Shrinik Club
+                        </p>
+                        <p className="mt-4 text-sm leading-7 text-white/40">
+                          Faculty guidance and support for the Shrinik student
+                          community, helping students turn ideas into meaningful
+                          initiatives and experiences.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </article>
+                </article>
 
-              {/* ABOUT DEPARTMENT */}
-              <article
-                className="
-                  relative
-                  overflow-hidden
-                  rounded-[1.75rem]
-                  border
-                  border-[#C6922E]/15
-                  bg-gradient-to-br
-                  from-[#16090C]/85
-                  via-[#0F090A]
-                  to-black/70
-                  p-6
-                  sm:p-8
-                "
-              >
-                <div className="pointer-events-none absolute bottom-[-30%] right-[-10%] h-72 w-72 rounded-full bg-[#C6922E]/[0.04] blur-[100px]" />
+                {/* KIRAN SINGH */}
+                <article
+                  className="
+                    relative
+                    overflow-hidden
+                    rounded-[1.75rem]
+                    border
+                    border-white/[0.08]
+                    bg-gradient-to-br
+                    from-[#10080A]
+                    via-[#0C090A]
+                    to-[#080808]
+                    p-6
+                    sm:p-8
+                  "
+                >
+                  <div className="pointer-events-none absolute right-[-18%] top-[-28%] h-64 w-64 rounded-full bg-[#650018]/10 blur-[90px]" />
 
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[8px] uppercase tracking-[0.34em] text-[#C6922E]">
-                      About Department
-                    </span>
-                    <span className="h-px flex-1 bg-white/[0.08]" />
-                    <span className="text-[8px] uppercase tracking-[0.2em] text-white/20">
-                      CSE · GLBITM
-                    </span>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3">
+                      <span className="h-px w-7 bg-[#C6922E]/70" />
+                      <span className="text-[9px] uppercase tracking-[0.34em] text-[#C6922E]">
+                        Faculty Coordinator
+                      </span>
+                    </div>
+
+                    <div className="mt-6 grid items-center gap-6 sm:grid-cols-[220px_1fr]">
+                      <button
+                        type="button"
+                        onClick={() => setKiranPhotoOpen(true)}
+                        aria-label="View enlarged photo of Faculty Coordinator Ms. Kiran Singh"
+                        className="group relative block w-full cursor-zoom-in rounded-[1.35rem] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#C6922E]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[#080808]"
+                      >
+                        <div className="relative aspect-square overflow-hidden rounded-[1.35rem] border border-[#C6922E]/30 bg-[#16090C] p-2 shadow-[0_0_55px_rgba(198,146,46,0.07)]">
+                          <div className="pointer-events-none absolute inset-1.5 z-20 rounded-[1.05rem] border border-white/10" />
+                          <img
+                            src="/images/kiran-singh.webp"
+                            alt="Ms. Kiran Singh, Faculty Coordinator"
+                            width={360}
+                            height={360}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-full w-full rounded-[1.05rem] object-cover object-center transition-transform duration-500 group-hover:scale-[1.025]"
+                            draggable={false}
+                          />
+                        </div>
+                      </button>
+
+                      <div>
+                        <p className="text-[8px] uppercase tracking-[0.3em] text-white/25">
+                          Faculty Coordinator
+                        </p>
+                        <h3 className="mt-2 text-3xl font-medium tracking-[-0.035em] text-[#F5F1E8] sm:text-4xl">
+                          Ms. Kiran Singh
+                        </h3>
+                        <p className="mt-3 text-xs font-medium uppercase tracking-[0.16em] text-[#C6922E]/80">
+                          Assistant Professor · Department of CSE
+                        </p>
+                        <p className="mt-4 text-sm leading-7 text-white/40">
+                          As Faculty Coordinator, she provides direction,
+                          encouragement and student-first mentorship while
+                          helping Shrinik students turn ideas into action.
+                        </p>
+                        <p className="mt-3 text-xs uppercase tracking-[0.16em] text-white/25">
+                          GL Bajaj Institute of Technology &amp; Management
+                        </p>
+                      </div>
+                    </div>
                   </div>
-
-                  <p className="mt-6 text-sm font-medium leading-6 text-[#F5F1E8]/85 md:text-base md:leading-7">
-                    B.Tech (4 Years), B.Tech.-Hindi (4 Years) &amp; M.Tech (2
-                    Years), Approved by AICTE
-                  </p>
-
-                  <p className="mt-2 text-xs uppercase tracking-[0.16em] text-[#C6922E]/75">
-                    Affiliated to Dr. A.P.J. Abdul Kalam Technical University
-                  </p>
-
-                  <div className="mt-6 border-t border-white/[0.07] pt-6">
-                    <p className="text-sm leading-7 text-white/40 md:text-[15px] md:leading-8">
-                      The Department of Computer Science &amp; Engineering at GL
-                      Bajaj Institute of Technology and Management was
-                      established in the year 2005 with a vision to help the IT
-                      boom and fulfil the need of dynamic Software Engineers
-                      globally. Since then, especially in the last ten years of
-                      the IT revolution, the department has taken long strides
-                      and is now among one of the best department in the
-                      college. The Department aims to nurture students in terms
-                      of modern computer techniques and to prepare them, to cope
-                      well with the technical advancements in future. Computer
-                      Science being the flagship branch of Engineering takes
-                      focus in scientific research, scientific programming, and
-                      software engineering.
-                    </p>
-                  </div>
-
-                  <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-white/[0.07] pt-5">
-                    <span className="text-[8px] uppercase tracking-[0.25em] text-white/20">
-                      Official Contact
-                    </span>
-                    <span className="h-1 w-1 rounded-full bg-[#C6922E]/60" />
-                    <a
-                      href="mailto:hod.cse@glbitm.ac.in"
-                      className="text-xs text-[#C6922E]/80 transition-colors hover:text-[#F5F1E8]"
-                    >
-                      hod.cse@glbitm.ac.in
-                    </a>
-                  </div>
-                </div>
-              </article>
+                </article>
+              </div>
             </div>
-          </div>
+
+            {/* ABOUT DEPARTMENT */}
+            <article
+              className="
+                mt-10
+                relative
+                overflow-hidden
+                rounded-[1.75rem]
+                border
+                border-[#C6922E]/15
+                bg-gradient-to-br
+                from-[#16090C]/85
+                via-[#0F090A]
+                to-black/70
+                p-6
+                sm:p-8
+              "
+            >
+              <div className="pointer-events-none absolute bottom-[-30%] right-[-10%] h-72 w-72 rounded-full bg-[#C6922E]/[0.04] blur-[100px]" />
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-3">
+                  <span className="text-[8px] uppercase tracking-[0.34em] text-[#C6922E]">
+                    About Department
+                  </span>
+                  <span className="h-px flex-1 bg-white/[0.08]" />
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-white/20">
+                    CSE · GLBITM
+                  </span>
+                </div>
+
+                <p className="mt-6 text-sm font-medium leading-6 text-[#F5F1E8]/85 md:text-base md:leading-7">
+                  B.Tech (4 Years), B.Tech.-Hindi (4 Years) &amp; M.Tech (2
+                  Years), Approved by AICTE
+                </p>
+
+                <p className="mt-2 text-xs uppercase tracking-[0.16em] text-[#C6922E]/75">
+                  Affiliated to Dr. A.P.J. Abdul Kalam Technical University
+                </p>
+
+                <div className="mt-6 border-t border-white/[0.07] pt-6">
+                  <p className="text-sm leading-7 text-white/40 md:text-[15px] md:leading-8">
+                    The Department of Computer Science &amp; Engineering at GL
+                    Bajaj Institute of Technology and Management was
+                    established in the year 2005 with a vision to help the IT
+                    boom and fulfil the need of dynamic Software Engineers
+                    globally. Since then, especially in the last ten years of
+                    the IT revolution, the department has taken long strides
+                    and is now among one of the best department in the
+                    college. The Department aims to nurture students in terms
+                    of modern computer techniques and to prepare them, to cope
+                    well with the technical advancements in future. Computer
+                    Science being the flagship branch of Engineering takes
+                    focus in scientific research, scientific programming, and
+                    software engineering.
+                  </p>
+                </div>
+
+                <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-white/[0.07] pt-5">
+                  <span className="text-[8px] uppercase tracking-[0.25em] text-white/20">
+                    Official Contact
+                  </span>
+                  <span className="h-1 w-1 rounded-full bg-[#C6922E]/60" />
+                  <a
+                    href="mailto:hod.cse@glbitm.ac.in"
+                    className="text-xs text-[#C6922E]/80 transition-colors hover:text-[#F5F1E8]"
+                  >
+                    hod.cse@glbitm.ac.in
+                  </a>
+                </div>
+              </div>
+            </article>
         </section>
 
         {/* ======================================================
@@ -1896,6 +1983,34 @@ export default function Website() {
             <img
               src="/images/hod-sansar-chauhan.webp"
               alt="Prof. (Dr.) Sansar Singh Chauhan, Professor & Head of Department"
+              width={1000}
+              height={1000}
+              className="max-h-[90vh] max-w-[92vw] rounded-[1.5rem] object-contain shadow-[0_30px_120px_rgba(0,0,0,0.65)]"
+              onClick={(event) => event.stopPropagation()}
+            />
+          </div>
+        )}
+
+        {kiranPhotoOpen && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-5 backdrop-blur-md sm:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Enlarged Kiran Singh photo"
+            onClick={() => setKiranPhotoOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setKiranPhotoOpen(false)}
+              aria-label="Close enlarged Kiran Singh photo"
+              className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/40 text-2xl leading-none text-white/75 transition-all duration-300 hover:border-[#C6922E]/50 hover:bg-[#C6922E]/10 hover:text-[#C6922E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6922E]/60"
+            >
+              ×
+            </button>
+
+            <img
+              src="/images/kiran-singh.webp"
+              alt="Ms. Kiran Singh, Faculty Coordinator"
               width={1000}
               height={1000}
               className="max-h-[90vh] max-w-[92vw] rounded-[1.5rem] object-contain shadow-[0_30px_120px_rgba(0,0,0,0.65)]"
