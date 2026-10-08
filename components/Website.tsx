@@ -1876,9 +1876,6 @@ export default function Website() {
                           encouragement and student-first mentorship while
                           helping Shrinik students turn ideas into action.
                         </p>
-                        <p className="mt-3 text-xs uppercase tracking-[0.16em] text-white/25">
-                          GL Bajaj Institute of Technology &amp; Management
-                        </p>
                       </div>
                     </div>
                   </div>
